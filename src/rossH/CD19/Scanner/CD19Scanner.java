@@ -39,12 +39,7 @@ public class CD19Scanner {
         System.out.println(printString);
 
 
-        CD19ScannerStateMachine.CD19ScannerState s1 = CD19ScannerStateMachine.transition(CD19ScannerStateMachine.CD19ScannerState.Divide, 'a');
-        if (s1 == CD19ScannerStateMachine.CD19ScannerState.Equals) {
-            System.out.println("yyyyyyyyyyyyyyy");
-        } else {
-            System.out.println("xxx");
-        }
+        CD19ScannerStateMachine.arb();
     }
 
     public Token gettoken () {
