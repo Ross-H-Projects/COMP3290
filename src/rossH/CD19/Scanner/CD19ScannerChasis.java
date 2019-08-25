@@ -1,7 +1,8 @@
 package rossH.CD19.Scanner;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class CD19ScannerChasis {
 
@@ -9,10 +10,9 @@ public class CD19ScannerChasis {
         // grab input source file text
         String sourceFileName = null;
         String sourceText = null;
-        BufferedInputStream sourceFileStream = null;
         try {
             sourceFileName = args[0];
-            sourceText = new String( (new FileInputStream(sourceFileName)).readAllBytes() );
+            sourceText = new String(Files.readAllBytes(Paths.get(sourceFileName)));
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);
@@ -24,16 +24,6 @@ public class CD19ScannerChasis {
         while (!scanner.eof()) {
             token = scanner.gettoken();
             scanner.printtoken(token);
-        }
-
-
-        // close input source file
-        if (sourceFileStream != null) {
-            try {
-                sourceFileStream.close();
-            } catch (Exception e) {
-                System.out.println(e);
-            }
         }
     }
 }

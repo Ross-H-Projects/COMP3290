@@ -2,6 +2,7 @@ package rossH.CD19.Scanner;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.util.EnumSet;
 import java.util.Vector;
 
 public class CD19Scanner {
@@ -23,6 +24,7 @@ public class CD19Scanner {
         this.currentLineNo = 1;
         this.lexemeBuffer = "";
         this.endOfFile = false;
+
     }
 
     public boolean eof () {
@@ -36,7 +38,13 @@ public class CD19Scanner {
         printString += token.getPos() + ">";
         System.out.println(printString);
 
-        CD19ScannerStateMachine.transition(CD19ScannerStateMachine.CD19ScannerState.Divide, 'a');
+
+        CD19ScannerStateMachine.CD19ScannerState s1 = CD19ScannerStateMachine.transition(CD19ScannerStateMachine.CD19ScannerState.Divide, 'a');
+        if (s1 == CD19ScannerStateMachine.CD19ScannerState.Equals) {
+            System.out.println("yyyyyyyyyyyyyyy");
+        } else {
+            System.out.println("xxx");
+        }
     }
 
     public Token gettoken () {
