@@ -1,5 +1,7 @@
 package rossH.CD19.Scanner;
 
+import java.util.Map;
+
 public class CD19ScannerStateMachine {
 
 
@@ -15,12 +17,14 @@ public class CD19ScannerStateMachine {
             endOfToken, // where we have successfully recognized a token,
 
             // Partially recognized tokens
-            PossibleComment, // we have just recognized a '-' char, upon  the next char being another '-' char, we will be within a comment
+            PossibleComment, // we have just recognized the chars '/-', upon  the next char being another '-' char, we will be within a comment
             PossibleNotEquals, // we have just recognized up to '!', upon the next char being  a '+' char, we will have
             PossibleRealLiteral, // <integer>.(0)*<integer>
                                  //          ^ we have  just recognized up to here so far, if we come across
                                  //            any numbers after tis point then we will be within a Real Literal
-
+            PossibleCommentOrDivide, // we have just recognized the char '/', upon an identifier / real literal / integer literal / SPACE (??)
+                                    // we will know we have just recognized a Divide token, if however we recognize a '-' char, we will transition to
+                                    // a PossibleComment state
 
 
             // Illegal chars, operators, identifiers, Strings, Literals etc
@@ -28,7 +32,7 @@ public class CD19ScannerStateMachine {
             IllegalOperator,
             IllegalIdentifier,
             IllegalInteger,
-            IllegalReal
+            IllegalReal,
 
 
         // -- SPECIAL CHARACTERS --
@@ -63,11 +67,44 @@ public class CD19ScannerStateMachine {
             GreaterOrEqualTo, // >=
             LesserOrEqualTo, // <=
 
+            // reference operators
+            Dot,
+
+        // -- Literals --
+        Integer,
+        Real,
+        String,
+
         // -- MISC --
+        Identifer,
         Keyword, // one of the reserved key words of CD19
         Comment,  // single line comment
-
-
     };
+
+    public enum CD19ScannerCurrentCharType {
+        Alphabetical, // [a-zA-Z]
+        Number, // [0-9]
+        LegalSpecialCharacter, // * + - . ( ) [ ] ^  ! %  = > < , " : ; / etc
+        IllegalSpecialCharacter, // { } # $ @ & _ ` ~ ?  | | \ etc
+        ControlAndNonPrintableASCIICharacter,
+        Space, // We NEED to distinguish between a newline and a space as a string literal cannot span multiple lines
+        Newspace // \n \r OR \n\r ??
+    }
+    /*
+    public static Map<CD19ScannerState, CD19ScannerState> AlphabeticalTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    // <Current State, Next State>
+    // Legal
+    AlphabeticalTransition.put(CD19ScannerState.Identifer, CD19ScannerState.Identifer);
+    AlphabeticalTransition.put(CD19ScannerState.Start, CD19ScannerState.Identifer);
+    AlphabeticalTransition.put(CD19ScannerState.String, CD19ScannerState.String);
+    // Illegal
+    AlphabeticalTransition.put(CD19ScannerState.Integer, CD19ScannerState.IllegalInteger);
+    AlphabeticalTransition.put(CD19ScannerState.Real, CD19ScannerState.IllegalReal);
+    */
+
+    public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
+
+        return presentState;
+    }
 }
 

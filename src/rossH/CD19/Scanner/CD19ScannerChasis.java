@@ -26,7 +26,6 @@ public class CD19ScannerChasis {
             scanner.printtoken(token);
         }
 
-        scanner.arb();
 
         // close input source file
         if (sourceFileStream != null) {

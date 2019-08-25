@@ -35,6 +35,8 @@ public class CD19Scanner {
         printString += token.getLn() + ", ";
         printString += token.getPos() + ">";
         System.out.println(printString);
+
+        CD19ScannerStateMachine.transition(CD19ScannerStateMachine.CD19ScannerState.Divide, 'a');
     }
 
     public Token gettoken () {
