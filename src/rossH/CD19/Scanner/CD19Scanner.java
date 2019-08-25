@@ -38,7 +38,7 @@ public class CD19Scanner {
         printString += token.getPos() + ">";
         System.out.println(printString);
 
-
+        CD19ScannerStateMachine.setup();
         CD19ScannerStateMachine.arb();
     }
 

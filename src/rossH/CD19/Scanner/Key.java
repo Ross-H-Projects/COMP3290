@@ -1,10 +1,10 @@
 package rossH.CD19.Scanner;
 
-public class Key<T, E> {
-    private final T x;
-    private final E y;
+public class Key {
+    public final char x;
+    public final String y;
 
-    public Pair(final T x, final E y) {
+    public Key(final char x, String y ) {
         this.x = x;
         this.y = y;
     }
@@ -19,12 +19,12 @@ public class Key<T, E> {
             return false;
         }
 
-        final Key pair = (Key) o;
+        final Key key = (Key) o;
 
-        if (x != pair.x) {
+        if (x != key.x) {
             return false;
         }
-        if (y != pair.y) {
+        if (y != key.y) {
             return false;
         }
 
@@ -33,8 +33,8 @@ public class Key<T, E> {
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = (int) x;
+        result = 31 * result + y.hashCode();
         return result;
     }
 }

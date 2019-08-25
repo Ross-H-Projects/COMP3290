@@ -1,15 +1,12 @@
 package rossH.CD19.Scanner;
 
-import java.security.Key;
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CD19ScannerStateMachine {
 
-    public static CD19ScannerState arb () {
-        return CD19ScannerState.Comment;
-    }
 
     // Define the states of the machine
     public enum CD19ScannerState {
@@ -99,11 +96,49 @@ public class CD19ScannerStateMachine {
         Newline // \n \r OR \n\r ??
     }
 
-    // On hitting a [Alphabetic, Numeric, ..] character, when we are in the CURRENT STATE, transition to NEXT STATE
+
+    public static Map< CD19ScannerState, CD19ScannerState > AlphabeticalTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    public static Map< CD19ScannerState, CD19ScannerState > NumericTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    public static Map< CD19ScannerState, CD19ScannerState > SpaceTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    public static Map< CD19ScannerState, CD19ScannerState > NewlineTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    public static Map< Key, CD19ScannerState > LegalSpecialCharacterTransition = new HashMap<Key, CD19ScannerState>();
+
+    public static boolean isSetup = false;
+    public static void setup () {
+        if (isSetup) {
+            return;
+        }
+
+        setupAlphabeticalTransition();
+        setupNumericTransition();
+        setupSpaceTransition();
+        setupNewlineTransition();
+        setupLegalSpecialCharacterTransition();
+
+        isSetup = true;
+    }
 
 
-    public static Map< Enum<?>, Enum<?> > AlphabeticalTransition = new HashMap<>();
-    {{
+
+    public static void arb () {
+
+        CD19ScannerState a = LegalSpecialCharacterTransition.get( new Key('(', CD19ScannerState.Start.name()) );
+        System.out.println("a: " + a);
+        if (a == CD19ScannerState.Colon) {
+            System.out.println("yyy");
+        } else {
+            System.out.println("xxxxxxxxx");
+        }
+    }
+
+    public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
+
+        return presentState;
+    }
+
+    private static void setupAlphabeticalTransition () {
+        // On hitting a [Alphabetic, Numeric, ..] character, when we are in the CURRENT STATE, transition to NEXT STATE
+
         // <Current State, Next State>
         // Legal
         AlphabeticalTransition.put(CD19ScannerState.Identifier, CD19ScannerState.Identifier);
@@ -112,10 +147,9 @@ public class CD19ScannerStateMachine {
         // Illegal
         AlphabeticalTransition.put(CD19ScannerState.Integer, CD19ScannerState.IllegalInteger);
         AlphabeticalTransition.put(CD19ScannerState.Real, CD19ScannerState.IllegalReal);
-    }};
+    }
 
-    public static Map< Enum<?>, Enum<?> > NumericTransition = new HashMap<>();
-    {{
+    private static void setupNumericTransition () {
         // <Current State, Next State>
         // Legal
         NumericTransition.put(CD19ScannerState.Integer, CD19ScannerState.Integer);
@@ -126,35 +160,32 @@ public class CD19ScannerStateMachine {
         NumericTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
         NumericTransition.put(CD19ScannerState.Zero, CD19ScannerState.IllegalNumber); // reals or integers do not start with 0, 0 can only be within (or ended with) the integer or real
-    }};
+    }
 
-    public static Map< Enum<?>, Enum<?> > SpaceTransition = new HashMap<>();
-    {{
+    private static void setupSpaceTransition () {
         // <Current State, Next State>
         // Legal
-        SpaceTransition.add(CD19ScannerState.String, CD19ScannerState.String);
-        SpaceTransition.add(CD19ScannerState.Start, CD19ScannerState.Start);
-        SpaceTransition.add(CD19ScannerState.Comment, CD19ScannerState.Comment);
+        SpaceTransition.put(CD19ScannerState.String, CD19ScannerState.String);
+        SpaceTransition.put(CD19ScannerState.Start, CD19ScannerState.Start);
+        SpaceTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
-    }};
+    }
 
-    public static Map< Enum<?>, Enum<?> > NewlineTransition = new HashMap<>();
-    {{
+    private static void setupNewlineTransition () {
         // <Current State, Next State>
         // Legal
-        NewlineTransition.add(CD19ScannerState.Comment, CD19ScannerState.Start); // newline terminates comment
-        NewlineTransition.add(CD19ScannerState.Start, CD19ScannerState.Start);
+        NewlineTransition.put(CD19ScannerState.Comment, CD19ScannerState.Start); // newline terminates comment
+        NewlineTransition.put(CD19ScannerState.Start, CD19ScannerState.Start);
         // Illegal
-        NewlineTransition.add(CD19ScannerState.String, CD19ScannerState.IllegalString);
-    }};
+        NewlineTransition.put(CD19ScannerState.String, CD19ScannerState.IllegalString);
+    }
 
-    public static Map< Map.Entry<String, Enum<?> >, Enum<?> > LegalSpecialCharacterTransition = new HashMap<>();
-    {{
+    private static void setupLegalSpecialCharacterTransition () {
         // <Current Char ,<Current State, Next State> >
         // Legal
         // Simple single character tokens
-        LegalSpecialCharacterTransition.add(new AbstractMap.SimpleEntry( "(", CD19ScannerState.Start), CD19ScannerState.LeftBracket) );
-        /*LegalSpecialCharacterTransition.add(")", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.RightBracket) );
+        LegalSpecialCharacterTransition.put(new Key( '(', CD19ScannerState.Start.name()), CD19ScannerState.LeftBracket );
+        /*LegalSpecialCharacterTransition.put(")", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.RightBracket) );
         LegalSpecialCharacterTransition.add("[", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.LeftSquareBracket) );
         LegalSpecialCharacterTransition.add("]", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.RightSquareBracket) );
         LegalSpecialCharacterTransition.add("^", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.ToThePowerOf) );
@@ -189,20 +220,6 @@ public class CD19ScannerStateMachine {
         // Illegal
         // /
         // Operators: += -=
-    }}
-
-    public static void arb () {
-        CD19ScannerState a = LegalSpecialCharacterTransition.get( new Key("(", CD19ScannerState.Start) );
-        if (a == CD19ScannerState.LeftBracket) {
-            System.out.println("yyy");
-        } else {
-            System.out.println("xxxxxxxxx");
-        }
-    }
-
-    public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
-
-        return presentState;
     }
 }
 
