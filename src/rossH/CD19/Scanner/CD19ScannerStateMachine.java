@@ -13,7 +13,7 @@ public class CD19ScannerStateMachine {
         // -- Helper States --
             // abstract / virtual
             Start, // where we are still scanning undetermined / illegal tokens
-            endOfToken, // where we have successfully recognized a token,
+            possibleEndOfToken, // where we MAY have just recognized a token successfully
 
             // Partially recognized tokens
             PossibleComment, // we have just recognized the chars '/-', upon  the next char being another '-' char, we will be within a comment
@@ -96,14 +96,13 @@ public class CD19ScannerStateMachine {
         Newline // \n \r OR \n\r ??
     }
 
+    private static Map< CD19ScannerState, CD19ScannerState > AlphabeticalTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    private static Map< CD19ScannerState, CD19ScannerState > NumericTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    private static Map< CD19ScannerState, CD19ScannerState > SpaceTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    private static Map< CD19ScannerState, CD19ScannerState > NewlineTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
+    private static Map< Key, CD19ScannerState > LegalSpecialCharacterTransition = new HashMap<Key, CD19ScannerState>();
+    private static boolean isSetup = false;
 
-    public static Map< CD19ScannerState, CD19ScannerState > AlphabeticalTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
-    public static Map< CD19ScannerState, CD19ScannerState > NumericTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
-    public static Map< CD19ScannerState, CD19ScannerState > SpaceTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
-    public static Map< CD19ScannerState, CD19ScannerState > NewlineTransition = new HashMap<CD19ScannerState, CD19ScannerState>();
-    public static Map< Key, CD19ScannerState > LegalSpecialCharacterTransition = new HashMap<Key, CD19ScannerState>();
-
-    public static boolean isSetup = false;
     public static void setup () {
         if (isSetup) {
             return;
@@ -118,24 +117,6 @@ public class CD19ScannerStateMachine {
         isSetup = true;
     }
 
-
-
-    public static void arb () {
-
-        CD19ScannerState a = LegalSpecialCharacterTransition.get( new Key('(', CD19ScannerState.Start.name()) );
-        System.out.println("a: " + a);
-        if (a == CD19ScannerState.Colon) {
-            System.out.println("yyy");
-        } else {
-            System.out.println("xxxxxxxxx");
-        }
-    }
-
-    public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
-
-        return presentState;
-    }
-
     private static void setupAlphabeticalTransition () {
         // On hitting a [Alphabetic, Numeric, ..] character, when we are in the CURRENT STATE, transition to NEXT STATE
 
@@ -144,6 +125,7 @@ public class CD19ScannerStateMachine {
         AlphabeticalTransition.put(CD19ScannerState.Identifier, CD19ScannerState.Identifier);
         AlphabeticalTransition.put(CD19ScannerState.Start, CD19ScannerState.Identifier);
         AlphabeticalTransition.put(CD19ScannerState.String, CD19ScannerState.String);
+        AlphabeticalTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
         AlphabeticalTransition.put(CD19ScannerState.Integer, CD19ScannerState.IllegalInteger);
         AlphabeticalTransition.put(CD19ScannerState.Real, CD19ScannerState.IllegalReal);
@@ -221,5 +203,70 @@ public class CD19ScannerStateMachine {
         // /
         // Operators: += -=
     }
+
+    public static void arb () {
+        /*
+        CD19ScannerState a = LegalSpecialCharacterTransition.get( new Key('(', CD19ScannerState.Start.name()) );
+        System.out.println("a: " + a);
+        if (a == CD19ScannerState.Colon) {
+            System.out.println("yyy");
+        } else {
+            System.out.println("xxxxxxxxx");
+        }
+        */
+    }
+
+    public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
+
+        int asciiIndex = (int)presentChar;
+        CD19ScannerState nextState;
+        // Current char is alphabetical
+        if ((asciiIndex >= 65 && asciiIndex <= 90) || (asciiIndex >= 97 && asciiIndex <= 122)) {
+            nextState = AlphabeticalTransition.get(presentState);
+            if (nextState != null) {
+                return nextState;
+            } else {
+                // TO DO
+            }
+        }
+
+        // Current char is Numeric
+        if (asciiIndex >= 48 && asciiIndex <= 57) {
+            if (asciiIndex == 48 && presentState == CD19ScannerState.Start) { // Zero
+                nextState = CD19ScannerState.Zero;
+            } else {
+                nextState = NumericTransition.get(presentState);
+            }
+
+            if (nextState != null) {
+                return nextState;
+            } else {
+                // TO DO
+            }
+        }
+
+        // Current char is a space char
+        // tab, space
+        if (asciiIndex == 9 || asciiIndex == 32) {
+            nextState = SpaceTransition.get(presentState);
+            if (nextState != null) {
+                return nextState;
+            } else {
+                // TO DO
+            }
+
+        }
+
+        // Current char is a newline char
+        // newline or CR
+        if (asciiIndex == 10 || asciiIndex == 13) {
+            
+        }
+
+        return presentState;
+    }
+
+
+
 }
 

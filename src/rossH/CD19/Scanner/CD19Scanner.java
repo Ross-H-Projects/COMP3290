@@ -25,6 +25,7 @@ public class CD19Scanner {
         this.lexemeBuffer = "";
         this.endOfFile = false;
 
+        CD19ScannerStateMachine.setup();
     }
 
     public boolean eof () {
