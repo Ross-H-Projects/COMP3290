@@ -25,8 +25,8 @@ public class CD19ScannerStateMachine {
 
             // Illegal chars, operators, identifiers, Strings, Literals etc
             IllegalCharacter,
-            IllegalOperator,
-            IllegalIdentifier,
+            //IllegalOperator,
+            //IllegalIdentifier,
             IllegalInteger,
             IllegalReal,
             IllegalNumber,
@@ -41,14 +41,13 @@ public class CD19ScannerStateMachine {
         Colon, // :
         SemiColon, // ;
         Comma, // ,
-        DoubleQuotes, // "
 
         // -- OPERATORS --
             // arithmetic operators
             Plus, // +
             Minus, // -
             Multiply, // *
-            Divide, // /
+            //Divide, // / MAY NOT BE NEEDED AS WE CAN DISCERN DIVIDE IN THE SCANNER CLASS
             ToThePowerOf, // ^
             Modulo, // %
 
@@ -79,7 +78,7 @@ public class CD19ScannerStateMachine {
 
         // -- MISC --
         Identifier,
-        Keyword, // one of the reserved key words of CD19
+        //Keyword, // one of the reserved key words of CD19 MAY NOT BE NEEDED AS WE CAN DISCERN KEYWORDS IN THE SCANNER CLASS
         Comment,  // single line comment
     };
 
@@ -127,6 +126,8 @@ public class CD19ScannerStateMachine {
         // Illegal
         AlphabeticalTransition.put(CD19ScannerState.Integer, CD19ScannerState.IllegalInteger);
         AlphabeticalTransition.put(CD19ScannerState.Real, CD19ScannerState.IllegalReal);
+        AlphabeticalTransition.put(CD19ScannerState.IllegalInteger, CD19ScannerState.IllegalInteger);
+        AlphabeticalTransition.put(CD19ScannerState.IllegalReal, CD19ScannerState.IllegalReal);
     }
 
     private static void setupNumericTransition () {
@@ -139,7 +140,9 @@ public class CD19ScannerStateMachine {
         NumericTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         NumericTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
-        NumericTransition.put(CD19ScannerState.Zero, CD19ScannerState.IllegalNumber); // reals or integers do not start with 0, 0 can only be within (or ended with) the integer or real
+        to do: find out if this is legal NumericTransition.put(CD19ScannerState.Zero, CD19ScannerState.IllegalNumber); // reals or integers do not start with 0, 0 can only be within (or ended with) the integer or real
+        AlphabeticalTransition.put(CD19ScannerState.IllegalInteger, CD19ScannerState.IllegalInteger);
+        AlphabeticalTransition.put(CD19ScannerState.IllegalReal, CD19ScannerState.IllegalReal);
     }
 
     private static void setupSpaceTransition () {
@@ -163,7 +166,7 @@ public class CD19ScannerStateMachine {
     private static void setupLegalSpecialCharacterTransition () {
         // <Current Char ,<Current State, Next State> >
         // Legal
-        // Simple single character tokens
+        // single character tokens
         LegalSpecialCharacterTransition.put(new Key( '(', CD19ScannerState.Start.name()), CD19ScannerState.LeftBracket );
         LegalSpecialCharacterTransition.put(new Key( ')', CD19ScannerState.Start.name()), CD19ScannerState.RightBracket );
         LegalSpecialCharacterTransition.put(new Key( ')', CD19ScannerState.Start.name()), CD19ScannerState.RightBracket );
@@ -173,7 +176,7 @@ public class CD19ScannerStateMachine {
         LegalSpecialCharacterTransition.put(new Key( '^', CD19ScannerState.Start.name()), CD19ScannerState.ToThePowerOf );
         LegalSpecialCharacterTransition.put(new Key( '%', CD19ScannerState.Start.name()), CD19ScannerState.Modulo);
         LegalSpecialCharacterTransition.put(new Key( ',', CD19ScannerState.Start.name()), CD19ScannerState.Comma );
-        LegalSpecialCharacterTransition.put(new Key( '"', CD19ScannerState.Start.name()), CD19ScannerState.DoubleQuotes );
+
         LegalSpecialCharacterTransition.put(new Key( ':', CD19ScannerState.Start.name()), CD19ScannerState.Colon );
         LegalSpecialCharacterTransition.put(new Key( ';', CD19ScannerState.Start.name()), CD19ScannerState.SemiColon );
         LegalSpecialCharacterTransition.put(new Key( '*', CD19ScannerState.Start.name()), CD19ScannerState.Multiply );
@@ -185,22 +188,27 @@ public class CD19ScannerStateMachine {
         LegalSpecialCharacterTransition.put(new Key( '<', CD19ScannerState.Start.name()), CD19ScannerState.LessThan );
         LegalSpecialCharacterTransition.put(new Key( '>', CD19ScannerState.Start.name()), CD19ScannerState.GreaterThan );
         LegalSpecialCharacterTransition.put(new Key( '.', CD19ScannerState.Start.name()), CD19ScannerState.Dot );
-        
 
+        // string transitions
+        LegalSpecialCharacterTransition.put(new Key( '"', CD19ScannerState.Start.name()), CD19ScannerState.String );
+        LegalSpecialCharacterTransition.put( new Key('"', CD19ScannerState.String.name()), CD19ScannerState.StringEnd );
 
-        LegalSpecialCharacterTransition.add("-", new AbstractMap.SimpleEntry(CD19ScannerState.PossibleCommentOrDivide, CD19ScannerState.PossibleComment) );
-        LegalSpecialCharacterTransition.add("-", new AbstractMap.SimpleEntry(CD19ScannerState.PossibleComment, CD19ScannerState.Comment) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.Multiply, CD19ScannerState.MultiplyEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.PossibleCommentOrDivide, CD19ScannerState.DivideEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.Plus, CD19ScannerState.PlusEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.Minus, CD19ScannerState.MinusEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.PossibleNotEquals, CD19ScannerState.NotEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.Equals, CD19ScannerState.EqualsEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.LessThan, CD19ScannerState.LesserOrEqualTo) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.GreaterThan, CD19ScannerState.GreaterOrEqualTo) );
-        LegalSpecialCharacterTransition.add(".", new AbstractMap.SimpleEntry(CD19ScannerState.Integer, CD19ScannerState.PossibleReal) );*/
+        // double character tokens
+        LegalSpecialCharacterTransition.put( new Key('-', CD19ScannerState.PossibleCommentOrDivide.name()), CD19ScannerState.PossibleComment );
+        LegalSpecialCharacterTransition.put( new Key('-', CD19ScannerState.PossibleComment.name()), CD19ScannerState.Comment );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Multiply.name()), CD19ScannerState.MultiplyEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.PossibleCommentOrDivide.name()), CD19ScannerState.DivideEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Plus.name()), CD19ScannerState.PlusEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Minus.name()), CD19ScannerState.MinusEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.PossibleNotEquals.name()), CD19ScannerState.NotEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Equals.name()), CD19ScannerState.EqualsEquals );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.LessThan.name()), CD19ScannerState.LesserOrEqualTo );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.GreaterThan.name()), CD19ScannerState.GreaterOrEqualTo );
+        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Integer.name()), CD19ScannerState.PossibleReal );
 
         // Illegal
+        // Illegal combinations / expressions will be picked up by the scanner class
+        // TO DO: Find out if
     }
 
     public static void arb () {
@@ -213,7 +221,6 @@ public class CD19ScannerStateMachine {
             System.out.println("xxxxxxxxx");
         }
         */
-
     }
 
     public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
@@ -222,6 +229,11 @@ public class CD19ScannerStateMachine {
         CD19ScannerState nextState;
         // Current char is alphabetical
         if ((asciiIndex >= 65 && asciiIndex <= 90) || (asciiIndex >= 97 && asciiIndex <= 122)) {
+            // We are stilling continuing on with an invalid int / real
+            if (presentState == CD19ScannerState.IllegalInteger || presentState == CD19ScannerState.IllegalInteger) {
+                return presentState;
+            }
+
             nextState = AlphabeticalTransition.get(presentState);
             if (nextState != null) {
                 return nextState;
@@ -231,6 +243,11 @@ public class CD19ScannerStateMachine {
 
         // Current char is Numeric
         if (asciiIndex >= 48 && asciiIndex <= 57) {
+            // We are stilling continuing on with an invalid int / real
+            if (presentState == CD19ScannerState.IllegalInteger || presentState == CD19ScannerState.IllegalInteger) {
+                return presentState;
+            }
+
             if (asciiIndex == 48 && presentState == CD19ScannerState.Start) { // Zero
                 nextState = CD19ScannerState.Zero;
             } else {
