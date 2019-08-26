@@ -1,9 +1,6 @@
 package rossH.CD19.Scanner;
 
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CD19ScannerStateMachine {
 
@@ -114,6 +111,7 @@ public class CD19ScannerStateMachine {
         setupNewlineTransition();
         setupLegalSpecialCharacterTransition();
 
+
         isSetup = true;
     }
 
@@ -167,24 +165,27 @@ public class CD19ScannerStateMachine {
         // Legal
         // Simple single character tokens
         LegalSpecialCharacterTransition.put(new Key( '(', CD19ScannerState.Start.name()), CD19ScannerState.LeftBracket );
-        /*LegalSpecialCharacterTransition.put(")", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.RightBracket) );
-        LegalSpecialCharacterTransition.add("[", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.LeftSquareBracket) );
-        LegalSpecialCharacterTransition.add("]", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.RightSquareBracket) );
-        LegalSpecialCharacterTransition.add("^", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.ToThePowerOf) );
-        LegalSpecialCharacterTransition.add("%", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Modulo) );
-        LegalSpecialCharacterTransition.add(",", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Comma) );
-        LegalSpecialCharacterTransition.add("\"", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.DoubleQuotes) );
-        LegalSpecialCharacterTransition.add(":", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Colon) );
-        LegalSpecialCharacterTransition.add(";", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.SemiColon) );
-        LegalSpecialCharacterTransition.add("*", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Multiply) );
-        LegalSpecialCharacterTransition.add("/", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.PossibleCommentOrDivide) );
-        LegalSpecialCharacterTransition.add("+", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Plus) );
-        LegalSpecialCharacterTransition.add("-", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Minus) );
-        LegalSpecialCharacterTransition.add("!", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.PossibleNotEquals) );
-        LegalSpecialCharacterTransition.add("=", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Equals) );
-        LegalSpecialCharacterTransition.add("<", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.LessThan) );
-        LegalSpecialCharacterTransition.add(">", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.GreaterThan) );
-        LegalSpecialCharacterTransition.add(".", new AbstractMap.SimpleEntry(CD19ScannerState.Start, CD19ScannerState.Dot) );
+        LegalSpecialCharacterTransition.put(new Key( ')', CD19ScannerState.Start.name()), CD19ScannerState.RightBracket );
+        LegalSpecialCharacterTransition.put(new Key( ')', CD19ScannerState.Start.name()), CD19ScannerState.RightBracket );
+        LegalSpecialCharacterTransition.put(new Key( '[', CD19ScannerState.Start.name()), CD19ScannerState.LeftSquareBracket );
+
+        LegalSpecialCharacterTransition.put(new Key( ']', CD19ScannerState.Start.name()), CD19ScannerState.RightSquareBracket );
+        LegalSpecialCharacterTransition.put(new Key( '^', CD19ScannerState.Start.name()), CD19ScannerState.ToThePowerOf );
+        LegalSpecialCharacterTransition.put(new Key( '%', CD19ScannerState.Start.name()), CD19ScannerState.Modulo);
+        LegalSpecialCharacterTransition.put(new Key( ',', CD19ScannerState.Start.name()), CD19ScannerState.Comma );
+        LegalSpecialCharacterTransition.put(new Key( '"', CD19ScannerState.Start.name()), CD19ScannerState.DoubleQuotes );
+        LegalSpecialCharacterTransition.put(new Key( ':', CD19ScannerState.Start.name()), CD19ScannerState.Colon );
+        LegalSpecialCharacterTransition.put(new Key( ';', CD19ScannerState.Start.name()), CD19ScannerState.SemiColon );
+        LegalSpecialCharacterTransition.put(new Key( '*', CD19ScannerState.Start.name()), CD19ScannerState.Multiply );
+        LegalSpecialCharacterTransition.put(new Key( '/', CD19ScannerState.Start.name()), CD19ScannerState.PossibleCommentOrDivide );
+        LegalSpecialCharacterTransition.put(new Key( '+', CD19ScannerState.Start.name()), CD19ScannerState.Plus );
+        LegalSpecialCharacterTransition.put(new Key( '-', CD19ScannerState.Start.name()), CD19ScannerState.Minus );
+        LegalSpecialCharacterTransition.put(new Key( '!', CD19ScannerState.Start.name()), CD19ScannerState.PossibleNotEquals );
+        LegalSpecialCharacterTransition.put(new Key( '=', CD19ScannerState.Start.name()), CD19ScannerState.Equals );
+        LegalSpecialCharacterTransition.put(new Key( '<', CD19ScannerState.Start.name()), CD19ScannerState.LessThan );
+        LegalSpecialCharacterTransition.put(new Key( '>', CD19ScannerState.Start.name()), CD19ScannerState.GreaterThan );
+        LegalSpecialCharacterTransition.put(new Key( '.', CD19ScannerState.Start.name()), CD19ScannerState.Dot );
+        
 
 
         LegalSpecialCharacterTransition.add("-", new AbstractMap.SimpleEntry(CD19ScannerState.PossibleCommentOrDivide, CD19ScannerState.PossibleComment) );
@@ -200,8 +201,6 @@ public class CD19ScannerStateMachine {
         LegalSpecialCharacterTransition.add(".", new AbstractMap.SimpleEntry(CD19ScannerState.Integer, CD19ScannerState.PossibleReal) );*/
 
         // Illegal
-        // /
-        // Operators: += -=
     }
 
     public static void arb () {
@@ -214,6 +213,7 @@ public class CD19ScannerStateMachine {
             System.out.println("xxxxxxxxx");
         }
         */
+
     }
 
     public static CD19ScannerState transition(CD19ScannerState presentState, char presentChar) {
@@ -225,9 +225,8 @@ public class CD19ScannerStateMachine {
             nextState = AlphabeticalTransition.get(presentState);
             if (nextState != null) {
                 return nextState;
-            } else {
-                // TO DO
             }
+            return CD19ScannerState.possibleEndOfToken;
         }
 
         // Current char is Numeric
@@ -240,9 +239,8 @@ public class CD19ScannerStateMachine {
 
             if (nextState != null) {
                 return nextState;
-            } else {
-                // TO DO
             }
+            return CD19ScannerState.possibleEndOfToken;
         }
 
         // Current char is a space char
@@ -251,19 +249,35 @@ public class CD19ScannerStateMachine {
             nextState = SpaceTransition.get(presentState);
             if (nextState != null) {
                 return nextState;
-            } else {
-                // TO DO
             }
-
+            return CD19ScannerState.possibleEndOfToken;
         }
 
         // Current char is a newline char
         // newline or CR
         if (asciiIndex == 10 || asciiIndex == 13) {
-            
+            nextState = NewlineTransition.get(presentState);
+            if (nextState != null) {
+                return nextState;
+            }
+            return CD19ScannerState.possibleEndOfToken;
         }
 
-        return presentState;
+        // Current char is a special char
+        if (asciiIndex == 91 || asciiIndex == 93 || asciiIndex == 94 ||
+                asciiIndex == 33 || asciiIndex == 34 || asciiIndex == 37 ||
+                (asciiIndex >= 40 && asciiIndex <= 47) ||
+                (asciiIndex >= 58 && asciiIndex <= 62)
+        ) {
+            nextState = LegalSpecialCharacterTransition.get( new Key(presentChar, presentState.name()) );
+            if (nextState != null) {
+                return nextState;
+            }
+            return CD19ScannerState.possibleEndOfToken;
+        }
+
+        // Current char is an IllealCharacter
+        return CD19ScannerState.IllegalCharacter;
     }
 
 
