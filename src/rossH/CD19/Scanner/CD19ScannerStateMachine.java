@@ -10,7 +10,7 @@ public class CD19ScannerStateMachine {
         // -- Helper States --
             // abstract / virtual
             Start, // where we are still scanning undetermined / illegal tokens
-            possibleEndOfToken, // where we MAY have just recognized a token successfully
+            PossibleEndOfToken, // where we MAY have just recognized a token successfully
 
             // Partially recognized tokens
             PossibleComment, // we have just recognized the chars '/-', upon  the next char being another '-' char, we will be within a comment
@@ -196,6 +196,7 @@ public class CD19ScannerStateMachine {
         // double character tokens
         LegalSpecialCharacterTransition.put( new Key('-', CD19ScannerState.PossibleCommentOrDivide.name()), CD19ScannerState.PossibleComment );
         LegalSpecialCharacterTransition.put( new Key('-', CD19ScannerState.PossibleComment.name()), CD19ScannerState.Comment );
+        LegalSpecialCharacterTransition.put( new Key('-', CD19ScannerState.Start.name()), CD19ScannerState.Minus );
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Multiply.name()), CD19ScannerState.MultiplyEquals );
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.PossibleCommentOrDivide.name()), CD19ScannerState.DivideEquals );
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Plus.name()), CD19ScannerState.PlusEquals );
@@ -238,7 +239,7 @@ public class CD19ScannerStateMachine {
             if (nextState != null) {
                 return nextState;
             }
-            return CD19ScannerState.possibleEndOfToken;
+            return CD19ScannerState.PossibleEndOfToken;
         }
 
         // Current char is Numeric
@@ -257,7 +258,7 @@ public class CD19ScannerStateMachine {
             if (nextState != null) {
                 return nextState;
             }
-            return CD19ScannerState.possibleEndOfToken;
+            return CD19ScannerState.PossibleEndOfToken;
         }
 
         // Current char is a space char
@@ -267,7 +268,7 @@ public class CD19ScannerStateMachine {
             if (nextState != null) {
                 return nextState;
             }
-            return CD19ScannerState.possibleEndOfToken;
+            return CD19ScannerState.PossibleEndOfToken;
         }
 
         // Current char is a newline char
@@ -277,7 +278,7 @@ public class CD19ScannerStateMachine {
             if (nextState != null) {
                 return nextState;
             }
-            return CD19ScannerState.possibleEndOfToken;
+            return CD19ScannerState.PossibleEndOfToken;
         }
 
         // Current char is a special char
@@ -290,7 +291,7 @@ public class CD19ScannerStateMachine {
             if (nextState != null) {
                 return nextState;
             }
-            return CD19ScannerState.possibleEndOfToken;
+            return CD19ScannerState.PossibleEndOfToken;
         }
 
         // Current char is an IllealCharacter
