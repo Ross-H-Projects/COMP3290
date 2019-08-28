@@ -43,6 +43,7 @@ public class CD19Scanner {
         Token nextToken = null;
 
         char currentChar = srcCode.charAt(srcCodePos);
+        lexemeBuffer = "";
         CD19ScannerStateMachine.CD19ScannerState currentState = CD19ScannerStateMachine.CD19ScannerState.Start;
         CD19ScannerStateMachine.CD19ScannerState nextState = currentState;
 
@@ -64,23 +65,59 @@ public class CD19Scanner {
                 lexemeBuffer = "";
             }
 
+
             if (currentState != CD19ScannerStateMachine.CD19ScannerState.Comment) {
-                lexemeBuffer += currentChar;
+                if (currentChar == '"') {
+                    lexemeBuffer += '\"';
+                } else {
+                    lexemeBuffer += currentChar;
+                }
             }
 
             currentChar = moveHead();
             currentState = nextState;
         }
 
+        String returnLexemeBuffer = "";
+        int returnColumnNo = -1;
+
+        // we have just recognized a
+
+        // we have either just recognized a ident or a keyword
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.Identifier) {
+            returnLexemeBuffer = lexemeBuffer;
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            return new Token(Token.TIDEN, currentLineNo, returnColumnNo, returnLexemeBuffer);
+        }
+
+        // We have successfully recognized a string literal
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.StringEnd) {
+            returnLexemeBuffer = lexemeBuffer;
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            return new Token(Token.TSTRG, currentLineNo, returnColumnNo, returnLexemeBuffer);
+        }
+
+        // we have just recognized an integer literal
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.Integer) {
+            returnLexemeBuffer = lexemeBuffer;
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            return new Token(Token.TINTG, currentLineNo, returnColumnNo, returnLexemeBuffer);
+        }
+
+        // we have just recognized a real literal
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.Real) {
+            returnLexemeBuffer = lexemeBuffer;
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            return new Token(Token.TREAL, currentLineNo, returnColumnNo, returnLexemeBuffer);
+        }
+
         // [PossibleNotEquals] ended prematurely
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
-            lexemeBuffer = "";
             return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
         }
 
         // [Possible Comment or Divide] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleCommentOrDivide) {
-            lexemeBuffer = "";
             return new Token(Token.TDIVD, currentLineNo, currentColumnNo, "/");
         }
 
@@ -89,19 +126,22 @@ public class CD19Scanner {
             // setup the scanner for the next gettoken (which will always be a recognition of either a minus or a minus equals)
             // by walking back the last move operation
             srcCodePos--;
-            lexemeBuffer = "";
-            int returnColumnNo = currentColumnNo - 1; // the column number for the divide will also be 1 behind the current column no (pointing at the minus)
+            returnColumnNo = currentColumnNo - 1; // the column number for the divide will also be 1 behind the current column no (pointing at the minus)
             return new Token(Token.TDIVD, currentLineNo, returnColumnNo , "/");
         }
 
-        // [Some Illegal or Invalid State] ended
+        // [Some Invalid State] ended
         if (isIllegalState(currentState)) {
             // Generate errors
             // return undefined token
-            String returnLexemeBuffer = lexemeBuffer;
+            returnLexemeBuffer = lexemeBuffer;
+            // we need walk back the column no to the start of the illegal sequence
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
             lexemeBuffer = "";
-
+            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, returnLexemeBuffer)
         }
+
+
 
         this.endOfFile = true;
         return new Token(Token.TIDEN, 1, 1, "cd19");
