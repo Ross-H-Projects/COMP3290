@@ -18,6 +18,9 @@ package rossH.CD19.Scanner;
 //
 //
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Token {
 
     public static final int
@@ -60,6 +63,9 @@ public class Token {
             "TPCEQ ",	"TSEMI ",	"TDOT  ",
 
             "TIDEN ",	"TILIT ",	"TFLIT ",	"TSTRG ",	"TUNDF "};
+
+    private static Map<String, Integer> tokenStringMappings = new HashMap<String, Integer>();
+    private static boolean isSetup = false;
 
 
     private int tid;	// token number - for token classification
@@ -172,7 +178,81 @@ public class Token {
         if ( s.equals("true")      )	return TTRUE;
         if ( s.equals("false")     )	return TFALS;
 
+
         return -1;		// not a Keyword
+    }
+
+    public static void setup () {
+        if (isSetup) {
+            return;
+        }
+
+        // set up mapping
+		tokenStringMappings.put(")", 			TRPAR);
+        tokenStringMappings.put("(", 			TLPAR);
+        tokenStringMappings.put("]", 			TRBRK);
+        tokenStringMappings.put("[", 			TLBRK);
+        tokenStringMappings.put(";", 			TSEMI);
+        tokenStringMappings.put(",", 			TCOMA);
+		tokenStringMappings.put(".", 			TDOT);
+		tokenStringMappings.put("+", 			TPLUS);
+        tokenStringMappings.put("-", 			TMINS);
+        tokenStringMappings.put("*", 			TMINS);
+        tokenStringMappings.put("/", 			TDIVD);
+        tokenStringMappings.put("%", 			TPERC);
+        tokenStringMappings.put("%", 			TCART);
+        tokenStringMappings.put("=", 			TEQUL);
+        tokenStringMappings.put("+=", 			TPLEQ);
+        tokenStringMappings.put("-=", 			TMNEQ);
+        tokenStringMappings.put("*=", 			TMNEQ);
+        tokenStringMappings.put("/=", 			TDVEQ);
+        tokenStringMappings.put("==", 			TEQEQ);
+        tokenStringMappings.put("!=", 			TNEQL);
+        tokenStringMappings.put(">", 			TGRTR);
+        tokenStringMappings.put("<", 			TLESS);
+        tokenStringMappings.put("<=", 			TLEQL);
+        tokenStringMappings.put(">=", 		    TGEQL);
+        tokenStringMappings.put("cd19",         TCD19);
+        tokenStringMappings.put("constants",    TCONS);
+        tokenStringMappings.put("types",        TTYPS);
+        tokenStringMappings.put("is",           TIS);
+        tokenStringMappings.put("arrays",       TARRS);
+        tokenStringMappings.put("main",         TMAIN);
+        tokenStringMappings.put("begin",        TBEGN);
+        tokenStringMappings.put("end",          TEND);
+        tokenStringMappings.put("array",        TARAY);
+        tokenStringMappings.put("of",           TOF);
+        tokenStringMappings.put("function",     TFUNC);
+        tokenStringMappings.put("void",         TVOID);
+        tokenStringMappings.put("const",        TCNST);
+        tokenStringMappings.put("integer",      TINTG);
+        tokenStringMappings.put("real",         TREAL);
+        tokenStringMappings.put("boolean",      TBOOL);
+        tokenStringMappings.put("for",          TFOR);
+        tokenStringMappings.put("repeat",       TREPT);
+        tokenStringMappings.put("until",        TUNTL);
+        tokenStringMappings.put("if",           TIFTH);
+        tokenStringMappings.put("else",         TELSE);
+        tokenStringMappings.put("input",        TINPT);
+        tokenStringMappings.put("print",        TPRIN);
+        tokenStringMappings.put("printline",    TPRLN);
+        tokenStringMappings.put("return",       TRETN);
+        tokenStringMappings.put("and",          TAND);
+        tokenStringMappings.put("or",           TOR);
+        tokenStringMappings.put("xor",          TXOR);
+        tokenStringMappings.put("not",          TNOT);
+        tokenStringMappings.put("true",         TTRUE);
+        tokenStringMappings.put("false",        TFALS);
+		
+		
+		
+
+
+        isSetup = true;
+    }
+
+    public Token matchToken (String s) {
+        Token =
     }
 
 }

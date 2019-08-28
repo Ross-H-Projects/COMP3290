@@ -41,7 +41,6 @@ public class CD19Scanner {
 
     public Token gettoken () {
         Token nextToken = null;
-
         char currentChar = srcCode.charAt(srcCodePos);
         lexemeBuffer = "";
         CD19ScannerStateMachine.CD19ScannerState currentState = CD19ScannerStateMachine.CD19ScannerState.Start;
@@ -81,39 +80,34 @@ public class CD19Scanner {
         String returnLexemeBuffer = "";
         int returnColumnNo = -1;
 
-        // we have just recognized a
+        // we have just recognized a single char token
+        if (isSingleCharToken(currentState)) {
+            return new Token(Token.matchToken(), currentLineNo, currentColumnNo, lexemeBuffer)
+        }
 
         // we have either just recognized a ident or a keyword
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Identifier) {
-            returnLexemeBuffer = lexemeBuffer;
             returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            return new Token(Token.TIDEN, currentLineNo, returnColumnNo, returnLexemeBuffer);
+            // The Token class will figure out if the ident is a actually a keyword or not
+            return new Token(Token.TIDEN, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // We have successfully recognized a string literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.StringEnd) {
-            returnLexemeBuffer = lexemeBuffer;
             returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            return new Token(Token.TSTRG, currentLineNo, returnColumnNo, returnLexemeBuffer);
+            return new Token(Token.TSTRG, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // we have just recognized an integer literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Integer) {
-            returnLexemeBuffer = lexemeBuffer;
             returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            return new Token(Token.TINTG, currentLineNo, returnColumnNo, returnLexemeBuffer);
+            return new Token(Token.TILIT, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // we have just recognized a real literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Real) {
-            returnLexemeBuffer = lexemeBuffer;
             returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            return new Token(Token.TREAL, currentLineNo, returnColumnNo, returnLexemeBuffer);
-        }
-
-        // [PossibleNotEquals] ended prematurely
-        if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
-            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
+            return new Token(Token.TFLIT, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // [Possible Comment or Divide] ended
@@ -130,21 +124,30 @@ public class CD19Scanner {
             return new Token(Token.TDIVD, currentLineNo, returnColumnNo , "/");
         }
 
+
+        // [PossibleNotEquals] ended prematurely
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
+            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
+        }
+
         // [Some Invalid State] ended
         if (isIllegalState(currentState)) {
             // Generate errors
             // return undefined token
-            returnLexemeBuffer = lexemeBuffer;
             // we need walk back the column no to the start of the illegal sequence
             returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            lexemeBuffer = "";
-            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, returnLexemeBuffer)
+            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, lexemeBuffer)
         }
 
 
 
         this.endOfFile = true;
         return new Token(Token.TIDEN, 1, 1, "cd19");
+    }
+
+    private boolean isSingleCharToken (CD19ScannerStateMachine.CD19ScannerState state) {
+        return state == CD19ScannerStateMachine.CD19ScannerState.RightBracket ||
+                state == CD19ScannerStateMachine.CD19ScannerState.LeftBracket;
     }
 
     private boolean isIllegalState (CD19ScannerStateMachine.CD19ScannerState state) {
