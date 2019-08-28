@@ -74,7 +74,8 @@ public class CD19Scanner {
 
         // [PossibleNotEquals] ended prematurely
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
-
+            lexemeBuffer = "";
+            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
         }
 
         // [Possible Comment or Divide] ended
@@ -89,14 +90,17 @@ public class CD19Scanner {
             // by walking back the last move operation
             srcCodePos--;
             lexemeBuffer = "";
-            currentColumnNo = // DOES THIS NEED CHANGING?
-            return new Token(Token.TDIVD, currentLineNo, currentColumnNo, "/");
+            int returnColumnNo = currentColumnNo - 1; // the column number for the divide will also be 1 behind the current column no (pointing at the minus)
+            return new Token(Token.TDIVD, currentLineNo, returnColumnNo , "/");
         }
 
         // [Some Illegal or Invalid State] ended
         if (isIllegalState(currentState)) {
             // Generate errors
             // return undefined token
+            String returnLexemeBuffer = lexemeBuffer;
+            lexemeBuffer = "";
+
         }
 
         this.endOfFile = true;
@@ -106,7 +110,6 @@ public class CD19Scanner {
     private boolean isIllegalState (CD19ScannerStateMachine.CD19ScannerState state) {
         return state == CD19ScannerStateMachine.CD19ScannerState.IllegalCharacter ||
                 state == CD19ScannerStateMachine.CD19ScannerState.IllegalString ||
-                state == CD19ScannerStateMachine.CD19ScannerState.IllegalInteger ||
                 state == CD19ScannerStateMachine.CD19ScannerState.IllegalReal;
     }
 

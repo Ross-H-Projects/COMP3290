@@ -27,9 +27,7 @@ public class CD19ScannerStateMachine {
             IllegalCharacter,
             //IllegalOperator,
             //IllegalIdentifier,
-            IllegalInteger,
             IllegalReal,
-            IllegalNumber,
             IllegalString,
 
 
@@ -124,10 +122,7 @@ public class CD19ScannerStateMachine {
         AlphabeticalTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         AlphabeticalTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
-        AlphabeticalTransition.put(CD19ScannerState.Integer, CD19ScannerState.IllegalInteger);
-        AlphabeticalTransition.put(CD19ScannerState.Real, CD19ScannerState.IllegalReal);
-        AlphabeticalTransition.put(CD19ScannerState.IllegalInteger, CD19ScannerState.IllegalInteger);
-        AlphabeticalTransition.put(CD19ScannerState.IllegalReal, CD19ScannerState.IllegalReal);
+        AlphabeticalTransition.put(CD19ScannerState.PossibleReal, CD19ScannerState.IllegalReal); // 12.a --> <TUNDF, "12."> <IDENT, "a">
     }
 
     private static void setupNumericTransition () {
@@ -135,21 +130,18 @@ public class CD19ScannerStateMachine {
         // Legal
         NumericTransition.put(CD19ScannerState.Integer, CD19ScannerState.Integer);
         NumericTransition.put(CD19ScannerState.Real, CD19ScannerState.Real);
-        NumericTransition.put(CD19ScannerState.PossibleReal, CD19ScannerState.Real);
+        NumericTransition.put(CD19ScannerState.PossibleReal, CD19ScannerState.Real); // previously walked "12.", and just recognized "4"
         NumericTransition.put(CD19ScannerState.Identifier, CD19ScannerState.Identifier);
         NumericTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         NumericTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
-        to do: find out if this is legal NumericTransition.put(CD19ScannerState.Zero, CD19ScannerState.IllegalNumber); // reals or integers do not start with 0, 0 can only be within (or ended with) the integer or real
-        AlphabeticalTransition.put(CD19ScannerState.IllegalInteger, CD19ScannerState.IllegalInteger);
-        AlphabeticalTransition.put(CD19ScannerState.IllegalReal, CD19ScannerState.IllegalReal);
     }
 
     private static void setupSpaceTransition () {
         // <Current State, Next State>
         // Legal
-        SpaceTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         SpaceTransition.put(CD19ScannerState.Start, CD19ScannerState.Start);
+        SpaceTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         SpaceTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
     }
@@ -208,8 +200,6 @@ public class CD19ScannerStateMachine {
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Integer.name()), CD19ScannerState.PossibleReal );
 
         // Illegal
-        // Illegal combinations / expressions will be picked up by the scanner class
-        // TO DO: Find out if
     }
 
     public static void arb () {
@@ -230,11 +220,6 @@ public class CD19ScannerStateMachine {
         CD19ScannerState nextState;
         // Current char is alphabetical
         if ((asciiIndex >= 65 && asciiIndex <= 90) || (asciiIndex >= 97 && asciiIndex <= 122)) {
-            // We are stilling continuing on with an invalid int / real
-            if (presentState == CD19ScannerState.IllegalInteger || presentState == CD19ScannerState.IllegalInteger) {
-                return presentState;
-            }
-
             nextState = AlphabeticalTransition.get(presentState);
             if (nextState != null) {
                 return nextState;
@@ -244,11 +229,6 @@ public class CD19ScannerStateMachine {
 
         // Current char is Numeric
         if (asciiIndex >= 48 && asciiIndex <= 57) {
-            // We are stilling continuing on with an invalid int / real
-            if (presentState == CD19ScannerState.IllegalInteger || presentState == CD19ScannerState.IllegalInteger) {
-                return presentState;
-            }
-
             if (asciiIndex == 48 && presentState == CD19ScannerState.Start) { // Zero
                 nextState = CD19ScannerState.Zero;
             } else {
