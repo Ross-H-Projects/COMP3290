@@ -192,6 +192,7 @@ public class Token {
         tokenStringMappings.put("(", 			TLPAR);
         tokenStringMappings.put("]", 			TRBRK);
         tokenStringMappings.put("[", 			TLBRK);
+        tokenStringMappings.put(":", 			TCOLN);
         tokenStringMappings.put(";", 			TSEMI);
         tokenStringMappings.put(",", 			TCOMA);
 		tokenStringMappings.put(".", 			TDOT);
@@ -200,7 +201,7 @@ public class Token {
         tokenStringMappings.put("*", 			TMINS);
         tokenStringMappings.put("/", 			TDIVD);
         tokenStringMappings.put("%", 			TPERC);
-        tokenStringMappings.put("%", 			TCART);
+        tokenStringMappings.put("^", 			TCART);
         tokenStringMappings.put("=", 			TEQUL);
         tokenStringMappings.put("+=", 			TPLEQ);
         tokenStringMappings.put("-=", 			TMNEQ);
@@ -212,47 +213,47 @@ public class Token {
         tokenStringMappings.put("<", 			TLESS);
         tokenStringMappings.put("<=", 			TLEQL);
         tokenStringMappings.put(">=", 		    TGEQL);
-        tokenStringMappings.put("cd19",         TCD19);
-        tokenStringMappings.put("constants",    TCONS);
-        tokenStringMappings.put("types",        TTYPS);
-        tokenStringMappings.put("is",           TIS);
-        tokenStringMappings.put("arrays",       TARRS);
-        tokenStringMappings.put("main",         TMAIN);
-        tokenStringMappings.put("begin",        TBEGN);
-        tokenStringMappings.put("end",          TEND);
-        tokenStringMappings.put("array",        TARAY);
-        tokenStringMappings.put("of",           TOF);
-        tokenStringMappings.put("function",     TFUNC);
-        tokenStringMappings.put("void",         TVOID);
-        tokenStringMappings.put("const",        TCNST);
-        tokenStringMappings.put("integer",      TINTG);
-        tokenStringMappings.put("real",         TREAL);
-        tokenStringMappings.put("boolean",      TBOOL);
-        tokenStringMappings.put("for",          TFOR);
-        tokenStringMappings.put("repeat",       TREPT);
-        tokenStringMappings.put("until",        TUNTL);
-        tokenStringMappings.put("if",           TIFTH);
-        tokenStringMappings.put("else",         TELSE);
-        tokenStringMappings.put("input",        TINPT);
-        tokenStringMappings.put("print",        TPRIN);
-        tokenStringMappings.put("printline",    TPRLN);
-        tokenStringMappings.put("return",       TRETN);
-        tokenStringMappings.put("and",          TAND);
-        tokenStringMappings.put("or",           TOR);
-        tokenStringMappings.put("xor",          TXOR);
-        tokenStringMappings.put("not",          TNOT);
-        tokenStringMappings.put("true",         TTRUE);
-        tokenStringMappings.put("false",        TFALS);
-		
-		
-		
-
+        tokenStringMappings.put("cd19",          TCD19);
+        tokenStringMappings.put("constants",     TCONS);
+        tokenStringMappings.put("types",         TTYPS);
+        tokenStringMappings.put("is",            TIS);
+        tokenStringMappings.put("arrays",        TARRS);
+        tokenStringMappings.put("main",          TMAIN);
+        tokenStringMappings.put("begin",         TBEGN);
+        tokenStringMappings.put("end",           TEND);
+        tokenStringMappings.put("array",         TARAY);
+        tokenStringMappings.put("of",            TOF);
+        tokenStringMappings.put("function",      TFUNC);
+        tokenStringMappings.put("void",          TVOID);
+        tokenStringMappings.put("const",         TCNST);
+        tokenStringMappings.put("integer",       TINTG);
+        tokenStringMappings.put("real",          TREAL);
+        tokenStringMappings.put("boolean",       TBOOL);
+        tokenStringMappings.put("for",           TFOR);
+        tokenStringMappings.put("repeat",        TREPT);
+        tokenStringMappings.put("until",         TUNTL);
+        tokenStringMappings.put("if",            TIFTH);
+        tokenStringMappings.put("else",          TELSE);
+        tokenStringMappings.put("input",         TINPT);
+        tokenStringMappings.put("print",         TPRIN);
+        tokenStringMappings.put("printline",     TPRLN);
+        tokenStringMappings.put("return",        TRETN);
+        tokenStringMappings.put("and",           TAND);
+        tokenStringMappings.put("or",            TOR);
+        tokenStringMappings.put("xor",           TXOR);
+        tokenStringMappings.put("not",           TNOT);
+        tokenStringMappings.put("true",          TTRUE);
+        tokenStringMappings.put("false",         TFALS);
 
         isSetup = true;
     }
 
-    public Token matchToken (String s) {
-        Token =
+    public static int matchToken (String s) {
+        Integer tokenCode = tokenStringMappings.get(s);
+        if (tokenCode == null) {
+            return -1;
+        }
+        return tokenCode;
     }
 
 }

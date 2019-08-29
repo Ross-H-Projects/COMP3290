@@ -22,8 +22,8 @@ public class CD19ScannerChasis {
         CD19Scanner scanner = new CD19Scanner(sourceText);
         Token token;
         while (!scanner.eof()) {
-            token = scanner.gettoken();
-            scanner.printtoken(token);
+            token = scanner.getToken();
+            scanner.printToken(token);
         }
     }
 }

@@ -11,6 +11,7 @@ public class CD19ScannerStateMachine {
             // abstract / virtual
             Start, // where we are still scanning undetermined / illegal tokens
             PossibleEndOfToken, // where we MAY have just recognized a token successfully
+            EOF, //
 
             // Partially recognized tokens
             PossibleComment, // we have just recognized the chars '/-', upon  the next char being another '-' char, we will be within a comment
@@ -63,7 +64,7 @@ public class CD19ScannerStateMachine {
             LesserOrEqualTo, // <=
 
             // reference operators
-            Dot,
+            Dot, // .
 
         // -- Literals --
         Integer,
@@ -190,7 +191,7 @@ public class CD19ScannerStateMachine {
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Equals.name()), CD19ScannerState.EqualsEquals );
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.LessThan.name()), CD19ScannerState.LesserOrEqualTo );
         LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.GreaterThan.name()), CD19ScannerState.GreaterOrEqualTo );
-        LegalSpecialCharacterTransition.put( new Key('=', CD19ScannerState.Integer.name()), CD19ScannerState.PossibleReal );
+        LegalSpecialCharacterTransition.put( new Key('.', CD19ScannerState.Integer.name()), CD19ScannerState.PossibleReal );
 
 
         // Illegal
@@ -220,10 +221,10 @@ public class CD19ScannerStateMachine {
                 (asciiIndex >= 40 && asciiIndex <= 47) ||
                 (asciiIndex >= 58 && asciiIndex <= 62)
         ) {
-            // instead of creating a haspmap entry for every a distinct symbol in the comment state
-            // results in the comment state simply do this
-            if (presentState == CD19ScannerState.String) {
-                return CD19ScannerState.String;
+            // instead of creating a haspmap entry for every a distinct symbol in the comment / string state
+            // results in the comment / string state simply do this
+            if ((presentState == CD19ScannerState.String && asciiIndex != 34) ||presentState == CD19ScannerState.Comment) {
+                return presentState;
             }
 
             nextState = LegalSpecialCharacterTransition.get( new Key(presentChar, presentState.name()) );
