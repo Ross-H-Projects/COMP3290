@@ -26,7 +26,6 @@ public class CD19ScannerStateMachine {
 
             // Illegal chars, identifiers, Strings, Literals etc
             IllegalCharacter,
-            IllegalReal,
             IllegalString,
 
 
@@ -119,7 +118,6 @@ public class CD19ScannerStateMachine {
         AlphabeticalTransition.put(CD19ScannerState.String, CD19ScannerState.String);
         AlphabeticalTransition.put(CD19ScannerState.Comment, CD19ScannerState.Comment);
         // Illegal
-        AlphabeticalTransition.put(CD19ScannerState.PossibleReal, CD19ScannerState.IllegalReal); // 12.a --> <TUNDF, "12."> <IDENT, "a">
     }
 
     private static void setupNumericTransition () {
@@ -223,7 +221,7 @@ public class CD19ScannerStateMachine {
         ) {
             // instead of creating a haspmap entry for every a distinct symbol in the comment / string state
             // results in the comment / string state simply do this
-            if ((presentState == CD19ScannerState.String && asciiIndex != 34) ||presentState == CD19ScannerState.Comment) {
+            if ((presentState == CD19ScannerState.String && asciiIndex != 34) || presentState == CD19ScannerState.Comment) {
                 return presentState;
             }
 

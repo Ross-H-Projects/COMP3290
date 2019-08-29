@@ -55,14 +55,21 @@ public class CD19Scanner {
             }
             nextState = CD19ScannerStateMachine.transition(nextState, currentChar);
 
-            // We do want to move the head past the current char as this is a char that
+            // We do not want to move the head past the current char as this is a char that
             // has caused a possible recognition of a token and we will the current char for the
             // next possible token
             if (nextState == CD19ScannerStateMachine.CD19ScannerState.PossibleEndOfToken) {
                 break;
             }
 
-            currentColumnNo++;
+            // we have just encountered an illegal char when not waiting to build a token
+            // and we are not already building a sequence of illegal chars
+            // thus we have just encountered an illegal char while in some building state
+            if ((currentState != CD19ScannerStateMachine.CD19ScannerState.IllegalCharacter &&
+                    currentState != CD19ScannerStateMachine.CD19ScannerState.Start) &&
+                    nextState == CD19ScannerStateMachine.CD19ScannerState.IllegalCharacter) {
+                break;
+            }
 
             // we have  just recognized a comment
             // so we should clear the lexeme buffer
@@ -72,14 +79,23 @@ public class CD19Scanner {
                 lexemeBuffer = "";
             }
 
-            // anything within a comment is not consumed
             asciiIndex = (int) currentChar;
+
+            if (asciiIndex == 9) { // tab - 4 units
+                currentColumnNo += 4;
+            } else { // single - 1 unit
+                currentColumnNo++;
+            }
+
+            // anything within a comment is not consumed
             if (currentState != CD19ScannerStateMachine.CD19ScannerState.Comment) {
                 if (currentChar == '"') {
                     lexemeBuffer += '\"';
-                } else if (asciiIndex == 10 || asciiIndex == 13) { // newline
+                } else if (asciiIndex == 10) { // newline (we're on windows, lines are ended via <CR><LF>, so we will just count <LF>
                     currentLineNo++;
                     currentColumnNo = 1;
+                } else if (asciiIndex == 13) { // <CR>
+                    // don't add it to the lexeme buffer
                 } else if (asciiIndex == 9 || asciiIndex == 32 && (nextState == CD19ScannerStateMachine.CD19ScannerState.Start)) { // space
                     // don't add space to the lexeme buffer if we aren't currently
                     // building a potential token
@@ -142,12 +158,23 @@ public class CD19Scanner {
             return new Token(Token.TFLIT, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
+        // [Possible Real] ended
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleReal) {
+            // setup the scanner for the next getToken (which will always be a dot token)
+            // by walking back the last move operation
+            srcCodePos--;
+            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1); // the column number for the int
+            String returnLexemeBuffer = lexemeBuffer;
+            returnLexemeBuffer = returnLexemeBuffer.substring(0, returnLexemeBuffer.length() - 1);
+            return new Token(Token.TILIT, currentLineNo, returnColumnNo , returnLexemeBuffer);
+        }
+
         // [Possible Comment or Divide] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleCommentOrDivide) {
             return new Token(Token.TDIVD, currentLineNo, currentColumnNo, null);
         }
 
-        // [Possible Comment] ended prematurely
+        // [Possible Comment] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleComment) {
             // setup the scanner for the next getToken (which will always be a recognition of either a minus or a minus equals)
             // by walking back the last move operation
@@ -156,18 +183,19 @@ public class CD19Scanner {
             return new Token(Token.TDIVD, currentLineNo, returnColumnNo , null);
         }
 
-        // [PossibleNotEquals] ended prematurely
+        // [PossibleNotEquals] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
             return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
         }
 
-        // check if we have hit eof with incomplete reals or strings
-        if (nextState == CD19ScannerStateMachine.CD19ScannerState.EOF) {
-            if (currentState == CD19ScannerStateMachine.CD19ScannerState.String) {
-                currentState = CD19ScannerStateMachine.CD19ScannerState.IllegalString;
-            } else if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleReal) {
-                currentState = CD19ScannerStateMachine.CD19ScannerState.IllegalReal;
-            }
+        // check if we have hit eof with an incomplete string
+        if (nextState == CD19ScannerStateMachine.CD19ScannerState.EOF && currentState == CD19ScannerStateMachine.CD19ScannerState.String) {
+            currentState = CD19ScannerStateMachine.CD19ScannerState.IllegalString;
+        }
+
+        // blank last line
+        if (nextState == CD19ScannerStateMachine.CD19ScannerState.EOF && currentState == CD19ScannerStateMachine.CD19ScannerState.Start) {
+            return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
         }
 
         // [Some Invalid State] ended
@@ -221,8 +249,7 @@ public class CD19Scanner {
 
     private boolean isIllegalState (CD19ScannerStateMachine.CD19ScannerState state) {
         return state == CD19ScannerStateMachine.CD19ScannerState.IllegalCharacter ||
-                state == CD19ScannerStateMachine.CD19ScannerState.IllegalString ||
-                state == CD19ScannerStateMachine.CD19ScannerState.IllegalReal;
+                state == CD19ScannerStateMachine.CD19ScannerState.IllegalString;
     }
 
     private char moveHead () {
