@@ -42,6 +42,11 @@ public class CD19Scanner {
             return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
         }
 
+        if (srcCodePos >= srcCode.length()) {
+            endOfFile = true;
+            return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
+        }
+
         char currentChar = srcCode.charAt(srcCodePos);
         lexemeBuffer = "";
         CD19ScannerStateMachine.CD19ScannerState currentState = CD19ScannerStateMachine.CD19ScannerState.Start;
@@ -58,7 +63,7 @@ public class CD19Scanner {
             // We do not want to move the head past the current char as this is a char that
             // has caused a possible recognition of a token and we will the current char for the
             // next possible token
-            if (nextState == CD19ScannerStateMachine.CD19ScannerState.PossibleEndOfToken) {
+            if (nextState == CD19ScannerStateMachine.CD19ScannerState.PossibleEndOfToken || nextState == CD19ScannerStateMachine.CD19ScannerState.IllegalString) {
                 break;
             }
 
@@ -110,6 +115,8 @@ public class CD19Scanner {
 
         int returnColumnNo = -1;
 
+        endOfFile = false;
+
         // we have just recognized a single char token
         if (isSingleCharToken(currentState) ) {
             if (Token.matchToken(lexemeBuffer) == -1) {
@@ -118,7 +125,7 @@ public class CD19Scanner {
                 System.out.println("#" + lexemeBuffer + "#");
                 System.exit(1);
             }
-            return new Token(Token.matchToken(lexemeBuffer), currentLineNo, currentColumnNo, null);
+            return new Token(Token.matchToken(lexemeBuffer), currentLineNo, currentColumnNo - 1, null);
         }
 
         if (isDoubleCharToken(currentState)) {
@@ -128,33 +135,31 @@ public class CD19Scanner {
                 System.out.println("#" + lexemeBuffer + "#");
                 System.exit(1);
             }
-            // we need to walk back he column number by 1 as this is a double char token
-            returnColumnNo  = currentColumnNo - 1;
-            return new Token(Token.matchToken(lexemeBuffer), currentLineNo, returnColumnNo, null);
+            return new Token(Token.matchToken(lexemeBuffer), currentLineNo, currentColumnNo - 2, null);
         }
 
         // we have either just recognized a ident or a keyword
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Identifier) {
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            returnColumnNo = currentColumnNo - lexemeBuffer.length();
             // The Token class will figure out if the ident is a actually a keyword or not
             return new Token(Token.TIDEN, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // We have successfully recognized a string literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.StringEnd) {
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            returnColumnNo = currentColumnNo - lexemeBuffer.length();
             return new Token(Token.TSTRG, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // we have just recognized an integer literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Integer) {
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            returnColumnNo = currentColumnNo - lexemeBuffer.length();
             return new Token(Token.TILIT, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
         // we have just recognized a real literal
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.Real) {
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
+            returnColumnNo = currentColumnNo - lexemeBuffer.length();
             return new Token(Token.TFLIT, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
@@ -163,7 +168,8 @@ public class CD19Scanner {
             // setup the scanner for the next getToken (which will always be a dot token)
             // by walking back the last move operation
             srcCodePos--;
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1); // the column number for the int
+            returnColumnNo = currentColumnNo - lexemeBuffer.length(); // the column number for the int
+            currentColumnNo--;
             String returnLexemeBuffer = lexemeBuffer;
             returnLexemeBuffer = returnLexemeBuffer.substring(0, returnLexemeBuffer.length() - 1);
             return new Token(Token.TILIT, currentLineNo, returnColumnNo , returnLexemeBuffer);
@@ -171,7 +177,7 @@ public class CD19Scanner {
 
         // [Possible Comment or Divide] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleCommentOrDivide) {
-            return new Token(Token.TDIVD, currentLineNo, currentColumnNo, null);
+            return new Token(Token.TDIVD, currentLineNo, currentColumnNo - 1, null);
         }
 
         // [Possible Comment] ended
@@ -179,22 +185,28 @@ public class CD19Scanner {
             // setup the scanner for the next getToken (which will always be a recognition of either a minus or a minus equals)
             // by walking back the last move operation
             srcCodePos--;
-            returnColumnNo = currentColumnNo - 1; // the column number for the divide will also be 1 behind the current column no (pointing at the minus)
+            returnColumnNo = currentColumnNo - 2;
+            currentColumnNo--;
             return new Token(Token.TDIVD, currentLineNo, returnColumnNo , null);
         }
 
         // [PossibleNotEquals] ended
         if (currentState == CD19ScannerStateMachine.CD19ScannerState.PossibleNotEquals) {
-            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, "!");
+            return new Token(Token.TUNDF, currentLineNo, currentColumnNo - 1, "!");
         }
 
-        // check if we have hit eof with an incomplete string
+
         if (nextState == CD19ScannerStateMachine.CD19ScannerState.EOF && currentState == CD19ScannerStateMachine.CD19ScannerState.String) {
+            // check if we have hit eof with an incomplete string
             currentState = CD19ScannerStateMachine.CD19ScannerState.IllegalString;
+            srcCodePos++;
+        } else if (nextState == CD19ScannerStateMachine.CD19ScannerState.IllegalString) {
+            currentState  = CD19ScannerStateMachine.CD19ScannerState.IllegalString;
         }
 
         // blank last line
         if (nextState == CD19ScannerStateMachine.CD19ScannerState.EOF && currentState == CD19ScannerStateMachine.CD19ScannerState.Start) {
+            endOfFile = true;
             return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
         }
 
@@ -203,8 +215,8 @@ public class CD19Scanner {
             // Generate errors
             // return undefined token
             // we need walk back the column no to the start of the illegal sequence
-            returnColumnNo = currentColumnNo - (lexemeBuffer.length() - 1);
-            return new Token(Token.TUNDF, currentLineNo, currentColumnNo, lexemeBuffer);
+            returnColumnNo = currentColumnNo - lexemeBuffer.length();
+            return new Token(Token.TUNDF, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
 
@@ -253,6 +265,8 @@ public class CD19Scanner {
     }
 
     private char moveHead () {
+        System.out.println();
+
         if (srcCodePos < (srcCode.length() - 1)) {
             srcCodePos++;
         } else {

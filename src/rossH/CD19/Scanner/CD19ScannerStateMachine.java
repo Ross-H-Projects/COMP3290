@@ -220,7 +220,7 @@ public class CD19ScannerStateMachine {
                 (asciiIndex >= 58 && asciiIndex <= 62)
         ) {
             // instead of creating a haspmap entry for every a distinct symbol in the comment / string state
-            // results in the comment / string state simply do this
+            // that results in the comment / string state simply do this
             if ((presentState == CD19ScannerState.String && asciiIndex != 34) || presentState == CD19ScannerState.Comment) {
                 return presentState;
             }
@@ -262,6 +262,10 @@ public class CD19ScannerStateMachine {
         }
 
         // Current char is an Illegal Character
+        // if we're in a string we don't care about illegal characters
+        if (presentState == CD19ScannerState.String) {
+            return presentState;
+        }
         return CD19ScannerState.IllegalCharacter;
     }
 
