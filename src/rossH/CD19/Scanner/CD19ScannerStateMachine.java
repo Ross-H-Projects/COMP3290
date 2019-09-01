@@ -1,3 +1,14 @@
+/*
+ *  Author: Ross Hurley
+ *  Last edited: 1/09/2019
+ *  Made for COMP3290.
+ */
+
+/*
+ *  This program defines the states, and the transition from state to state
+ *  for the state machine defined in CD19Scanner.java
+ */
+
 package rossH.CD19.Scanner;
 
 import java.util.*;

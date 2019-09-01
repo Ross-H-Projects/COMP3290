@@ -1,10 +1,23 @@
+/*
+ *  Author: Ross Hurley
+ *  Last edited: 1/09/2019
+ *  Made for COMP3290.
+ */
+
+/*
+ *   This program defines the main entry for e scanner component and as the chasis
+ *   for CD19Scanner.java
+ *   made for COMP3290
+ */
+
+
 package rossH.CD19.Scanner;
 
-import java.io.BufferedInputStream;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class CD19ScannerChasis {
+public class A1 {
 
     public static void main(String[] args) {
         // grab input source file text

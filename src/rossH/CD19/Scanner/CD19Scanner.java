@@ -1,3 +1,17 @@
+/*
+ *  Author: Ross Hurley
+ *  Last edited: 1/09/2019
+ *  Made for COMP3290.
+ */
+
+/*
+ *   This program generates tokens used in the lexical analysis phase.
+ *   It acts as a state machine, which each call of getToken giving the next
+ *   state which corresponds to a known token for the CD19 language.
+ *
+ */
+
+
 package rossH.CD19.Scanner;
 
 import java.io.BufferedInputStream;
@@ -13,6 +27,11 @@ public class CD19Scanner {
     private int currentColumnNo;
     private boolean endOfFile;
 
+    private CD19ScannerStateMachine.CD19ScannerState nextState;
+    CD19ScannerStateMachine.CD19ScannerState currentState;
+
+    private int printCurrentLineLength;
+
     public CD19Scanner (String srcCode) {
         this.srcCode = srcCode;
         this.srcCodePos = 0;
@@ -20,6 +39,7 @@ public class CD19Scanner {
         this.currentLineNo = 1;
         this.lexemeBuffer = "";
         this.endOfFile = false;
+        this.printCurrentLineLength = 0;
 
         Token.setup();
         CD19ScannerStateMachine.setup();
@@ -29,28 +49,16 @@ public class CD19Scanner {
         return endOfFile;
     }
 
-    public void printToken (Token token) {
-        String printString = "<" + token.value() + ", ";
-        printString += token.getStr() + ", ";
-        printString += token.getLn() + ", ";
-        printString += token.getPos() + ">";
-        System.out.println(printString);
-    }
-
     public Token getToken () {
-        if (endOfFile) {
-            return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
-        }
-
-        if (srcCodePos >= srcCode.length()) {
+        if (endOfFile || srcCodePos >= srcCode.length() || nextState == CD19ScannerStateMachine.CD19ScannerState.EOF) {
             endOfFile = true;
             return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
         }
 
         char currentChar = srcCode.charAt(srcCodePos);
         lexemeBuffer = "";
-        CD19ScannerStateMachine.CD19ScannerState currentState = CD19ScannerStateMachine.CD19ScannerState.Start;
-        CD19ScannerStateMachine.CD19ScannerState nextState = currentState;
+        currentState = CD19ScannerStateMachine.CD19ScannerState.Start;
+        nextState = currentState;
 
         int asciiIndex;
         while (nextState != CD19ScannerStateMachine.CD19ScannerState.PossibleEndOfToken) {
@@ -114,7 +122,8 @@ public class CD19Scanner {
         }
 
         int returnColumnNo = -1;
-
+        // getting here implies that we are returning something that isn't EOF
+        // so we will need to get th EOF token
         endOfFile = false;
 
         // we have just recognized a single char token
@@ -219,7 +228,6 @@ public class CD19Scanner {
             return new Token(Token.TUNDF, currentLineNo, returnColumnNo, lexemeBuffer);
         }
 
-
         // SHOULD NEVER GET TO THIS POINT
         System.out.println("SHOULD NEVER GET TO THIS POINT -- end of getToken");
         System.out.println(currentState);
@@ -265,14 +273,105 @@ public class CD19Scanner {
     }
 
     private char moveHead () {
-        System.out.println();
-
         if (srcCodePos < (srcCode.length() - 1)) {
             srcCodePos++;
         } else {
-            endOfFile = true ;
+            endOfFile = true;
         }
         return srcCode.charAt(srcCodePos);
+    }
+
+    public void printToken (Token token) {
+        String tokenName = Token.TPRINT[token.value()];
+
+        boolean needToPrintLexeme = false;
+        if (tokenName.equals("TIDEN ") ||
+                tokenName.equals("TILIT ") ||
+                tokenName.equals("TFLIT ") ||
+                tokenName.equals("TSTRG ") ||
+                tokenName.equals("TUNDF ")) {
+            needToPrintLexeme = true;
+        }
+
+        if (needToPrintLexeme) {
+            printCurrentToken(tokenName, token.getStr() + " ");
+        } else {
+            printCurrentToken(tokenName, "");
+        }
+
+    }
+
+    private void printCurrentToken (String tokenName, String lexeme) {
+        // need to handle errors
+        if (tokenName.equals("TUNDF ")) {
+            if (printCurrentLineLength != 0) {
+                System.out.println();
+            }
+            System.out.println("TUNDF ");
+            System.out.println("lexical error " + lexeme);
+            printCurrentLineLength = 0;
+            return;
+        }
+
+        // assumes we are starting fresh at a new column
+
+        // print token name first
+        // jump to new line if needed
+        if (printCurrentLineLength + 6 + lexeme.length() >= 66) {
+            System.out.println();
+            printCurrentLineLength = 5;
+        } else {
+            if (printCurrentLineLength == 0) {
+                printCurrentLineLength = 5;
+            } else {
+                printCurrentLineLength += 6;
+            }
+        }
+        System.out.print(tokenName);
+
+        if (lexeme.length() == 0) {
+            return;
+        }
+
+        for (int i = 0; i < lexeme.length(); i++) {
+            printCurrentLineLength++;
+            System.out.print(lexeme.charAt(i));
+            if (printCurrentLineLength == 65) {
+                System.out.println();
+                printCurrentLineLength = 0;
+            }
+        }
+
+        String padding;
+        if (lexeme.length() < 6) {
+            padding = generateSpace(6 - lexeme.length());
+            System.out.print(padding);
+            printCurrentLineLength += padding.length();
+            return;
+        }
+
+        int over = (printCurrentLineLength + (6 - printCurrentLineLength % 6)) - 1;
+        over = over - printCurrentLineLength;
+        if (over != 0) {
+            padding = generateSpace(over);
+            if (printCurrentLineLength + padding.length() >= 66) {
+                System.out.println();
+                printCurrentLineLength = 0;
+            } else {
+                System.out.print(padding);
+                printCurrentLineLength += padding.length();
+            }
+        }
+
+    }
+
+
+    private String generateSpace (int amount) {
+        String spaces = "";
+        for (int i = 0; i < amount; i++) {
+            spaces = spaces + " ";
+        }
+        return spaces;
     }
 
 }

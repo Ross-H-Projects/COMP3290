@@ -18,6 +18,13 @@ package rossH.CD19.Scanner;
 //
 //
 
+
+/*
+  Modified by Ross Hurley to accommodate th state machine
+  defined in CD19Scanner.java
+  Last edit: 1/09/2019
+ */
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +55,7 @@ public class Token {
     TIDEN = 58,	TILIT = 59,	TFLIT = 60,	TSTRG = 61,	TUNDF = 62;
 
 
-    private static final String TPRINT[] = {  //  TPRINT[tokenValue] will produce the associated String
+    public static final String TPRINT[] = {  //  TPRINT[tokenValue] will produce the associated String
             //  e.g. TPRINT[TMAIN] will be the String "TMAIN ".
             "TEOF  ",
             "TCD19 ",	"TCONS ",	"TTYPS ",	"TIS   ",	"TARRS ",	"TMAIN ",
