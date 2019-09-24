@@ -1,7 +1,0 @@
-CD19 a
-main
-	x : integer
-begin
-	x = 1;
-end 
-CD19 a
