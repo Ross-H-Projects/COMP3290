@@ -129,7 +129,7 @@ public class CD19Scanner {
         // we have just recognized a single char token
         if (isSingleCharToken(currentState) ) {
             if (Token.matchToken(lexemeBuffer) == -1) {
-                System.out.println("SHOULD NEVER HAPPEN");
+                System.out.println("SHOULD NEVER HAPPEN - single char");
                 System.out.println(currentState);
                 System.out.println("#" + lexemeBuffer + "#");
                 System.exit(1);
@@ -139,7 +139,7 @@ public class CD19Scanner {
 
         if (isDoubleCharToken(currentState)) {
             if (Token.matchToken(lexemeBuffer) == -1) {
-                System.out.println("SHOULD NEVER HAPPEN");
+                System.out.println("SHOULD NEVER HAPPEN - double char");
                 System.out.println(currentState);
                 System.out.println("#" + lexemeBuffer + "#");
                 System.exit(1);
@@ -226,6 +226,12 @@ public class CD19Scanner {
             // we need walk back the column no to the start of the illegal sequence
             returnColumnNo = currentColumnNo - lexemeBuffer.length();
             return new Token(Token.TUNDF, currentLineNo, returnColumnNo, lexemeBuffer);
+        }
+
+        // ended with a comment
+        if (currentState == CD19ScannerStateMachine.CD19ScannerState.Comment && nextState == CD19ScannerStateMachine.CD19ScannerState.EOF) {
+            endOfFile = true;
+            return new Token(Token.TEOF, currentLineNo, currentColumnNo, null);
         }
 
         // SHOULD NEVER GET TO THIS POINT
@@ -341,6 +347,8 @@ public class CD19Scanner {
                 printCurrentLineLength = 0;
             }
         }
+
+
 
         String padding;
         if (lexeme.length() < 6) {

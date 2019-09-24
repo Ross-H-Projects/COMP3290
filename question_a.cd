@@ -1,0 +1,7 @@
+CD19 test
+main
+	x : integer
+begin
+	x = printline "Hello World";
+end 
+CD19 test

@@ -1,0 +1,63 @@
+CD19 a
+constants
+	COUNT = 2
+types
+	/-- declare struct
+	coord is
+		x : real,
+		y : real
+	end 
+
+	/-- declare and init array
+	/-- every element of coords's x and y vars are 
+	/-- initialised to 0.0
+	coords is array [COUNT] of coord
+arrays
+	xyCoords : coords 
+main
+	/-- declare primitives to be used
+	/-- in main pogram
+	x : integer,
+	z : integer,
+	i : real
+begin
+	i = 1.0;
+
+	/-- set array elements
+	xyCoords[0].x = i;
+	xyCoords[0].y = 2.0;
+	
+	xyCoords[1].x = 1.0;
+	xyCoords[1].y = 2.0;
+	
+	incrementElementsOfArray (xyCoords);
+
+	x = 1; 
+	z = doubleNum (x);
+end 
+CD19 a
+
+
+/-- pass array by reference, pass length by value
+func incrementElementsOfArray (passArray : coords, length: integer) : void
+tmp : real,
+i	: integer,
+k	: integer
+begin
+	for(i = 0, k = length; i < k)
+		tmp = coords[i].x + 1.0;
+		coords[i].x = tmp;
+		
+		tmp = coords[i].y + 1.0;
+		coords[i].y = tmp;
+	end
+	return;
+end
+
+/-- pass a by value
+func doubleNum (a : integer) : integer
+tmp: integer
+begin
+	tmp = a * 2;
+	return tmp;
+end

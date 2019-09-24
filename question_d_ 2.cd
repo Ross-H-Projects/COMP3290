@@ -1,0 +1,33 @@
+CD19 arrays_test
+constants
+	COUNT = 2
+types
+	/-- declare struct
+	coord is
+		x : real,
+		y : real
+	end 
+
+	/-- declare and init array
+	/-- every element of coords's x and y vars are 
+	/-- initialised to 0.0
+	coords is array [COUNT] of coord
+arrays
+	xyCoords : coords 
+main
+	/-- declare primitives to be used
+	/-- in main pogram
+	i : real,
+begin
+	/-- set values
+	i = 1.0;
+
+	/-- set array element values
+	xyCoords[0].x = i;
+	xyCoords[0].y = 2.0;
+	
+	xyCoords[1].x = 1.0;
+	xyCoords[1].y = 2.0;
+
+end 
+CD19 arrays_test
