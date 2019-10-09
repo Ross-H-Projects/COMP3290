@@ -316,34 +316,31 @@ public class CD19Scanner {
 
         // assumes we are starting fresh at a new column
 
-        // print token name first
-        // jump to new line if needed
-        if (printCurrentLineLength + 6 + lexeme.length() >= 66) {
-            System.out.println();
+
+        if (printCurrentLineLength == 0) {
             printCurrentLineLength = 5;
         } else {
-            if (printCurrentLineLength == 0) {
-                printCurrentLineLength = 5;
-            } else {
-                printCurrentLineLength += 6;
-            }
+            printCurrentLineLength += 6;
         }
+
         System.out.print(tokenName);
 
         if (lexeme.length() == 0) {
-            return;
-        }
-
-        for (int i = 0; i < lexeme.length(); i++) {
-            printCurrentLineLength++;
-            System.out.print(lexeme.charAt(i));
-            if (printCurrentLineLength == 65) {
+            if (printCurrentLineLength >= 60) {
                 System.out.println();
                 printCurrentLineLength = 0;
             }
+            return;
         }
 
+        printCurrentLineLength += lexeme.length();
+        System.out.print(lexeme);
 
+        if (printCurrentLineLength >= 60) {
+            System.out.println();
+            printCurrentLineLength = 0;
+            return;
+        }
 
         String padding;
         if (lexeme.length() < 6) {
