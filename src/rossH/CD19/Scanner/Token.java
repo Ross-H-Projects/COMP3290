@@ -14,8 +14,6 @@ package rossH.CD19.Scanner;
 //			  the way you expect it to.
 //			  It is supplied as an assistance and may be used in your project if you wish.
 //
-//	8
-//
 //
 
 
@@ -24,6 +22,8 @@ package rossH.CD19.Scanner;
   defined in CD19Scanner.java
   Last edit: 1/09/2019
  */
+
+import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -205,14 +205,14 @@ public class Token {
 		tokenStringMappings.put(".", 			TDOT);
 		tokenStringMappings.put("+", 			TPLUS);
         tokenStringMappings.put("-", 			TMINS);
-        tokenStringMappings.put("*", 			TMINS);
+        tokenStringMappings.put("*", 			TSTAR);
         tokenStringMappings.put("/", 			TDIVD);
         tokenStringMappings.put("%", 			TPERC);
         tokenStringMappings.put("^", 			TCART);
         tokenStringMappings.put("=", 			TEQUL);
         tokenStringMappings.put("+=", 			TPLEQ);
         tokenStringMappings.put("-=", 			TMNEQ);
-        tokenStringMappings.put("*=", 			TMNEQ);
+        tokenStringMappings.put("*=", 			TSTEQ);
         tokenStringMappings.put("/=", 			TDVEQ);
         tokenStringMappings.put("==", 			TEQEQ);
         tokenStringMappings.put("!=", 			TNEQL);
@@ -262,5 +262,4 @@ public class Token {
         }
         return tokenCode;
     }
-
 }

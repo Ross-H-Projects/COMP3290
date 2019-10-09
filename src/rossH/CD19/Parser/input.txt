@@ -1,0 +1,6 @@
+CD19 a
+main
+	i:integer, j:integer, k:integer
+begin
+end 
+CD19 a

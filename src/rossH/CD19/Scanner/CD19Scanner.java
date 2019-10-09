@@ -14,11 +14,6 @@
 
 package rossH.CD19.Scanner;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.util.EnumSet;
-import java.util.Vector;
-
 public class CD19Scanner {
     private String srcCode;
     private String lexemeBuffer;
