@@ -41,7 +41,7 @@ public class A3 {
         TreeNode NPROG = parser.parse();
         System.out.println();
         System.out.println();
-        TreeNode.printTree(NPROG);
+        TreeNode.printTree(NPROG, "");
         // print out a <CERTAIN> traversal of the syntax tree
 
     }

@@ -232,10 +232,12 @@ public class TreeNode {
     //	whatever you like tree output routine.
     //
 
-    public static void printTree(TreeNode tr) {
+    public static void printTree(TreeNode tr, String nodePos) {
         if (tr.nodeValue == NUNDEF) {
             return;
         }
+
+        //System.out.print(nodePos + " ");
 
         if (tr.nodeValue == NPROG) {
             count = 0;
@@ -261,14 +263,17 @@ public class TreeNode {
             if (count%7 == 0) out.println();
         }*/
 
-        if (tr.left   != null) {
-            printTree(tr.left);
-        }
+        // pre-order traversal of syntax tree
         if (tr.middle != null) {
-            printTree(tr.middle);
+            printTree(tr.middle, "middle");
         }
+
+        if (tr.left   != null) {
+            printTree(tr.left, "left");
+        }
+
         if (tr.right  != null) {
-            printTree(tr.right);
+            printTree(tr.right, "right");
         }
         if (tr.nodeValue == NPROG && count%7 != 0) {
             System.out.println();

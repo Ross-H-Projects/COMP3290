@@ -37,14 +37,13 @@ public class NMAIN {
 
         // <stats>
         TreeNode stats = new TreeNode(TreeNodeType.NUNDEF);
-        /*
+
         TreeNode stats = NSTATS.generateTreeNode(p);
         if (stats != null && stats.getNodeType() == TreeNodeType.NUNDEF) {
             System.out.println("NSTATS :: ERROR RECOVERY - exiting...");
             System.exit(1);
             //errorRecoveryToEnd(p);
         }
-        */
 
         // end
         if (!p.currentTokenIs(Token.TEND)) {

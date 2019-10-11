@@ -48,12 +48,19 @@ public class CD19Parser {
          */
     }
 
-    public void moveToNextToken() {
+    public void moveToNextToken () {
         tokenPos++;
     }
 
-    public Token getCurrentToken() {
+    public Token getCurrentToken () {
         return tokens.get(tokenPos);
+    }
+
+    public Token getTokenAhead (int ahead) {
+        if (tokenPos + ahead > (tokens.size() - 1) {
+            return null;
+        }
+        return tokens.get(tokenPos + ahead);
     }
 
     public boolean currentTokenIs(int tokenValue) {

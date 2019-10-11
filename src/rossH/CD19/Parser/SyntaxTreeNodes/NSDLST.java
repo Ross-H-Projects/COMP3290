@@ -30,15 +30,14 @@ public class NSDLST {
         }
 
         // <opt_slist>
-        TreeNode sdeclOptional = opt_slist(p);
+        TreeNode sdeclOptional = optSlist(p);
         if (sdeclOptional == null) {
             return sdecl;
-        };
-        else {
-            TreeNode slist = new TreeNode(TreeNodeType.NSDLST, sdecl, sdeclOptional);
-            //decList.setDataType(TreeNodeType.);
-            return slist;
         }
+
+        TreeNode slist = new TreeNode(TreeNodeType.NSDLST, sdecl, sdeclOptional);
+        //decList.setDataType(TreeNodeType.);
+        return slist;
     }
 
     // <sdecl> --> <id> : <stype>
@@ -79,7 +78,7 @@ public class NSDLST {
     }
 
     // <opt_slist>  --> , <slist> | ɛ
-    private static TreeNode opt_slist (CD19Parser p) {
+    private static TreeNode optSlist (CD19Parser p) {
         TreeNode slist = null;
         Token currentToken;
 

@@ -42,6 +42,7 @@ public class NPROG {
         // <globals>
         TreeNode globals = new TreeNode(TreeNodeType.NUNDEF);
         /*
+        todo
         TreeNode globals = NGLOB.generateTreeNode(p);
         if (globals != null && globals.getNodeType() == TreeNodeType.NUNDEF) {
 
@@ -57,6 +58,7 @@ public class NPROG {
         // <funcs>
         TreeNode functions = new TreeNode(TreeNodeType.NUNDEF);
         /*
+        todo
         TreeNode funcs = NProclNode.generateTreeNode(p);
         if (funcs != null && funcs.getNodeType() == ParseTreeNodeType.NUNDEF) {
             try {errorRecovery(p);}
