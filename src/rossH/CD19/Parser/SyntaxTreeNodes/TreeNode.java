@@ -264,12 +264,12 @@ public class TreeNode {
         }*/
 
         // pre-order traversal of syntax tree
-        if (tr.middle != null) {
-            printTree(tr.middle, "middle");
-        }
-
         if (tr.left   != null) {
             printTree(tr.left, "left");
+        }
+
+        if (tr.middle != null) {
+            printTree(tr.middle, "middle");
         }
 
         if (tr.right  != null) {

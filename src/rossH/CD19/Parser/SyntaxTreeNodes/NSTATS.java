@@ -187,15 +187,14 @@ public class NSTATS {
             System.out.println("NSTATS :: asgstat - asgnop :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
+        p.moveToNextToken();
 
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
 
-        TreeNode stats = new TreeNode(TreeNodeType.NSTATS);
-        stats.setMiddle(var);
-        stats.setLeft(asgnop);
-        stats.setRight(bool);
-        return stats;
+        asgnop.setLeft(var);
+        asgnop.setRight(bool);
+        return asgnop;
     }
 
 }
