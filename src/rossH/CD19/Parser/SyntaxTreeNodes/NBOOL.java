@@ -45,14 +45,8 @@ public class NBOOL {
     public static TreeNode boolR (CD19Parser p) {
 
         // <logop>
-        TreeNode logop;
-        if (p.currentTokenIs(Token.TAND)) {
-            logop = new TreeNode(TreeNodeType.NAND);
-        } else if (p.currentTokenIs(Token.TOR)) {
-            logop = new TreeNode(TreeNodeType.NOR);
-        } else if (p.currentTokenIs(Token.TXOR)) {
-            logop = new TreeNode(TreeNodeType.NXOR);
-        } else {
+        TreeNode logop = logop(p);
+        if (logop == null) {
             // getting here implies the rule:
             // <bool_r> -> ɛ
             return null;
@@ -72,19 +66,42 @@ public class NBOOL {
         return logop;
     }
 
+    public static TreeNode logop (CD19Parser p) {
+        if (p.currentTokenIs(Token.TAND)) {
+            return new TreeNode(TreeNodeType.NAND);
+        } else if (p.currentTokenIs(Token.TOR)) {
+            return new TreeNode(TreeNodeType.NOR);
+        } else if (p.currentTokenIs(Token.TXOR)) {
+            return new TreeNode(TreeNodeType.NXOR);
+        }
+
+        return null;
+    }
+
     // <rel>
     /*
         OLD RULES:
         <rel>             -> <expr> <relop> <rel>
+        <rel>             -> not <expr> <relop> <rel>
         <rel>             -> <expr>
 
         NEW RULES:
         <rel>             -> <expr> <opt_relop_expr>
+        <rel>             -> not <expr> <relop> <rel>
         <opt_relop_expr>  -> <relop> <expr> | ɛ
     */
 
     // <rel>             -> <expr> <opt_relop_expr>
+    // <rel>             -> not <expr> <relop> <rel>
     public static TreeNode rel (CD19Parser p) {
+        boolean notPresent = false;
+
+        // <rel>             -> not <expr> <relop> <expr>
+        if (p.currentTokenIs(Token.TNOT)) {
+            TreeNode NNOTNode = NNOT.generateTreeNode(p);
+            return NNOTNode;
+        }
+
         // <expr>
         TreeNode expr = expr(p);
 
@@ -354,7 +371,7 @@ public class NBOOL {
     private static TreeNode varOrFnCall (CD19Parser p) {
 
         if (!p.currentTokenIs(Token.TIDEN)) {
-            System.out.println("NBOOL :: exponent :: nothing suitable to match :: ERROR RECOVERY - exiting...");
+            System.out.println("NBOOL :: varOrFnCall :: nothing suitable to match :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
 
@@ -369,10 +386,8 @@ public class NBOOL {
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            System.out.println(" <var> --> <id>[<expr>].<id>");
-            /* todo
+            System.out.println("<var> --> <id>[<expr>].<id>");
             var = NARRV.generateTreeNode(p);
-            */
         } else { // NISVM: <var> --> <id>
             System.out.println("<var> --> <id>");
             var = NSIVM.generateTreeNode(p);

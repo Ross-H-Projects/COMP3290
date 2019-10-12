@@ -9,6 +9,7 @@ package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
@@ -232,16 +233,31 @@ public class TreeNode {
     //	whatever you like tree output routine.
     //
 
-    public static void printTree(TreeNode tr, String nodePos) {
+    public static BufferedWriter xmlFileWriter;
+
+    public static void setXmlFileWriter (BufferedWriter fileWriter) {
+        xmlFileWriter = fileWriter;
+    }
+
+    /*
+    <root>
+      <child>
+        <subchild>.....</subchild>
+      </child>
+    </root>
+     */
+
+    public static void printTree(TreeNode tr, String nodePos) throws IOException {
         if (tr.nodeValue == NUNDEF) {
             return;
         }
 
-        //System.out.print(nodePos + " ");
-
         if (tr.nodeValue == NPROG) {
+            xmlFileWriter.append("<root>\n");
             count = 0;
         };
+        xmlFileWriter.append("<nodeType =\"" + PRINTNODE[tr.nodeValue] + " \">\n");
+
         System.out.print(PRINTNODE[tr.nodeValue] + " ");
         count++;
 
@@ -250,7 +266,9 @@ public class TreeNode {
         }
 
         if (tr.getSymbolRecord() != null) {
-            System.out.print(tr.getSymbolRecord().getLexeme() + " ");
+            String toPrint = tr.getSymbolRecord().getLexeme();
+            System.out.print(toPrint + " ");
+            xmlFileWriter.append("<nodeSymbolValue =\"" + toPrint + " \">\n");
             count++;
             if (count % 7 == 0) {
                 System.out.println();
@@ -265,20 +283,29 @@ public class TreeNode {
 
         // pre-order traversal of syntax tree
         if (tr.left   != null) {
+            xmlFileWriter.append("<child>\n");
             printTree(tr.left, "left");
+            xmlFileWriter.append("</child>\n");
         }
 
         if (tr.middle != null) {
+            xmlFileWriter.append("<child>\n");
             printTree(tr.middle, "middle");
+            xmlFileWriter.append("</child>\n");
         }
 
         if (tr.right  != null) {
+            xmlFileWriter.append("<child>\n");
             printTree(tr.right, "right");
+            xmlFileWriter.append("</child>\n");
         }
         if (tr.nodeValue == NPROG && count%7 != 0) {
             System.out.println();
         };
+
+        if (tr.nodeValue == NPROG) {
+            xmlFileWriter.append("</root>");
+        };
+
     }
-
-
 }

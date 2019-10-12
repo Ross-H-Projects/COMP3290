@@ -1,0 +1,110 @@
+<root>
+<nodeType ="NPROG ">
+<nodeSymbolValue ="a ">
+<child>
+</child>
+<child>
+</child>
+<child>
+<nodeType ="NMAIN ">
+<child>
+<nodeType ="NSDLST ">
+<child>
+<nodeType ="NSDECL ">
+<nodeSymbolValue ="i ">
+</child>
+<child>
+<nodeType ="NSDLST ">
+<child>
+<nodeType ="NSDECL ">
+<nodeSymbolValue ="j ">
+</child>
+<child>
+<nodeType ="NSDECL ">
+<nodeSymbolValue ="k ">
+</child>
+</child>
+</child>
+<child>
+<nodeType ="NSTATS ">
+<child>
+<nodeType ="NASGN ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="i ">
+</child>
+<child>
+<nodeType ="NILIT ">
+<nodeSymbolValue ="1 ">
+</child>
+</child>
+<child>
+<nodeType ="NSTATS ">
+<child>
+<nodeType ="NASGN ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="j ">
+</child>
+<child>
+<nodeType ="NILIT ">
+<nodeSymbolValue ="2 ">
+</child>
+</child>
+<child>
+<nodeType ="NSTATS ">
+<child>
+<nodeType ="NASGN ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="k ">
+</child>
+<child>
+<nodeType ="NADD ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="i ">
+</child>
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="j ">
+</child>
+</child>
+</child>
+<child>
+<nodeType ="NSTATS ">
+<child>
+<nodeType ="NASGN ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="mVal ">
+</child>
+<child>
+<nodeType ="NARRV ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="mArr ">
+</child>
+<child>
+<nodeType ="NADD ">
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="i ">
+</child>
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="j ">
+</child>
+</child>
+<child>
+<nodeType ="NSIMV ">
+<nodeSymbolValue ="key ">
+</child>
+</child>
+</child>
+</child>
+</child>
+</child>
+</child>
+</child>
+</root>

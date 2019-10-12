@@ -6,6 +6,8 @@ import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Scanner.CD19Scanner;
 import rossH.CD19.Scanner.Token;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -43,7 +45,17 @@ public class A3 {
         TreeNode NPROG = parser.parse();
         System.out.println();
         System.out.println();
-        TreeNode.printTree(NPROG, "");
+
+        try {
+            BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
+            TreeNode.setXmlFileWriter(xmlFileWriter);
+            xmlFileWriter.write("");
+            TreeNode.printTree(NPROG, "");
+            xmlFileWriter.close();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.exit(1);
+        }
         // print out a <CERTAIN> traversal of the syntax tree
 
     }
