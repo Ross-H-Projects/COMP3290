@@ -161,6 +161,25 @@ public class NBOOL {
         return optAddSub;
     }
 
+    // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
+    public static TreeNode optAddSub (CD19Parser p) {
+        TreeNode optAddSub;
+
+        if (p.currentTokenIs(Token.TPLUS)) { // +
+            optAddSub.setValue(TreeNodeType.NADD);
+        } else if (p.currentTokenIs(Token.TMINS)) { // -
+            optAddSub.setValue(TreeNodeType.NSUB);
+        } else { // ɛ
+            return null;
+        }
+        p.moveToNextToken();
+
+        // <expr>
+        TreeNode expr = expr(p);
+        optAddSub.setRight(expr);
+        return optAddSub;
+    }
+
     /*
         OLD RULES:
         <term>          -> <term> / <fact>
@@ -192,33 +211,79 @@ public class NBOOL {
         return multDivModNothing;
     }
 
+    //        <multDivModOpt> -> / <term> | % <term> | * <term> | ɛ
+    public static TreeNode multDivModNothing (CD19Parser p) {
+        TreeNode multDivModNothing;
 
-    // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
-    public static TreeNode optAddSub (CD19Parser p) {
-        TreeNode optAddSub;
-
-        if (p.currentTokenIs(Token.TPLUS)) { // +
-            optAddSub.setValue(TreeNodeType.NADD);
-        } else if (p.currentTokenIs(Token.TMINS)) { // -
-            optAddSub.setValue(TreeNodeType.NSUB);
+        if (p.currentTokenIs(Token.TDIVD)) { // /
+            multDivModNothing.setValue(TreeNodeType.NDIV);
+        } else if (p.currentTokenIs(Token.TPERC)) { // %
+            multDivModNothing.setValue(TreeNodeType.NMOD);
+        } else if (p.currentTokenIs(Token.TSTAR)) { // *
+            multDivModNothing.setValue(TreeNodeType.NMUL);
         } else { // ɛ
             return null;
         }
         p.moveToNextToken();
 
-        // <expr>
-        TreeNode expr = expr(p);
-        optAddSub.setRight(expr);
-        return optAddSub;
+
+        // <term>
+        TreeNode term = term(p);
+        multDivModNothing.setRight(term);
+        term multDivModNothing;
     }
 
+    /*
+        OLD RULES:
+        <fact>   -> <fact> ^ <exponent>
+        <fact>   -> <exponent>
+
+        NEW RULES:
+        <fact>   -> <exponent <fact_r>
+        <fact_r> -> ^ <fact> | ɛ
+    */
+
+    // <fact>   -> <exponent <fact_r>
     public static TreeNode fact (CD19Parser p) {
+
+        // <exponent>
+        TreeNode exponent = exponent(p);
+
+        // <fact_r>
+        TreeNode factR = factR(p);
+
+        if (factR == null) {
+            return exponent;
+        }
+
+        factR.setLeft(exponent);
+        return factR;
+    }
+
+    // <fact_r> -> ^ <fact> | ɛ
+    public static TreeNode factR (CD19Parser p) {
+        TreeNode factR;
+
+        if (!p.currentTokenIs(Token.TCART)) { // ɛ
+            return null;
+        }
+
+        // ^
+        p.moveToNextToken();
+        factR.setValue(TreeNodeType.NPOW);
+
+        // <fact>
+        TreeNode fact = fact(p);
+        factR.setRight(fact);
+        return factR;
+    }
+
+    public static TreeNode exponent (CD19Parser p) {
+
         return null;
     }
 
-    public static TreeNode multDivModNothing (CD19Parser p) {
-        return null;
-    }
+
 
 
 }
