@@ -35,6 +35,8 @@ public class A3 {
             tokens.add(token);
         }
 
+        System.out.println();
+        System.out.println();
 
         // transform tokens into a synatax tree
         CD19Parser parser = new CD19Parser(tokens);

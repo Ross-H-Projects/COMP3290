@@ -34,7 +34,8 @@ public class NSTATS {
         TreeNode NSTATSNode = new TreeNode(TreeNodeType.NUNDEF);
         boolean isStrStat = false;
 
-        TreeNode stat, strStat;
+        TreeNode stat = new TreeNode(TreeNodeType.NUNDEF);
+        TreeNode strStat = null;
 
         /* todo
         // <strstat> -> <forstat>
@@ -54,15 +55,14 @@ public class NSTATS {
             // <stat>
             stat = stat(p);
             if (stat != null && stat.getNodeType() == TreeNodeType.NUNDEF) {
-                System.out.println("stat :: ERROR RECOVERY - exiting...");
+                System.out.println("NSTATS :: ERROR RECOVERY - exiting...");
                 System.exit(1);
             }
 
             // ;
-            if (p.currentTokenIs(Token.TSEMI)) {
-                p.generateSyntaxError("Expected a semi comma");
-                // prematurely end parsing due to irrecoverable error
-                return NSTATSNode;
+            if (!p.currentTokenIs(Token.TSEMI)) {
+                System.out.println("NSTATS :: Expected a semi comma");
+                System.exit(1);
             }
             p.moveToNextToken();
         }
@@ -71,16 +71,17 @@ public class NSTATS {
         TreeNode statsOptions = optStats(p);
 
         // construct actual tree node
-        if (strStat == null) {
-            NSTATSNode.setLeft(stat);
-        } else {
+        if (strStat != null) {
             NSTATSNode.setLeft(strStat);
+        } else {
+            NSTATSNode.setLeft(stat);
         }
 
         if (statsOptions != null) {
             NSTATSNode.setRight(statsOptions);
         }
 
+        NSTATSNode.setValue(TreeNodeType.NSTATS);
         return NSTATSNode;
     }
 
@@ -113,42 +114,29 @@ public class NSTATS {
         // <callstat>
         // getting to this point implies the next grammar is either <asgnstat>, <callstat>,
         // or we are traversing invalid code
-        TreeNode stat = asgnOrCallStat();
+        TreeNode stat = asgnOrCallStat(p);
+        return stat;
     }
 
     // <op_stats> --> <stats> | ɛ
     private static TreeNode optStats (CD19Parser p) {
-        TreeNode statsOptions = null;
-
         // critera under which we don't need
         // another <stat> / <stats> is if
         // current token is end, else, or until
 
-        // end
-        if (!p.currentTokenIs(Token.TEND)) {
-            return statsOptions;
+        // end, or else, or until
+        if (p.currentTokenIs(Token.TEND) || p.currentTokenIs(Token.TELSE) || p.currentTokenIs(Token.TUNTL)) {
+            return null;
         }
 
-        // else
-        if (!p.currentTokenIs(Token.TELSE)) {
-            return statsOptions;
-        }
-
-        // until
-        if (!p.currentTokenIs(Token.TUNTL)) {
-            return statsOptions;
-        }
-
-        statsOptions = generateTreeNode(p);
-        return statsOptions;
+        TreeNode optStats = generateTreeNode(p);
+        return optStats;
     }
 
     // <asgnOrCallStat> --> <asgnstat> | <callstat>
     private static TreeNode asgnOrCallStat (CD19Parser p) {
-        Token varToken;
-
         // asgnstat and callstat both being with an identifier
-        if (p.currentTokenIs(Token.TIDEN)) {
+        if (!p.currentTokenIs(Token.TIDEN)) {
             System.out.println("NSTATS :: asgOrCallStat :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
@@ -163,17 +151,21 @@ public class NSTATS {
         // <asgnstat> --> <var> <asgnop> <bool>
 
         // <var>
-        TreeNode var;
+        TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
+            System.out.println(" <var> --> <id>[<expr>].<id>");
             /* todo
             var = NARRV.generateTreeNode(p);
             */
         } else { // NISVM: <var> --> <id>
-             var = NSIVM.generateTreeNode(p);
+            System.out.println("<var> --> <id>");
+            var = NSIVM.generateTreeNode(p);
         }
 
         // <asgnop>
-        TreeNode asgnop;
+        Token currToken = p.getCurrentToken();
+
+        TreeNode asgnop = new TreeNode(TreeNodeType.NUNDEF);
         if (p.currentTokenIs(Token.TEQUL)) { // =
             asgnop = new TreeNode(TreeNodeType.NASGN);
         } else if (p.currentTokenIs(Token.TPLEQ)) { // +=
@@ -182,7 +174,7 @@ public class NSTATS {
             asgnop = new TreeNode(TreeNodeType.NMNEQ);
         } else if (p.currentTokenIs(Token.TSTEQ)) { // *=
             asgnop = new TreeNode(TreeNodeType.NSTEQ);
-        } else if (p.currentTokenIs(Token.TDVEQ))) { // /=
+        } else if (p.currentTokenIs(Token.TDVEQ)) { // /=
             asgnop = new TreeNode(TreeNodeType.NDVEQ);
         } else { // error
             System.out.println("NSTATS :: asgstat - asgnop :: ERROR RECOVERY - exiting...");

@@ -105,6 +105,15 @@ public class Token {
 
     public String getStr() { return str; }
 
+    public String getTokenObjString () {
+        String s = TPRINT[tid];
+
+        if (str != null) {
+            s += " " + str;
+        }
+        return s;
+    }
+
     //public StRec getSymbol() { return symbol; }
 
     //public void setSymbol(StRec x) {symbol = x; }		// Used by the Parser to set the ST Ref field of the Token tuple

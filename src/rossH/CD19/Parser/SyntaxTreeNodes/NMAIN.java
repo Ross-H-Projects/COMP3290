@@ -36,8 +36,6 @@ public class NMAIN {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = new TreeNode(TreeNodeType.NUNDEF);
-
         TreeNode stats = NSTATS.generateTreeNode(p);
         if (stats != null && stats.getNodeType() == TreeNodeType.NUNDEF) {
             System.out.println("NSTATS :: ERROR RECOVERY - exiting...");

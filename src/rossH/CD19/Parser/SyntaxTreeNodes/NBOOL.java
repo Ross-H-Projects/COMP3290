@@ -48,9 +48,9 @@ public class NBOOL {
         TreeNode logop;
         if (p.currentTokenIs(Token.TAND)) {
             logop = new TreeNode(TreeNodeType.NAND);
-        } else if (p.currentTokenIs(Token.TOR))) {
+        } else if (p.currentTokenIs(Token.TOR)) {
             logop = new TreeNode(TreeNodeType.NOR);
-        } else if (p.currentTokenIs(Token.TXOR))) {
+        } else if (p.currentTokenIs(Token.TXOR)) {
             logop = new TreeNode(TreeNodeType.NXOR);
         } else {
             // getting here implies the rule:
@@ -148,7 +148,7 @@ public class NBOOL {
     // <expr>            -> <term> <opt_add_sub>
     public static TreeNode expr (CD19Parser p) {
         // <term>
-        TreeNode term;
+        TreeNode term = term(p);
 
         // <opt_add_sub>
         TreeNode optAddSub = optAddSub(p);
@@ -163,7 +163,9 @@ public class NBOOL {
 
     // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
     public static TreeNode optAddSub (CD19Parser p) {
-        TreeNode optAddSub;
+        TreeNode optAddSub = new TreeNode(TreeNodeType.NUNDEF);
+
+        p.getCurrentToken();
 
         if (p.currentTokenIs(Token.TPLUS)) { // +
             optAddSub.setValue(TreeNodeType.NADD);
@@ -201,7 +203,7 @@ public class NBOOL {
         TreeNode fact = fact(p);
 
         // <multDivModOpt>
-        TreeNode multDivModNothing = multDivModNothing();
+        TreeNode multDivModNothing = multDivModNothing(p);
 
         if (multDivModNothing == null) {
             return fact;
@@ -213,7 +215,7 @@ public class NBOOL {
 
     //        <multDivModOpt> -> / <term> | % <term> | * <term> | ɛ
     public static TreeNode multDivModNothing (CD19Parser p) {
-        TreeNode multDivModNothing;
+        TreeNode multDivModNothing = new TreeNode(TreeNodeType.NUNDEF);
 
         if (p.currentTokenIs(Token.TDIVD)) { // /
             multDivModNothing.setValue(TreeNodeType.NDIV);
@@ -230,7 +232,7 @@ public class NBOOL {
         // <term>
         TreeNode term = term(p);
         multDivModNothing.setRight(term);
-        term multDivModNothing;
+        return multDivModNothing;
     }
 
     /*
@@ -262,7 +264,7 @@ public class NBOOL {
 
     // <fact_r> -> ^ <fact> | ɛ
     public static TreeNode factR (CD19Parser p) {
-        TreeNode factR;
+        TreeNode factR = new TreeNode(TreeNodeType.NUNDEF);
 
         if (!p.currentTokenIs(Token.TCART)) { // ɛ
             return null;
@@ -313,7 +315,6 @@ public class NBOOL {
         if (p.currentTokenIs(Token.TILIT) || p.currentTokenIs(Token.TFLIT)) { // <intlit>
             TreeNodeType type = (p.currentTokenIs(Token.TILIT)) ? TreeNodeType.NILIT : TreeNodeType.NFLIT;
             TreeNode litNode = new TreeNode(type);
-            litNode.setValue(type);
             Token lit = p.getCurrentToken();
             p.moveToNextToken();
             SymbolTableRecord stRec = p.insertSymbolIdentifier(lit);
@@ -326,7 +327,7 @@ public class NBOOL {
             p.moveToNextToken();
 
             // <bool>
-            TreeNode bool = bool(p);
+            TreeNode bool = generateTreeNode(p);
 
             if (p.currentTokenIs(Token.TRPAR)) { // )
                 p.moveToNextToken();
@@ -340,16 +341,44 @@ public class NBOOL {
 
         // <varOrFnCall>
         if (p.currentTokenIs(Token.TIDEN)) {
-            TreeNode varOrFnCallStat = varOrFnCallStat();
-            return varOrFnCallStat;
+            TreeNode varOrFnCall = varOrFnCall(p);
+            return varOrFnCall;
         }
 
         System.out.println("NBOOL :: exponent :: nothing suitable to match :: ERROR RECOVERY - exiting...");
         System.exit(1);
+        return null;
     }
 
-    private static TreeNode varOrFnCallStat(CD19Parser p) {
+    // <varOrFnCall> --> <var> | <fncall>
+    private static TreeNode varOrFnCall (CD19Parser p) {
 
+        if (!p.currentTokenIs(Token.TIDEN)) {
+            System.out.println("NBOOL :: exponent :: nothing suitable to match :: ERROR RECOVERY - exiting...");
+            System.exit(1);
+        }
+
+        // <fncall>
+        if (p.currentTokenIs(Token.TLPAR)) {
+            /*
+                todo
+                fncall
+            */
+        }
+
+        // <var>
+        TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
+        if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
+            System.out.println(" <var> --> <id>[<expr>].<id>");
+            /* todo
+            var = NARRV.generateTreeNode(p);
+            */
+        } else { // NISVM: <var> --> <id>
+            System.out.println("<var> --> <id>");
+            var = NSIVM.generateTreeNode(p);
+        }
+
+        return var;
     }
 
 

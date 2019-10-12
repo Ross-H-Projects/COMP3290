@@ -49,7 +49,11 @@ public class CD19Parser {
     }
 
     public void moveToNextToken () {
+        System.out.print("Current Token is: " + tokens.get(tokenPos).getTokenObjString());
+        System.out.print(" || Next Token is: " + tokens.get(tokenPos + 1).getTokenObjString());
+        System.out.println();
         tokenPos++;
+
     }
 
     public Token getCurrentToken () {
@@ -57,7 +61,7 @@ public class CD19Parser {
     }
 
     public Token getTokenAhead (int ahead) {
-        if (tokenPos + ahead > (tokens.size() - 1) {
+        if (tokenPos + ahead > (tokens.size() - 1)) {
             return null;
         }
         return tokens.get(tokenPos + ahead);
@@ -70,6 +74,6 @@ public class CD19Parser {
     }
 
     public void generateSyntaxError(String s) {
-        // stub
+        System.out.println(s);
     }
 }

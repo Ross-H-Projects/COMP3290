@@ -13,14 +13,16 @@ public class NSIVM {
         TreeNode NSIVMNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
-        if (p.currentTokenIs(Token.TIDEN)) {
+        if (!p.currentTokenIs(Token.TIDEN)) {
+            p.getCurrentToken();
             System.out.println("NISVM :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
         currentToken = p.getCurrentToken();
+        p.moveToNextToken();
         SymbolTableRecord stRec = p.insertSymbolIdentifier(currentToken);
         NSIVMNode.setSymbolRecord(stRec);
-
+        NSIVMNode.setValue(TreeNodeType.NSIMV);
         return NSIVMNode;
     }
 }

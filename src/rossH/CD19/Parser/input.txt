@@ -2,5 +2,8 @@ CD19 a
 main
 	i:integer, j:integer, k:integer
 begin
+	i = 1;
+	j = 2;
+	k = i + j;
 end 
 CD19 a
