@@ -23,8 +23,9 @@ public class NSTATS {
      <stats>    --> <strstat> <opt_stats>
      <op_stats> --> <stats> | ɛ
      <strstat>  --> <forstat> | <ifstat>
-     <stat>     --> <reptstat> | <asgnstat> | <iostat> | <callstat> | <returnstat>
-
+     <stat>     --> <reptstat> | <iostat> | <returnstat>
+     <stat>     --> <asgnOrCallStat>
+    <asgnOrCallStat> --> <asnstat> | <callstat>
      */
 
     // <stats>    --> <stat>; <opt_stats>
@@ -83,7 +84,8 @@ public class NSTATS {
         return NSTATSNode;
     }
 
-    // <stat>     --> <reptstat> | <asgnstat> | <iostat> | <callstat> | <returnstat>
+    // <stat>     --> <reptstat> | <iostat> | <returnstat>
+    // <stat>     --> <asgnOrCallStat>
     private static TreeNode stat (CD19Parser p) {
 
         /* todo
@@ -141,8 +143,7 @@ public class NSTATS {
         return statsOptions;
     }
 
-    // <asgnstat> --> <var> <asgnop> <bool>
-    // <callstat>
+    // <asgnOrCallStat> --> <asgnstat> | <callstat>
     private static TreeNode asgnOrCallStat (CD19Parser p) {
         Token varToken;
 

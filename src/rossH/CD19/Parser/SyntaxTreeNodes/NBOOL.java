@@ -279,22 +279,78 @@ public class NBOOL {
     }
 
     /*
-        RULES:
-        Special <exponent> ::= <var>
-        NILIT <exponent> ::= <intlit>
-        NFLIT <exponent> ::= <reallit>
-        Special <exponent> ::= <fncall>
-        NTRUE <exponent> ::= true
-        NFALS <exponent> ::= false
-        Special <exponent> ::= ( <bool> )
+        OLD RULES:
+        <exponent> --> <var>
+        <exponent> --> <intlit>
+        <exponent> --> <reallit>
+        <exponent> --> <fncall>
+        <exponent> --> true
+        <exponent> --> false
+        <exponent> --> ( <bool> )
+
+        NEW RULES:
+        <exponent> --> <intlit>
+        <exponent> --> <reallit>
+        <exponent> --> <intlit>
+        <exponent> --> ( <bool> )
+        <exponent> --> <varOrFnCall>
+
+        <varOrFnCall> --> <var> | <fnCall>
     */
 
     public static TreeNode exponent (CD19Parser p) {
 
+        // true | false
+        if (p.currentTokenIs(Token.TTRUE)) { // true
+            p.moveToNextToken();
+            return new TreeNode(TreeNodeType.NTRUE);
+        } else if (p.currentTokenIs(Token.TFALS)) { // false
+            p.moveToNextToken();
+            return new TreeNode(TreeNodeType.NTRUE);
+        }
 
+        // <intlit> | <realit>
+        if (p.currentTokenIs(Token.TILIT) || p.currentTokenIs(Token.TFLIT)) { // <intlit>
+            TreeNodeType type = (p.currentTokenIs(Token.TILIT)) ? TreeNodeType.NILIT : TreeNodeType.NFLIT;
+            TreeNode litNode = new TreeNode(type);
+            litNode.setValue(type);
+            Token lit = p.getCurrentToken();
+            p.moveToNextToken();
+            SymbolTableRecord stRec = p.insertSymbolIdentifier(lit);
+            litNode.setSymbolRecord(stRec);
+            return litNode;
+        }
+
+        // ( <bool> )
+        if (p.currentTokenIs(Token.TLPAR)) { // (
+            p.moveToNextToken();
+
+            // <bool>
+            TreeNode bool = bool(p);
+
+            if (p.currentTokenIs(Token.TRPAR)) { // )
+                p.moveToNextToken();
+                return bool;
+            }
+
+            // getting here implies an open paranthesis
+            System.out.println("NBOOL :: exponent :: ( <bool> ) :: UNCLOSED PARANTHESIS :: ERROR RECOVERY - exiting...");
+            System.exit(1);
+        }
+
+        // <varOrFnCall>
+        if (p.currentTokenIs(Token.TIDEN)) {
+            TreeNode varOrFnCallStat = varOrFnCallStat();
+            return varOrFnCallStat;
+        }
+
+        System.out.println("NBOOL :: exponent :: nothing suitable to match :: ERROR RECOVERY - exiting...");
+        System.exit(1);
     }
 
+    private static TreeNode varOrFnCallStat(CD19Parser p) {
 
+    }
 
 
 }
