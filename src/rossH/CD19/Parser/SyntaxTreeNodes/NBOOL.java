@@ -278,9 +278,20 @@ public class NBOOL {
         return factR;
     }
 
+    /*
+        RULES:
+        Special <exponent> ::= <var>
+        NILIT <exponent> ::= <intlit>
+        NFLIT <exponent> ::= <reallit>
+        Special <exponent> ::= <fncall>
+        NTRUE <exponent> ::= true
+        NFALS <exponent> ::= false
+        Special <exponent> ::= ( <bool> )
+    */
+
     public static TreeNode exponent (CD19Parser p) {
 
-        return null;
+
     }
 
 
