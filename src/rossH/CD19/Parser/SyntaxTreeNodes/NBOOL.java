@@ -41,6 +41,37 @@ public class NBOOL {
 
     }
 
+    // <bool_r> -> <logop> <rel> <bool_r> | ɛ
+    public static TreeNode boolR (CD19Parser p) {
+
+        // <logop>
+        TreeNode logop;
+        if (p.currentTokenIs(Token.TAND)) {
+            logop = new TreeNode(TreeNodeType.NAND);
+        } else if (p.currentTokenIs(Token.TOR))) {
+            logop = new TreeNode(TreeNodeType.NOR);
+        } else if (p.currentTokenIs(Token.TXOR))) {
+            logop = new TreeNode(TreeNodeType.NXOR);
+        } else {
+            // getting here implies the rule:
+            // <bool_r> -> ɛ
+            return null;
+        }
+        p.moveToNextToken();
+
+        // <rel>
+        TreeNode rel = rel(p);
+
+        // <bool_r>
+        TreeNode boolR = boolR(p);
+
+        logop.setLeft(rel);
+        if (boolR != null) {
+            logop.setRight(boolR);
+        }
+        return logop;
+    }
+
     // <rel>
     /*
         OLD RULES:
@@ -83,30 +114,6 @@ public class NBOOL {
         return relop;
     }
 
-    /*
-        OLD RULES:
-        <expr>            -> <expr> + <expr>
-        <expr>            -> <expr> - <expr>
-        <expr>            -> <term>
-
-        NEW RULES:
-        <expr>            -> <term> <opt_add_sub>
-        <opt_add_sub>     -> + <expr> | - <expr> | ɛ
-
-    */
-
-    // <expr>            -> <term> <opt_add_sub>
-    public static TreeNode expr (CD19Parser p) {
-        // <term>
-
-        // <opt_add_sub>
-    }
-
-    // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
-    public static TreeNode optAddSub (CD19Parser p) {
-
-    }
-
     // <relop> --> == | != | > | < | >= | <=
     public static TreeNode relop (CD19Parser p) {
         if (p.currentTokenIs(Token.TEQEQ)) { // ==
@@ -126,34 +133,92 @@ public class NBOOL {
         return null;
     }
 
-    // <bool_r> -> <logop> <rel> <bool_r> | ɛ
-    public static TreeNode boolR (CD19Parser p) {
+    /*
+        OLD RULES:
+        <expr>            -> <expr> + <expr>
+        <expr>            -> <expr> - <expr>
+        <expr>            -> <term>
 
-        // <logop>
-        TreeNode logop;
-        if (p.currentTokenIs(Token.TAND)) {
-            logop = new TreeNode(TreeNodeType.NAND);
-        } else if (p.currentTokenIs(Token.TOR))) {
-            logop = new TreeNode(TreeNodeType.NOR);
-        } else if (p.currentTokenIs(Token.TXOR))) {
-            logop = new TreeNode(TreeNodeType.NXOR);
-        } else {
-            // getting here implies the rule:
-            // <bool_r> -> ɛ
+        NEW RULES:
+        <expr>            -> <term> <opt_add_sub>
+        <opt_add_sub>     -> + <expr> | - <expr> | ɛ
+
+    */
+
+    // <expr>            -> <term> <opt_add_sub>
+    public static TreeNode expr (CD19Parser p) {
+        // <term>
+        TreeNode term;
+
+        // <opt_add_sub>
+        TreeNode optAddSub = optAddSub(p);
+
+        if (optAddSub == null) {
+            return term;
+        }
+
+        optAddSub.setLeft(term);
+        return optAddSub;
+    }
+
+    /*
+        OLD RULES:
+        <term>          -> <term> / <fact>
+        <term>          -> <term> % <fact>
+        <term>          -> <term> * <fact>
+        <term>          -> <fact>
+
+        NEW RULES:
+        <term>          -> <fact> <multDivModOpt>
+        <multDivModOpt> -> / <term>
+        <multDivModOpt> -> % <term>
+        <multDivModOpt> -> * <term>
+        <multDivModOpt> -> ɛ
+    */
+
+    // <term>          -> <fact> * <multDivModOpt>
+    public static TreeNode term (CD19Parser p) {
+        // <fact>
+        TreeNode fact = fact(p);
+
+        // <multDivModOpt>
+        TreeNode multDivModNothing = multDivModNothing();
+
+        if (multDivModNothing == null) {
+            return fact;
+        }
+
+        multDivModNothing.setLeft(fact);
+        return multDivModNothing;
+    }
+
+
+    // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
+    public static TreeNode optAddSub (CD19Parser p) {
+        TreeNode optAddSub;
+
+        if (p.currentTokenIs(Token.TPLUS)) { // +
+            optAddSub.setValue(TreeNodeType.NADD);
+        } else if (p.currentTokenIs(Token.TMINS)) { // -
+            optAddSub.setValue(TreeNodeType.NSUB);
+        } else { // ɛ
             return null;
         }
         p.moveToNextToken();
 
-        // <rel>
-        TreeNode rel = rel(p);
-
-        // <bool_r>
-        TreeNode boolR = boolR(p);
-
-        logop.setLeft(rel);
-        if (boolR != null) {
-            logop.setRight(boolR);
-        }
-        return logop;
+        // <expr>
+        TreeNode expr = expr(p);
+        optAddSub.setRight(expr);
+        return optAddSub;
     }
+
+    public static TreeNode fact (CD19Parser p) {
+        return null;
+    }
+
+    public static TreeNode multDivModNothing (CD19Parser p) {
+        return null;
+    }
+
+
 }
