@@ -69,16 +69,20 @@ public class NSTATS {
 
         // <opt_stats>
         TreeNode statsOptions = optStats(p);
+        if (statsOptions == null) {
+            if (strStat != null) {
+                return strStat;
+            }
+            return stat;
+        }
 
-        // construct actual tree node
+        NSTATSNode.setRight(statsOptions);
+
+
         if (strStat != null) {
             NSTATSNode.setLeft(strStat);
         } else {
             NSTATSNode.setLeft(stat);
-        }
-
-        if (statsOptions != null) {
-            NSTATSNode.setRight(statsOptions);
         }
 
         NSTATSNode.setValue(TreeNodeType.NSTATS);
@@ -98,10 +102,7 @@ public class NSTATS {
 
         // <iostat>
         if (p.currentTokenIs(Token.TINPT)) { // input
-            /*
-            todo
             return NINPUT.generateTreeNode(p);
-            */
         } else if (p.currentTokenIs(Token.TPRIN)) { // print
             return NPRINT.generateTreeNode(p);
         } else if (p.currentTokenIs(Token.TPRLN)) { // printline

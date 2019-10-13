@@ -1,10 +1,9 @@
-CD19 a
+CD19 ExampleAST
 main
 	i:integer, j:integer, k:integer
 begin
-	i = 1;
-	j = 2;
+	input i;
+	input j;
 	k = i + j;
-	return abc(x, m);
-end 
-CD19 a
+	printline k;
+end CD19 ExampleAST

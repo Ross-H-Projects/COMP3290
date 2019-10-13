@@ -30,7 +30,7 @@ public class NPRLST {
 
         TreeNode prlistOptional = prlistOptional(p);
         if (prlistOptional == null) {
-            return PRLSTNode;
+            return printitem;
         }
 
         PRLSTNode.setRight(prlistOptional);
@@ -41,7 +41,7 @@ public class NPRLST {
     public static TreeNode prlistOptional (CD19Parser p) {
 
         // ε
-        if (p.currentTokenIs(Token.TCOMA)) {
+        if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
         }
 
@@ -68,6 +68,7 @@ public class NPRLST {
         }
 
         // <expr>
-
+        TreeNode expr = NBOOL.expr(p);
+        return expr;
     }
 }
