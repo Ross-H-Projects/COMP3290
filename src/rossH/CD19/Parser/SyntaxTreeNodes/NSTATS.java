@@ -94,21 +94,24 @@ public class NSTATS {
         if (p.currentTokenIs(Token.TREPT)) {
             return NREPT.generateTreeNode(p);
         }
+        */
 
         // <iostat>
-        if (p.currentTokenIs(Token.TINPT)) {
+        if (p.currentTokenIs(Token.TINPT)) { // input
+            /*
+            todo
             return NINPUT.generateTreeNode(p);
-        } else if (p.currentTokenIs(Token.TPRIN)) {
+            */
+        } else if (p.currentTokenIs(Token.TPRIN)) { // print
             return NPRINT.generateTreeNode(p);
-        } else if (p.currentTokenIs(Token.TPRLN)) {
+        } else if (p.currentTokenIs(Token.TPRLN)) { // printline
             return NPRLN.generateTreeNode(p);
         }
 
         // <returnstat>
         if (p.currentTokenIs(Token.TRETN)) {
-            return NREPT.generateTreeNode(p);
+            return NRETN.generateTreeNode(p);
         }
-        */
 
         // <asgnstat>
         // <callstat>
@@ -142,11 +145,9 @@ public class NSTATS {
         }
 
         // <callstat>
-        /* todo
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
             return NCALL.generateTreeNode(p);
         }
-        */
 
         // <asgnstat> --> <var> <asgnop> <bool>
 
@@ -154,40 +155,46 @@ public class NSTATS {
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
             System.out.println(" <var> --> <id>[<expr>].<id>");
-            /* todo
             var = NARRV.generateTreeNode(p);
-            */
         } else { // NISVM: <var> --> <id>
             System.out.println("<var> --> <id>");
             var = NSIVM.generateTreeNode(p);
         }
 
         // <asgnop>
-        Token currToken = p.getCurrentToken();
-
-        TreeNode asgnop = new TreeNode(TreeNodeType.NUNDEF);
-        if (p.currentTokenIs(Token.TEQUL)) { // =
-            asgnop = new TreeNode(TreeNodeType.NASGN);
-        } else if (p.currentTokenIs(Token.TPLEQ)) { // +=
-            asgnop = new TreeNode(TreeNodeType.NPLEQ);
-        } else if (p.currentTokenIs(Token.TMNEQ)) { // -=
-            asgnop = new TreeNode(TreeNodeType.NMNEQ);
-        } else if (p.currentTokenIs(Token.TSTEQ)) { // *=
-            asgnop = new TreeNode(TreeNodeType.NSTEQ);
-        } else if (p.currentTokenIs(Token.TDVEQ)) { // /=
-            asgnop = new TreeNode(TreeNodeType.NDVEQ);
-        } else { // error
-            System.out.println("NSTATS :: asgstat - asgnop :: ERROR RECOVERY - exiting...");
+        TreeNode asgnop = asgnop(p);
+        if (asgnop == null) {
+            System.out.println("NSTATS :: asgOrCallStat :: asgnop :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
         p.moveToNextToken();
 
+
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
+
+
 
         asgnop.setLeft(var);
         asgnop.setRight(bool);
         return asgnop;
+    }
+
+    public static TreeNode asgnop (CD19Parser p) {
+
+        if (p.currentTokenIs(Token.TEQUL)) { // =
+            return new TreeNode(TreeNodeType.NASGN);
+        } else if (p.currentTokenIs(Token.TPLEQ)) { // +=
+            return new TreeNode(TreeNodeType.NPLEQ);
+        } else if (p.currentTokenIs(Token.TMNEQ)) { // -=
+            return new TreeNode(TreeNodeType.NMNEQ);
+        } else if (p.currentTokenIs(Token.TSTEQ)) { // *=
+            return new TreeNode(TreeNodeType.NSTEQ);
+        } else if (p.currentTokenIs(Token.TDVEQ)) { // /=
+            return new TreeNode(TreeNodeType.NDVEQ);
+        }
+
+        return null;
     }
 
 }

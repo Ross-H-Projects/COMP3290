@@ -239,25 +239,21 @@ public class TreeNode {
         xmlFileWriter = fileWriter;
     }
 
-    /*
-    <root>
-      <child>
-        <subchild>.....</subchild>
-      </child>
-    </root>
-     */
-
     public static void printTree(TreeNode tr, String nodePos) throws IOException {
         if (tr.nodeValue == NUNDEF) {
             return;
         }
 
         if (tr.nodeValue == NPROG) {
-            xmlFileWriter.append("<root>\n");
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("<root>\n");
+            }
             count = 0;
-        };
-        xmlFileWriter.append("<nodeType =\"" + PRINTNODE[tr.nodeValue] + " \">\n");
-
+        }
+        ;
+        if (xmlFileWriter != null) {
+            xmlFileWriter.append("<nodeType value=\"" + PRINTNODE[tr.nodeValue] + " \"/>\n");
+        }
         System.out.print(PRINTNODE[tr.nodeValue] + " ");
         count++;
 
@@ -268,7 +264,9 @@ public class TreeNode {
         if (tr.getSymbolRecord() != null) {
             String toPrint = tr.getSymbolRecord().getLexeme();
             System.out.print(toPrint + " ");
-            xmlFileWriter.append("<nodeSymbolValue =\"" + toPrint + " \">\n");
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("<nodeSymbolValue value=\"" + toPrint + " \"/>\n");
+            }
             count++;
             if (count % 7 == 0) {
                 System.out.println();
@@ -283,29 +281,49 @@ public class TreeNode {
 
         // pre-order traversal of syntax tree
         if (tr.left   != null) {
-            xmlFileWriter.append("<child>\n");
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("<child which=\"left\">\n");
+            }
+
             printTree(tr.left, "left");
-            xmlFileWriter.append("</child>\n");
+
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("</child>\n");
+            }
         }
 
         if (tr.middle != null) {
-            xmlFileWriter.append("<child>\n");
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("<child which=\"middle\">\n");
+            }
+
             printTree(tr.middle, "middle");
-            xmlFileWriter.append("</child>\n");
+
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("</child>\n");
+            }
         }
 
         if (tr.right  != null) {
-            xmlFileWriter.append("<child>\n");
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("<child which=\"right\">\n");
+            }
+
             printTree(tr.right, "right");
-            xmlFileWriter.append("</child>\n");
+
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("</child>\n");
+            }
         }
-        if (tr.nodeValue == NPROG && count%7 != 0) {
+
+        if (tr.nodeValue == NPROG && count % 7 != 0) {
             System.out.println();
         };
 
         if (tr.nodeValue == NPROG) {
-            xmlFileWriter.append("</root>");
-        };
-
+            if (xmlFileWriter != null) {
+                xmlFileWriter.append("</root>");
+            }
+        }
     }
 }

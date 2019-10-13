@@ -1,104 +1,103 @@
 <root>
-<nodeType ="NPROG ">
-<nodeSymbolValue ="a ">
-<child>
+<nodeType value="NPROG "/>
+<nodeSymbolValue value="a "/>
+<child which="left">
 </child>
-<child>
+<child which="middle">
 </child>
-<child>
-<nodeType ="NMAIN ">
-<child>
-<nodeType ="NSDLST ">
-<child>
-<nodeType ="NSDECL ">
-<nodeSymbolValue ="i ">
+<child which="right">
+<nodeType value="NMAIN "/>
+<child which="left">
+<nodeType value="NSDLST "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="i "/>
 </child>
-<child>
-<nodeType ="NSDLST ">
-<child>
-<nodeType ="NSDECL ">
-<nodeSymbolValue ="j ">
+<child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="j "/>
 </child>
-<child>
-<nodeType ="NSDECL ">
-<nodeSymbolValue ="k ">
-</child>
-</child>
-</child>
-<child>
-<nodeType ="NSTATS ">
-<child>
-<nodeType ="NASGN ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="i ">
-</child>
-<child>
-<nodeType ="NILIT ">
-<nodeSymbolValue ="1 ">
-</child>
-</child>
-<child>
-<nodeType ="NSTATS ">
-<child>
-<nodeType ="NASGN ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="j ">
-</child>
-<child>
-<nodeType ="NILIT ">
-<nodeSymbolValue ="2 ">
-</child>
-</child>
-<child>
-<nodeType ="NSTATS ">
-<child>
-<nodeType ="NASGN ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="k ">
-</child>
-<child>
-<nodeType ="NADD ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="i ">
-</child>
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="j ">
+<child which="right">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="k "/>
 </child>
 </child>
 </child>
-<child>
-<nodeType ="NSTATS ">
-<child>
-<nodeType ="NASGN ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="mVal ">
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="i "/>
 </child>
-<child>
-<nodeType ="NARRV ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="mArr ">
-</child>
-<child>
-<nodeType ="NADD ">
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="i ">
-</child>
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="j ">
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="1 "/>
 </child>
 </child>
-<child>
-<nodeType ="NSIMV ">
-<nodeSymbolValue ="key ">
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="j "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="2 "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="k "/>
+</child>
+<child which="right">
+<nodeType value="NADD "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="i "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="j "/>
+</child>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NRETN "/>
+<child which="left">
+<nodeType value="NFCALL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="abc "/>
+</child>
+<child which="right">
+<nodeType value="NEXPL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x "/>
+</child>
+<child which="right">
+<nodeType value="NEXPL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="m "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="l "/>
+</child>
+</child>
 </child>
 </child>
 </child>

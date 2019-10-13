@@ -376,11 +376,8 @@ public class NBOOL {
         }
 
         // <fncall>
-        if (p.currentTokenIs(Token.TLPAR)) {
-            /*
-                todo
-                fncall
-            */
+        if (p.getTokenAhead(1).value() == Token.TLPAR) {
+            return NFCALL.generateTreeNode(p);
         }
 
         // <var>
