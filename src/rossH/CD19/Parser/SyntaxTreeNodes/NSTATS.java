@@ -37,7 +37,6 @@ public class NSTATS {
         TreeNode stat = new TreeNode(TreeNodeType.NUNDEF);
         TreeNode strStat = null;
 
-        /* todo
         // <strstat> -> <forstat>
         if (p.currentTokenIs(Token.TFOR)) {
             isStrStat = true;
@@ -49,7 +48,6 @@ public class NSTATS {
             isStrStat = true;
             strStat = NIFTH.generateTreeNode(p);
         }
-        */
 
         if (!isStrStat) {
             // <stat>

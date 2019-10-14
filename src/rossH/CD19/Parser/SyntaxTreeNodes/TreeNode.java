@@ -265,7 +265,8 @@ public class TreeNode {
             String toPrint = tr.getSymbolRecord().getLexeme();
             System.out.print(toPrint + " ");
             if (xmlFileWriter != null) {
-                xmlFileWriter.append("<nodeSymbolValue value=\"" + toPrint + " \"/>\n");
+                String toPrintXml = toPrint.replace("\"", "");
+                xmlFileWriter.append("<nodeSymbolValue value=\"" + toPrintXml + " \"/>\n");
             }
             count++;
             if (count % 7 == 0) {
