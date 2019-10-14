@@ -2,8 +2,7 @@ CD19 ExampleAST
 main
 	i:integer, j:integer, k:integer
 begin
-	input i;
-	input j;
-	k = i + j;
-	printline k;
+	repeat (i = 1)
+		i = i + 1;
+	until i == 10; 
 end CD19 ExampleAST

@@ -91,14 +91,14 @@ public class NSTATS {
 
     // <stat>     --> <reptstat> | <iostat> | <returnstat>
     // <stat>     --> <asgnOrCallStat>
-    private static TreeNode stat (CD19Parser p) {
+    public static TreeNode stat (CD19Parser p) {
 
-        /* todo
+
         // <repstat>
         if (p.currentTokenIs(Token.TREPT)) {
             return NREPT.generateTreeNode(p);
         }
-        */
+
 
         // <iostat>
         if (p.currentTokenIs(Token.TINPT)) { // input
@@ -123,7 +123,7 @@ public class NSTATS {
     }
 
     // <op_stats> --> <stats> | ɛ
-    private static TreeNode optStats (CD19Parser p) {
+    public static TreeNode optStats (CD19Parser p) {
         // critera under which we don't need
         // another <stat> / <stats> is if
         // current token is end, else, or until
@@ -138,7 +138,7 @@ public class NSTATS {
     }
 
     // <asgnOrCallStat> --> <asgnstat> | <callstat>
-    private static TreeNode asgnOrCallStat (CD19Parser p) {
+    public static TreeNode asgnOrCallStat (CD19Parser p) {
         // asgnstat and callstat both being with an identifier
         if (!p.currentTokenIs(Token.TIDEN)) {
             System.out.println("NSTATS :: asgOrCallStat :: ERROR RECOVERY - exiting...");
@@ -150,7 +150,13 @@ public class NSTATS {
             return NCALL.generateTreeNode(p);
         }
 
-        // <asgnstat> --> <var> <asgnop> <bool>
+        // <asgnstat>
+        TreeNode asgnStat = asgnStat(p);
+        return asgnStat;
+    }
+
+    // <asgnstat> --> <var> <asgnop> <bool>
+    public static TreeNode asgnStat (CD19Parser p) {
 
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
@@ -170,11 +176,8 @@ public class NSTATS {
         }
         p.moveToNextToken();
 
-
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
-
-
 
         asgnop.setLeft(var);
         asgnop.setRight(bool);

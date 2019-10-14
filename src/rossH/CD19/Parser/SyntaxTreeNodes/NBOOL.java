@@ -123,6 +123,7 @@ public class NBOOL {
         if (relop == null) {
             return null;
         }
+        p.moveToNextToken();
 
         // <expr>
         TreeNode expr = expr(p);
