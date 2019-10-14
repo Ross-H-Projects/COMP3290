@@ -40,20 +40,18 @@ public class NPROG {
 
 
         // <globals>
-        TreeNode globals = new TreeNode(TreeNodeType.NUNDEF);
-        /*
-        todo
         TreeNode globals = NGLOB.generateTreeNode(p);
         if (globals != null && globals.getNodeType() == TreeNodeType.NUNDEF) {
 
-            System.out.println("NGLOB :: ERROR RECOVERY - exiting...");
+            System.out.println("NRPOG :: NGLOB :: ERROR RECOVERY - exiting...");
             System.exit(1);
             //try {
             //    errorRecovery(p);
             //} catch (Exception e) { p.popScope(); return nProg; }
 
         }
-        */
+
+
 
         // <funcs>
         TreeNode functions = new TreeNode(TreeNodeType.NUNDEF);

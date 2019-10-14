@@ -6,9 +6,24 @@ import rossH.CD19.Scanner.Token;
 
 public class NGLOB {
 
-    // <progam> --> CD19 <id> <globals> <funcs> <mainbody>
+    // <globals>        --> <consts> <types> <arrays>
     public static TreeNode generateTreeNode (CD19Parser p) {
-        return null;
-        //return new TreeNode();
+
+        // <consts>
+
+        // <types>
+
+        // <arrays>
+    }
+
+    // <consts>         --> constants <initlist> | ε
+    public static TreeNode consts (CD19Parser p) {
+
+        // ε
+        if (p.currentTokenIs(Token.TCONS)) {
+            return null;
+        }
+
+        // constants
     }
 }
