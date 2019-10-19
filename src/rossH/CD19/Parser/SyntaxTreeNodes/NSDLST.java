@@ -69,6 +69,8 @@ public class NSDLST {
         if (!p.currentTokenIs(Token.TINTG) && !p.currentTokenIs(Token.TREAL) && !p.currentTokenIs(Token.TBOOL)) {
             p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
         }
+        // todo
+        // add symbol reference to symbol type (sdecl stype)
         //currentToken = p.getCurrentToken();
         //p.insertSymbolIdentifier((currentToken));
         p.moveToNextToken();

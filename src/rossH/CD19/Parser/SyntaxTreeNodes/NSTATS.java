@@ -155,7 +155,6 @@ public class NSTATS {
 
     // <asgnstat> --> <var> <asgnop> <bool>
     public static TreeNode asgnStat (CD19Parser p) {
-
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
@@ -169,7 +168,7 @@ public class NSTATS {
         // <asgnop>
         TreeNode asgnop = asgnop(p);
         if (asgnop == null) {
-            System.out.println("NSTATS :: asgOrCallStat :: asgnop :: ERROR RECOVERY - exiting...");
+            System.out.println("NSTATS :: asgnstat :: asgnop :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
         p.moveToNextToken();
@@ -183,7 +182,6 @@ public class NSTATS {
     }
 
     public static TreeNode asgnop (CD19Parser p) {
-
         if (p.currentTokenIs(Token.TEQUL)) { // =
             return new TreeNode(TreeNodeType.NASGN);
         } else if (p.currentTokenIs(Token.TPLEQ)) { // +=

@@ -1,14 +1,5 @@
 CD19 ExampleAST
-	types
-		mark is
-			id : integer,
-			midterm : real,
-			final : real
-		end 
-		marks is array [COUNT + 3] of mark
-	arrays
-		comp3290 : marks,
-		abc123   : marks 
+
 		 
 main
 	i:integer, j:integer, k:integer

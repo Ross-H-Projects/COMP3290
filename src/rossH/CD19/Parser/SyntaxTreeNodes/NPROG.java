@@ -40,8 +40,7 @@ public class NPROG {
         // <globals>
         TreeNode globals = NGLOB.generateTreeNode(p);
         if (globals != null && globals.getNodeType() == TreeNodeType.NUNDEF) {
-
-            System.out.println("NRPOG :: NGLOB :: ERROR RECOVERY - exiting...");
+            System.out.println("NRPOG :: globals :: ERROR RECOVERY - exiting...");
             System.exit(1);
             //try {
             //    errorRecovery(p);
@@ -49,23 +48,20 @@ public class NPROG {
 
         }
 
-
-
         // <funcs>
-        TreeNode functions = new TreeNode(TreeNodeType.NUNDEF);
-        /*
-        todo
-        TreeNode funcs = NProclNode.generateTreeNode(p);
-        if (funcs != null && funcs.getNodeType() == ParseTreeNodeType.NUNDEF) {
-            try {errorRecovery(p);}
-            catch (Exception e) { p.popScope(); return nProg; }
+        TreeNode funcs = NFUNCS.generateTreeNode(p);
+        if (funcs != null && funcs.getNodeType() == TreeNodeType.NUNDEF) {
+            System.out.println("NRPOG :: funcs :: ERROR RECOVERY - exiting...");
+            System.exit(1);
+            //try {errorRecovery(p);}
+            //catch (Exception e) { p.popScope(); return nProg; }
         }
-        */
+
 
         // <mainbody>
         TreeNode main = NMAIN.generateTreeNode(p);
         if (main != null && main.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NMAIN :: ERROR RECOVERY - exiting...");
+            System.out.println("NPROG :: main :: ERROR RECOVERY - exiting...");
             System.exit(1);
             //errorRecoveryToEnd(p);
         }
@@ -73,7 +69,7 @@ public class NPROG {
         // construct actual tree node
         NPROGNode.setValue(TreeNodeType.NPROG);
         NPROGNode.setLeft(globals);
-        NPROGNode.setMiddle(functions);
+        NPROGNode.setMiddle(funcs);
         NPROGNode.setRight(main);
         return NPROGNode;
     }
