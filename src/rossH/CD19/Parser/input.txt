@@ -1,4 +1,15 @@
 CD19 ExampleAST
+	types
+		mark is
+			id : integer,
+			midterm : real,
+			final : real
+		end 
+		marks is array [COUNT + 3] of mark
+	arrays
+		comp3290 : marks,
+		abc123   : marks 
+		 
 main
 	i:integer, j:integer, k:integer
 begin
@@ -13,9 +24,3 @@ begin
 	end  
 end CD19 ExampleAST
 
-NPROG ExampleAST NMAIN NSDLST NSDECL i NSDLST 
-NSDECL j NSDECL k 
-NSTATS 
-NIFTH NEQL NSIMV i NADD NILIT 2 NILIT 3 
-NPRLN NSTRG "i is equal to 5" 
-NIFTH NTRUE NASGN NSIMV a NILIT 2 

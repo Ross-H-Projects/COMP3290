@@ -23,7 +23,7 @@ public class NSDLST {
         // <sdecl>
         TreeNode sdecl = sdecl(p);
         if (sdecl != null && sdecl.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("sdecl :: ERROR RECOVERY - exiting...");
+            System.out.println("NSDLST :: sdecl :: ERROR RECOVERY - exiting...");
             System.exit(1);
             //try { errorRecovery(p); }
             //catch (Exception e) { return new TreeNode(ParseTreeNodeType.NUNDEF); }
@@ -41,13 +41,13 @@ public class NSDLST {
     }
 
     // <sdecl> --> <id> : <stype>
-    private static TreeNode sdecl (CD19Parser p) {
+    public static TreeNode sdecl (CD19Parser p) {
         TreeNode sdecl = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.generateSyntaxError("Expected an identifier in declaration.");
+            p.generateSyntaxError("Expected an identifier in variable declaration.");
             // prematurely end parsing due to irrecoverable error
             return sdecl;
         }
@@ -59,7 +59,7 @@ public class NSDLST {
 
         // :
         if (!p.currentTokenIs(Token.TCOLN)) {
-            p.generateSyntaxError("Expected a comma");
+            p.generateSyntaxError("Expected the character ':'");
             // prematurely end parsing due to irrecoverable error
             return sdecl;
         }
@@ -67,7 +67,7 @@ public class NSDLST {
 
         // <stype> --> integer | real | boolean
         if (!p.currentTokenIs(Token.TINTG) && !p.currentTokenIs(Token.TREAL) && !p.currentTokenIs(Token.TBOOL)) {
-            p.generateSyntaxError("");
+            p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
         }
         //currentToken = p.getCurrentToken();
         //p.insertSymbolIdentifier((currentToken));
@@ -78,17 +78,18 @@ public class NSDLST {
     }
 
     // <opt_slist>  --> , <slist> | ɛ
-    private static TreeNode optSlist (CD19Parser p) {
-        TreeNode slist = null;
-        Token currentToken;
+    public static TreeNode optSlist (CD19Parser p) {
+
+        // ɛ
+        if (!p.currentTokenIs(Token.TCOMA)) {
+            return null;
+        }
 
         // ,
-        if (!p.currentTokenIs(Token.TCOMA)) {
-            return slist;
-        }
         p.moveToNextToken();
 
-        slist = generateTreeNode(p);
+        // <slist>
+        TreeNode slist = generateTreeNode(p);
         return slist;
 
     }

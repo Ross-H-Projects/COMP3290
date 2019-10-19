@@ -34,8 +34,6 @@ public class NPROG {
         currentToken = p.getCurrentToken();
         SymbolTableRecord stRec = p.insertSymbolIdentifier(currentToken);
         NPROGNode.setSymbolRecord(stRec);
-
-        NPROGNode.getSymbolRecord();
         p.moveToNextToken();
 
 
