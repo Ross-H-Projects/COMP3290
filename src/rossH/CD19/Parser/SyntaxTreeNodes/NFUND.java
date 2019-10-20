@@ -18,6 +18,7 @@ public class NFUND {
             // prematurely end parsing due to irrecoverable error
             return NFUNDNode;
         }
+        p.moveToNextToken();
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
@@ -41,7 +42,7 @@ public class NFUND {
 
 
         // <plist>
-        TreeNode plist;
+        TreeNode plist = null;
         if (!p.currentTokenIs(Token.TRPAR)) {
             plist = NPLIST.generateTreeNode(p);
         }
@@ -78,7 +79,11 @@ public class NFUND {
         // <locals>
         // <locals>     --> <dlist> | ε
         // <dlist>
-        TreeNode dlist = NDLIST.generateTreenode(p);
+        TreeNode dlist = null;
+        if (!p.currentTokenIs(Token.TBEGN)) {
+            dlist = NDLIST.generateTreeNode(p);
+        }
+
 
         // begin
         if (!p.currentTokenIs(Token.TBEGN)) {

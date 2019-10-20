@@ -41,6 +41,7 @@ public class NPLIST {
 
         // <param>      --> const <arrdecl>
         if (p.currentTokenIs(Token.TCONS)) {
+            p.moveToNextToken();
             return constantArrDecl(p);
         }
 
@@ -50,7 +51,11 @@ public class NPLIST {
     }
 
     public static TreeNode constantArrDecl (CD19Parser p) {
+        TreeNode decl = new TreeNode(TreeNodeType.NARRC);
 
+        TreeNode arrdecl = NARRD.generateTreeNode(p);
+        decl.setLeft(arrdecl);
+        return decl;
     }
 
     // <param>        --> <arrdecl>
@@ -67,7 +72,7 @@ public class NPLIST {
         }
 
         // :
-        if (!p.getTokenAhead(1).value() != Token.TSEMI) {
+        if (p.getTokenAhead(1).value() != Token.TCOLN) {
             System.out.println("NPLIST :: sdeclOArrdecl :: expected ':' :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }
@@ -75,20 +80,37 @@ public class NPLIST {
         // sdecl
         int potentialStype = p.getTokenAhead(2).value();
         if (potentialStype == Token.TINTG || potentialStype == Token.TREAL || potentialStype == Token.TBOOL) {
-            decl
+            decl.setValue(TreeNodeType.NSIMP);
+            TreeNode sdecl = NSDLST.sdecl(p);
+            decl.setLeft(sdecl);
+            return decl;
         }
 
         // arrdecl
+        if (potentialStype == Token.TIDEN) {
+            decl.setValue(TreeNodeType.NARRP);
+            TreeNode arrdecl = NARRD.generateTreeNode(p);
+            decl.setLeft(arrdecl);
+            return decl;
+        }
 
-        // error
+        // if the token after <id> : ... is not an identifier (typeid)
+        // or integer, real, or boolean, then we've experienced an error
+        p.generateSyntaxError("expected 'integer', 'real', 'boolean', or an identifer after start of array / variable function parameter declaration.");
+        return decl;
     }
 
     // <opt_paramas>   --> , <params>  | ε
     public static TreeNode paramsOptional (CD19Parser p) {
+        // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
         }
 
+        // ,
+        p.moveToNextToken();
+
+        // <params>
         TreeNode params = generateTreeNode(p);
         return params;
     }
