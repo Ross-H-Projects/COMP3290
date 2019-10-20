@@ -38,42 +38,44 @@ public class NTYPEL {
         NATYPE <type> --> <typeid> is array [ <expr> ] of <structid>
      */
     public static TreeNode structOrArrayType (CD19Parser p) {
-        TreeNode type;
+        TreeNode type = new TreeNode(TreeNodeType.NUNDEF);
 
         // <structid>
         // <typeid>
         if (!p.currentTokenIs(Token.TIDEN)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected an identifier =");
-            System.out.println("NTYPEL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected an identifier.");
+            return type;
         }
 
         // is
         if (p.getTokenAhead(1).value() != Token.TIS) {
             Token offendingToken = p.getTokenAhead(1);
             p.generateSyntaxError("expected the keyword 'is'", offendingToken.getLn());
-            System.out.println("NTYPEL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            return type;
         }
 
         // array
         if (p.getTokenAhead(2).value() == Token.TARAY) {
-            type = NATYPE.generateTreeNode(p);
-            return type;
+            TreeNode arrayType = NATYPE.generateTreeNode(p);
+            return arrayType;
         }
 
         // struct
-        type = NRTYPE.generateTreeNode(p);
-        return type;
+        TreeNode structType = NRTYPE.generateTreeNode(p);
+        return structType;
     }
 
+    // <opt_typelist>  -> <typelst> | ε
     public static TreeNode typelistOptional (CD19Parser p) {
         // criteria under which more types are not being defined is when
         // the next token is not an identifier
+        // ε
         if (!p.currentTokenIs(Token.TIDEN)) {
             return null;
         }
+
+        // <typelist>
         TreeNode typelist = generateTreeNode(p);
         return typelist;
     }

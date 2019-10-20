@@ -12,7 +12,7 @@ public class NRTYPE {
 
         // <structid>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.generateSyntaxError("Expected an array name identifier");
+            p.generateSyntaxError("Expected an array name identifier.");
             // prematurely end parsing due to irrecoverable error
             return NRTYPENode;
         }
@@ -24,22 +24,26 @@ public class NRTYPE {
 
         // is
         if (!p.currentTokenIs(Token.TIS)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected keyword 'is'");
-            System.out.println("NRTYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected keyword 'is'.");
+            // prematurely end parsing due to irrecoverable error
+            return NRTYPENode;
         }
         p.moveToNextToken();
 
         // <fields>
         TreeNode fields = NFLIST.generateTreeNode(p);
+        if (fields.getNodeType() == TreeNodeType.NUNDEF) {
+            // todo
+            //  do error recovery i.e. go to the  next 'end'
+            //  or if we fail to do that that we need to exit the types section entirely
+            return NRTYPENode;
+        }
 
         // end
         if (!p.currentTokenIs(Token.TEND)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'end'");
-            System.out.println("NRTYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'end'.");
+            // prematurely end parsing due to irrecoverable error
+            return NRTYPENode;
         }
         p.moveToNextToken();
 

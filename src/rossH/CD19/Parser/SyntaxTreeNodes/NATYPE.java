@@ -12,7 +12,7 @@ public class NATYPE {
 
         // <typeid>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.generateSyntaxError("Expected an array name identifier");
+            p.generateSyntaxError("Expected an array type name identifier.");
             // prematurely end parsing due to irrecoverable error
             return NATYPENode;
         }
@@ -24,54 +24,59 @@ public class NATYPE {
 
         // is
         if (!p.currentTokenIs(Token.TIS)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected keyword 'is'");
-            System.out.println("NATYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected the keyword 'is'.");
+            // prematurely end parsing due to irrecoverable error
+            return NATYPENode;
         }
         p.moveToNextToken();
 
         // array
         if (!p.currentTokenIs(Token.TARAY)) {
-            p.getCurrentToken();
             p.generateSyntaxError("expected keyword 'array'");
-            System.out.println("NATYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            // prematurely end parsing due to irrecoverable error
+            return NATYPENode;
         }
         p.moveToNextToken();
 
         // [
         if (!p.currentTokenIs(Token.TLBRK)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected character [");
-            System.out.println("NATYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character '['.");
+            // prematurely end parsing due to irrecoverable error
+            return NATYPENode;
         }
         p.moveToNextToken();
 
         // <expr>
         TreeNode expr = NBOOL.expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            // TODO expression errorrecovery i.e. try to go to ']'
+            //  OR if we fail to do that we need to exit types section entirely
+            return NATYPENode;
+        }
 
         // ]
         if (!p.currentTokenIs(Token.TRBRK)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected character ]");
-            System.out.println("NATYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character ']'.");
+            // prematurely end parsing due to irrecoverable error
+            return NATYPENode;
         }
         p.moveToNextToken();
 
         // of
         if (!p.currentTokenIs(Token.TOF)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected keyword 'of'");
-            System.out.println("NATYPE :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected keyword 'of'.");
+            // prematurely end parsing due to irrecoverable error
+            return NATYPENode;
         }
         p.moveToNextToken();
 
         // <structid>
         TreeNode structId = NSIVM.generateTreeNode(p);
+        if (structId.getNodeType() == TreeNodeType.NUNDEF) {
+            return NATYPENode;
+        }
 
         NATYPENode.setValue(TreeNodeType.NATYPE);
         NATYPENode.setLeft(expr);

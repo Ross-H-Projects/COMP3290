@@ -383,12 +383,6 @@ public class NBOOL {
 
     // <varOrFnCall> --> <var> | <fncall>
     private static TreeNode varOrFnCall (CD19Parser p) {
-
-        if (!p.currentTokenIs(Token.TIDEN)) {
-            System.out.println("NBOOL :: varOrFnCall :: nothing suitable to match :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-        }
-
         // <fncall>
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
             return NFCALL.generateTreeNode(p);
