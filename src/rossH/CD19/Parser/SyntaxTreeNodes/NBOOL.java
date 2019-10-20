@@ -167,6 +167,9 @@ public class NBOOL {
     public static TreeNode expr (CD19Parser p) {
         // <term>
         TreeNode term = term(p);
+        if (term.getNodeType() == TreeNodeType.NUNDEF) {
+            return term;
+        }
 
         // <opt_add_sub>
         TreeNode optAddSub = optAddSub(p);
@@ -219,6 +222,9 @@ public class NBOOL {
     public static TreeNode term (CD19Parser p) {
         // <fact>
         TreeNode fact = fact(p);
+        if (fact.getNodeType() == TreeNodeType.NUNDEF) {
+            return fact;
+        }
 
         // <multDivModOpt>
         TreeNode multDivModNothing = multDivModNothing(p);
@@ -268,6 +274,9 @@ public class NBOOL {
 
         // <exponent>
         TreeNode exponent = exponent(p);
+        if (exponent.getNodeType() == TreeNodeType.NUNDEF) {
+            return exponent;
+        }
 
         // <fact_r>
         TreeNode factR = factR(p);
@@ -284,7 +293,8 @@ public class NBOOL {
     public static TreeNode factR (CD19Parser p) {
         TreeNode factR = new TreeNode(TreeNodeType.NUNDEF);
 
-        if (!p.currentTokenIs(Token.TCART)) { // ɛ
+        // ɛ
+        if (!p.currentTokenIs(Token.TCART)) {
             return null;
         }
 
@@ -363,9 +373,12 @@ public class NBOOL {
             return varOrFnCall;
         }
 
-        System.out.println("NBOOL :: exponent :: nothing suitable to match :: ERROR RECOVERY - exiting...");
-        System.exit(1);
-        return null;
+        // nothing suitable to match for expression
+        String syntaxErrorString = "Illegal start of expression:\n\t\t";
+        syntaxErrorString += Token.TPRINTInverse[p.getCurrentToken().value()];
+        p.generateSyntaxError(syntaxErrorString);
+
+        return new TreeNode(TreeNodeType.NUNDEF);
     }
 
     // <varOrFnCall> --> <var> | <fncall>
@@ -393,6 +406,4 @@ public class NBOOL {
 
         return var;
     }
-
-
 }

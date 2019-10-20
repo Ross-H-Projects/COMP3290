@@ -40,7 +40,7 @@ public class NPLIST {
         // determine which piece of grammar we are parsing
 
         // <param>      --> const <arrdecl>
-        if (p.currentTokenIs(Token.TCONS)) {
+        if (p.currentTokenIs(Token.TCNST)) {
             p.moveToNextToken();
             return constantArrDecl(p);
         }

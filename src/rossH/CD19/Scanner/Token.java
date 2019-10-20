@@ -71,6 +71,22 @@ public class Token {
 
             "TIDEN ",	"TILIT ",	"TFLIT ",	"TSTRG ",	"TUNDF "};
 
+    public static final String TPRINTInverse[] = {
+      "eof",
+      "CD19",  "constants",	"types",	"is",	"arrays ",	"main",
+        "begin",	"end",	"array",	"of",	"function",	"void",
+        "const",	"integer",	"real",	"boolean",	"for",	"repeat",
+        "until",	"if",	"else",	"input",	"print",	"printline",
+        "return",	"not",	"and",	"or",	"xor",	"true",
+        "false",	",",	"[",	"]",	"(",	")",
+        "=",	"+",	"-",	"*",	"/",	"%",
+        "^",	"<",	">",	":",	"<=",	">=",
+        "!=",	"==",	"+=",	"-=",	"*=",	"/=",
+        "%= ",	";",	".",
+
+        "identifier",	"integer literal",	"real literal",	"string literal",	"undefined"
+    };
+
     private static Map<String, Integer> tokenStringMappings = new HashMap<String, Integer>();
     private static boolean isSetup = false;
 

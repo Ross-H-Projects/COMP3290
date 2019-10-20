@@ -8,16 +8,19 @@ import rossH.CD19.Scanner.Token;
 import rossH.CD19.Parser.SyntaxTreeNodes.NPROG;
 
 import javax.swing.plaf.synth.SynthMenuBarUI;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CD19Parser {
     private List<Token> tokens;
+    private List<String> syntaxErrors;
     private SymbolTable symbolTableIdentifiers;
     private int tokenPos = 0;
 
     public CD19Parser (List<Token> tokens) {
         this.tokens = tokens;
         this.symbolTableIdentifiers = new SymbolTable();
+        syntaxErrors = new LinkedList<String>();
         TreeNode.setup();
     }
 
@@ -38,14 +41,6 @@ public class CD19Parser {
 
         symbolTableIdentifiers.setSymbolTableRecord(stRec);
         return stRec;
-
-        /*
-        if (identifiers.contains(rec)) rec = identifiers.lookup(rec);
-        else identifiers.insert(rec);
-
-        // Update token with symbol table record reference
-        identifier.setSymbolTableRecord(rec);
-         */
     }
 
     public void moveToNextToken () {
@@ -54,6 +49,10 @@ public class CD19Parser {
         System.out.println();
         tokenPos++;
 
+    }
+
+    public List<String> getSyntaxErrors () {
+        return syntaxErrors;
     }
 
     public Token getCurrentToken () {
@@ -67,13 +66,39 @@ public class CD19Parser {
         return tokens.get(tokenPos + ahead);
     }
 
-    public boolean currentTokenIs(int tokenValue) {
+    public boolean currentTokenIs (int tokenValue) {
         Token currentToken = tokens.get(tokenPos);
 
         return (currentToken.value() == tokenValue);
     }
 
-    public void generateSyntaxError(String s) {
+    public void generateSyntaxError (String s) {
         System.out.println(s);
+
+        String syntaxErrorString = "Error occured at line ";
+        syntaxErrorString += " " + tokens.get(tokenPos).getLn() + ":\n\t";
+        syntaxErrorString += s;
+        syntaxErrors.add(syntaxErrorString);
+    }
+
+    public void generateSyntaxError (String s, int lineNo) {
+        System.out.println(s);
+
+        String syntaxErrorString = "Error occured at line " + lineNo + ":\n\t";
+        syntaxErrorString += s;
+        syntaxErrors.add(syntaxErrorString);
+    }
+
+    public void tokensJumpTo (int pos) {
+        tokenPos = pos;
+    }
+
+    public int nextTokenOccursAt (int tokenValue) {
+        for (int i = tokenPos; i < tokens.size(); i++) {
+            if (tokens.get(i).value() == tokenValue) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

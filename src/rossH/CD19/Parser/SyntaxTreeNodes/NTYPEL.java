@@ -51,8 +51,8 @@ public class NTYPEL {
 
         // is
         if (p.getTokenAhead(1).value() != Token.TIS) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'is'");
+            Token offendingToken = p.getTokenAhead(1);
+            p.generateSyntaxError("expected the keyword 'is'", offendingToken.getLn());
             System.out.println("NTYPEL :: ERROR RECOVERY - exiting...");
             System.exit(1);
         }

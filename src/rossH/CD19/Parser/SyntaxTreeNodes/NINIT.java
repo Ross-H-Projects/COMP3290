@@ -25,15 +25,17 @@ public class NINIT {
 
         // =
         if (!p.currentTokenIs(Token.TEQUL)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected character =");
-            System.out.println("NINIT :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character '='.");
+            // prematurely end parsing due to irrecoverable error
+            return NINITNode;
         }
         p.moveToNextToken();
 
         // <expr>
         TreeNode expr = NBOOL.expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            return NINITNode;
+        }
 
         NINITNode.setValue(TreeNodeType.NINIT);
         NINITNode.setLeft(expr);

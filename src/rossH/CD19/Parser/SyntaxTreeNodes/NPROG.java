@@ -36,7 +36,6 @@ public class NPROG {
         NPROGNode.setSymbolRecord(stRec);
         p.moveToNextToken();
 
-
         // <globals>
         TreeNode globals = NGLOB.generateTreeNode(p);
         if (globals != null && globals.getNodeType() == TreeNodeType.NUNDEF) {

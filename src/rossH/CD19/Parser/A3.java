@@ -56,8 +56,17 @@ public class A3 {
             System.out.println(e);
             System.exit(1);
         }
-        // print out a <CERTAIN> traversal of the syntax tree
 
+        System.out.println();
+        System.out.println();
+        System.out.println("Errors: ");
+        System.out.println();
+
+        // print syntax tree parsing errors
+        List<String> syntaxErrors = parser.getSyntaxErrors();
+        for (int i = 0; i < syntaxErrors.size(); i++) {
+            System.out.println(syntaxErrors.get(i));
+        }
     }
 
 }

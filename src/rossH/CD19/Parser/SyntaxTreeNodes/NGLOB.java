@@ -53,7 +53,12 @@ public class NGLOB {
 
         // <intlist>
         TreeNode initlist =  NILIST.generateTreeNode(p);
-        return initlist;
+        if (initlist.getNodeType() != TreeNodeType.NUNDEF) {
+            return initlist;
+        }
+
+        // errors occured while attempting to parse the initlist
+        return null;
     }
 
     // <types>      --> types <typelist> | ε

@@ -1,29 +1,8 @@
 CD19 ExampleAST
 	constants
-		COUNT = 10
-
-	types
-	mark is
-		id : integer,
-		midterm : real,
-		final : real
-	end
-	marks is array [COUNT] of mark
-
-	arrays
-		comp3290 : marks	
-
-	function squareSum ( ) : void
-	begin
-		tmp = a^2;
-		tmp += b^2;
-		return tmp; 
-	end
-	
-	function doSomething ( ) : boolean
-	begin
-		a = b + c;
-	end 		 
+		COUNT = 10,
+		abc = 
+	 
 main
 	i:integer, j:integer, k:integer
 begin
