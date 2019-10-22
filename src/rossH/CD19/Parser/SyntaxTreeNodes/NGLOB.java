@@ -71,8 +71,14 @@ public class NGLOB {
         // types
         p.moveToNextToken();
 
+        // <typelist>
         TreeNode typelist = NTYPEL.generateTreeNode(p);
-        return typelist;
+        if (typelist.getNodeType() != TreeNodeType.NUNDEF) {
+            return  typelist;
+        }
+
+        // errors occured while attempting to parse the typelist
+        return null;
     }
 
     // <types>      --> arrays <arrdecls> | ε
@@ -86,7 +92,13 @@ public class NGLOB {
         // arrays
         p.moveToNextToken();
 
+        // <arrdecls>
         TreeNode arrdecls = NALIST.generateTreeNode(p);
-        return arrdecls;
+        if (arrdecls.getNodeType() != TreeNodeType.NUNDEF) {
+            return  arrdecls;
+        }
+
+        // errors occured while attempting to parse the arrdecls
+        return null;
     }
 }

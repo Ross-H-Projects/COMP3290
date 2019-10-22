@@ -1,10 +1,10 @@
 CD19 ExampleAST
-	constants
-		a = 1 + 2,
-		x = 1 + ,
-		b = 3 + + ,
-		y = ,
-		c = e + m 
+	arrays
+		a : b,
+		c  b,
+		e 1 2,
+		f
+		
 		
 	 
 main

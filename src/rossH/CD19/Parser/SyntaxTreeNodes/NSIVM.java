@@ -14,9 +14,8 @@ public class NSIVM {
         Token currentToken;
 
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.getCurrentToken();
-            System.out.println("NISVM :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an identifer");
+            return NSIVMNode;
         }
         currentToken = p.getCurrentToken();
         p.moveToNextToken();

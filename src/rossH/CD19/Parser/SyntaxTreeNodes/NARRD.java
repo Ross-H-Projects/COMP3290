@@ -25,7 +25,6 @@ public class NARRD {
         // :
         if (!p.currentTokenIs(Token.TCOLN)) {
             p.generateSyntaxError("Expected the character ':'");
-            System.out.println("NARRD :: ERROR RECOVERY - exiting...");
             // prematurely end parsing due to irrecoverable error
             return NARRDNode;
         }
@@ -33,10 +32,12 @@ public class NARRD {
 
         // <typeid>
         TreeNode typeid = NSIVM.generateTreeNode(p);
+        if (typeid.getNodeType() == TreeNodeType.NUNDEF) {
+            return NARRDNode;
+        }
 
         NARRDNode.setValue(TreeNodeType.NARRD);
         NARRDNode.setLeft(typeid);
         return NARRDNode;
-
     }
 }

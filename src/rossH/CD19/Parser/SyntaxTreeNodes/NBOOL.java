@@ -256,7 +256,6 @@ public class NBOOL {
         }
         p.moveToNextToken();
 
-
         // <term>
         TreeNode term = term(p);
         multDivModNothing.setRight(term);
@@ -367,8 +366,8 @@ public class NBOOL {
             }
 
             // getting here implies an open paranthesis
-            System.out.println("NBOOL :: exponent :: ( <bool> ) :: UNCLOSED PARANTHESIS :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Unclosed paranthesis in expression");
+            return new TreeNode(TreeNodeType.NUNDEF);
         }
 
         // <varOrFnCall>
