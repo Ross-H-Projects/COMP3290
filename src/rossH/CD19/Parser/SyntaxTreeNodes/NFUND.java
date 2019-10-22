@@ -49,7 +49,7 @@ public class NFUND {
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
-            p.generateSyntaxError("Expected the chracter ')'.");
+            p.generateSyntaxError("Unclosed paranthesis for function definition.");
             // prematurely end parsing due to irrecoverable error
             return NFUNDNode;
         }
@@ -82,8 +82,15 @@ public class NFUND {
         TreeNode dlist = null;
         if (!p.currentTokenIs(Token.TBEGN)) {
             dlist = NDLIST.generateTreeNode(p);
-        }
 
+            if (dlist.getNodeType() == TreeNodeType.NUNDEF) {
+                try {
+                    errorRecoveryDlist(p);
+                } catch (Exception e) {
+                    return NFUNDNode;
+                }
+            }
+        }
 
         // begin
         if (!p.currentTokenIs(Token.TBEGN)) {
@@ -94,6 +101,13 @@ public class NFUND {
 
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
+        if (stats.getNodeType() == TreeNodeType.NUNDEF) {
+            try {
+                errorRecoveryStats(p);
+            } catch (Exception e) {
+                return NFUNDNode;
+            }
+        }
 
         // end
         if (!p.currentTokenIs(Token.TEND)) {
@@ -107,5 +121,13 @@ public class NFUND {
         NFUNDNode.setMiddle(dlist);
         NFUNDNode.setRight(stats);
         return NFUNDNode;
+    }
+
+    private static void errorRecoveryDlist (CD19Parser p) throws Exception {
+        // we need to go the next 'begin' token,
+        // in failing that we need to go to either the next 'function' token
+        // or 'main' token
+
+        int next
     }
 }

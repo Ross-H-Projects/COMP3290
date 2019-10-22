@@ -39,21 +39,18 @@ public class NPROG {
         // <globals>
         TreeNode globals = NGLOB.generateTreeNode(p);
         if (globals != null && globals.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NRPOG :: globals :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //try {
-            //    errorRecovery(p);
-            //} catch (Exception e) { p.popScope(); return nProg; }
+            // error recovery will have already taken place within some node
+            // within globals (NILIST, NTYPEL, or NALIST)
+            globals = null;
 
         }
 
         // <funcs>
         TreeNode funcs = NFUNCS.generateTreeNode(p);
         if (funcs != null && funcs.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NRPOG :: funcs :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //try {errorRecovery(p);}
-            //catch (Exception e) { p.popScope(); return nProg; }
+            // error recovery will have already taken place within some node
+            // within NFUNCS or some child node of NFUNCS (e.g. NFUND)
+            funcs = null;
         }
 
 
