@@ -1,5 +1,6 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
+import com.sun.source.tree.Tree;
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
@@ -19,24 +20,46 @@ public class NSDLST {
 
 
     public static TreeNode generateTreeNode (CD19Parser p) {
+        TreeNode slist = new TreeNode(TreeNodeType.NUNDEF);
 
         // <sdecl>
         TreeNode sdecl = sdecl(p);
         if (sdecl != null && sdecl.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NSDLST :: sdecl :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //try { errorRecovery(p); }
-            //catch (Exception e) { return new TreeNode(ParseTreeNodeType.NUNDEF); }
+            try {
+                errorRecovery(p);
+            } catch (Exception e) {
+                return new TreeNode(TreeNodeType.NUNDEF);
+            }
         }
 
         // <opt_slist>
         TreeNode sdeclOptional = optSlist(p);
-        if (sdeclOptional == null) {
+
+        // sdecl properly defined AND sdecl either non-existant or contains errors
+        // so we will just return sdecl
+        if (sdecl.getNodeType() != TreeNodeType.NUNDEF &&
+                (sdeclOptional == null ||sdeclOptional.getNodeType() == TreeNodeType.NUNDEF)) {
             return sdecl;
         }
 
-        TreeNode slist = new TreeNode(TreeNodeType.NSDLST, sdecl, sdeclOptional);
-        //decList.setDataType(TreeNodeType.);
+        // sdecl contains errors AND sdecllistOptional properly defined
+        // so we will just return sdecllistOptional
+        if (sdeclOptional != null && sdeclOptional.getNodeType() != TreeNodeType.NUNDEF
+                && sdecl.getNodeType() == TreeNodeType.NUNDEF) {
+            return sdeclOptional;
+        }
+
+        // sdecl contains errors and typelistOptional either non-existant or contains errors
+        if (sdecl.getNodeType() == TreeNodeType.NUNDEF &&
+                (sdeclOptional == null || sdeclOptional.getNodeType() == TreeNodeType.NUNDEF)) {
+            return slist;
+        }
+
+        // getting here implies both sdecl and sdeclOptional
+        // were successfully defined
+        slist.setValue(TreeNodeType.NSDLST);
+        slist.setLeft(sdecl);
+        slist.setRight(sdeclOptional);
         return slist;
     }
 
@@ -68,11 +91,12 @@ public class NSDLST {
         // <stype> --> integer | real | boolean
         if (!p.currentTokenIs(Token.TINTG) && !p.currentTokenIs(Token.TREAL) && !p.currentTokenIs(Token.TBOOL)) {
             p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
+            return sdecl;
         }
         // todo
-        // add symbol reference to symbol type (sdecl stype)
-        //currentToken = p.getCurrentToken();
-        //p.insertSymbolIdentifier((currentToken));
+        //  add symbol reference to symbol type (sdecl stype)
+        //      currentToken = p.getCurrentToken();
+        //      p.insertSymbolIdentifier((currentToken));
         p.moveToNextToken();
 
         sdecl.setValue(TreeNodeType.NSDECL);
@@ -94,5 +118,25 @@ public class NSDLST {
         TreeNode slist = generateTreeNode(p);
         return slist;
 
+    }
+
+    public static void errorRecovery (CD19Parser p) throws Exception {
+        // we need to go to the next comma, and the next comma
+        // needs to occur before the next 'begin' token
+
+        int nextComma = p.nextTokenOccursAt(Token.TCOMA);
+        int nextBegin = p.nextTokenOccursAt(Token.TBEGN);
+
+        if (nextBegin != -1 && nextComma < nextBegin) {
+            p.tokensJumpTo(nextComma);
+            return;
+        }
+
+        if (nextBegin != 1) {
+            p.tokensJumpTo(nextBegin);
+            return;
+        }
+
+        throw new Exception("Unable to Recover");
     }
 }

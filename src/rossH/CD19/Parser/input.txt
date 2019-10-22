@@ -1,7 +1,11 @@
 CD19 ExampleAST
 	constants
-		COUNT = 10,
-		abc = 
+		a = 1 + 2,
+		x = 1 + ,
+		b = 3 + + ,
+		y = ,
+		c = e + m 
+		
 	 
 main
 	i:integer, j:integer, k:integer

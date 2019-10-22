@@ -49,8 +49,6 @@ public class NATYPE {
         // <expr>
         TreeNode expr = NBOOL.expr(p);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
-            // TODO expression errorrecovery i.e. try to go to ']'
-            //  OR if we fail to do that we need to exit types section entirely
             return NATYPENode;
         }
 

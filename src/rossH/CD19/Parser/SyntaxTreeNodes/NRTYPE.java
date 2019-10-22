@@ -33,9 +33,6 @@ public class NRTYPE {
         // <fields>
         TreeNode fields = NFLIST.generateTreeNode(p);
         if (fields.getNodeType() == TreeNodeType.NUNDEF) {
-            // todo
-            //  do error recovery i.e. go to the  next 'end'
-            //  or if we fail to do that that we need to exit the types section entirely
             return NRTYPENode;
         }
 
@@ -46,6 +43,7 @@ public class NRTYPE {
             return NRTYPENode;
         }
         p.moveToNextToken();
+
 
         NRTYPENode.setValue(TreeNodeType.NRTYPE);
         NRTYPENode.setLeft(fields);

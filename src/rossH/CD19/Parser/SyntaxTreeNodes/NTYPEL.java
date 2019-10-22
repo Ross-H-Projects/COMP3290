@@ -20,13 +20,39 @@ public class NTYPEL {
 
         // <type>
         TreeNode type = structOrArrayType(p);
+        if (type.getNodeType() == TreeNodeType.NUNDEF) {
+            try {
+               errorRecovery(p);
+            } catch (Exception e) {
+                return NTYPELNode;
+            }
+        }
 
         // opt_typelist
         TreeNode typelistOptional = typelistOptional(p);
-        if (typelistOptional == null) {
+
+        // type properly defined AND typelistOptional either non-existant or contains errors
+        // so we will just return type
+        if (type.getNodeType() != TreeNodeType.NUNDEF &&
+                (typelistOptional == null || typelistOptional.getNodeType() == TreeNodeType.NUNDEF)) {
             return type;
         }
 
+        // type contains errors AND typelistOptional properly defined
+        // so we will just return typelistOptional
+        if (typelistOptional != null && typelistOptional.getNodeType() != TreeNodeType.NUNDEF
+                && type.getNodeType() == TreeNodeType.NUNDEF) {
+            return typelistOptional;
+        }
+
+        // type contains errors and typelistOptional either non-existant or contains errors
+        if (type.getNodeType() == TreeNodeType.NUNDEF &&
+                (typelistOptional == null || typelistOptional.getNodeType() == TreeNodeType.NUNDEF)) {
+            return NTYPELNode;
+        }
+
+        // getting here implies both type and typelistOptional
+        // were successfully defined
         NTYPELNode.setValue(TreeNodeType.NTYPEL);
         NTYPELNode.setLeft(type);
         NTYPELNode.setRight(typelistOptional);
@@ -78,5 +104,57 @@ public class NTYPEL {
         // <typelist>
         TreeNode typelist = generateTreeNode(p);
         return typelist;
+    }
+
+    public static void errorRecovery (CD19Parser p) throws Exception {
+        // we need to go to the next 'is' (and move back one next token)
+        // if we fail to do this we need to exit the types section
+        // complete
+        // the next 'is' also needs to be before the next 'arrays', 'function',
+        // or 'main' token
+
+        int nextIs = p.nextTokenOccursAt(Token.TIS);
+        int nextArrays = p.nextTokenOccursAt(Token.TARRS);
+        int nextFunction = p.nextTokenOccursAt(Token.TFUNC);
+        int nextMain = p.nextTokenOccursAt(Token.TMAIN);
+
+        // there is a next comma but it doesn't occur
+        // in the <typelist>. thus we can only jump
+        // the parser to the next sensisble section
+        if (nextIs == -1) {
+            if (nextArrays != -1) {
+                p.tokensJumpTo(nextArrays);
+            } else if (nextFunction != -1) {
+                p.tokensJumpTo(nextFunction);
+            } else if (nextMain != -1) {
+                p.tokensJumpTo(nextMain);
+            } else {
+                throw new Exception("Unable to recover");
+            }
+            return;
+        }
+
+        // arrays was defined in the program AND
+        // is occurs before arrays section is entered
+        if (nextArrays != -1 && nextIs < nextArrays) {
+            p.tokensJumpTo(nextIs - 1);
+            return;
+        }
+
+        // a function was defined in the program AND
+        // is occurs before function section is entered
+        if (nextFunction != -1 && nextIs < nextFunction) {
+            p.tokensJumpTo(nextIs - 1);
+            return;
+        }
+
+        // main was defined in the program AND
+        // is occurs before main section is entered
+        if (nextMain != -1 && nextIs < nextMain) {
+            p.tokensJumpTo(nextIs - 1);
+            return;
+        }
+
+        throw new Exception("Unable to recover");
     }
 }

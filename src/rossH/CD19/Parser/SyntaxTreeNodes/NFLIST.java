@@ -19,11 +19,18 @@ public class NFLIST {
 
         // <sdecl>
         TreeNode sdecl = NSDLST.sdecl(p);
+        if (sdecl.getNodeType() == TreeNodeType.NUNDEF) {
+            return NFLISTNode;
+        }
 
         // <opt_fields>
         TreeNode fieldsOptional = fieldsOptional(p);
         if (fieldsOptional == null) {
             return sdecl;
+        } else if (fieldsOptional.getNodeType() == TreeNodeType.NUNDEF) {
+            // todo
+            //  maybe : complete fields instead of just prematurely ending
+            return NFLISTNode;
         }
 
         NFLISTNode.setValue(TreeNodeType.NFLIST);

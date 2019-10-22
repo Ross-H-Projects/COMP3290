@@ -90,7 +90,21 @@ public class NILIST {
         // i.e. we have to jump the parser
         // the next sensible section
         if (nextComma == -1) {
-            throw new Exception("Unable to recover");
+            // there is a next comma but it doesn't occur
+            // in the <initlist>. thus we can only attempt to jump
+            // the parser to the next sensisble section
+            if (nextTypes != -1) {
+                p.tokensJumpTo(nextTypes);
+            } else if (nextArrays != -1) {
+                p.tokensJumpTo(nextArrays);
+            } else if (nextFunction != -1) {
+                p.tokensJumpTo(nextFunction);
+            } else if (nextMain != -1) {
+                p.tokensJumpTo(nextMain);
+            } else {
+                throw new Exception("Unable to recover");
+            }
+            return;
         }
 
         // types was defined in the program AND
@@ -119,19 +133,6 @@ public class NILIST {
         if (nextMain != -1 && nextComma < nextMain) {
             p.tokensJumpTo(nextComma);
             return;
-        }
-
-        // there is a next comma but it doesn't occur
-        // in the <initlist>. thus we can only jump
-        // the parser to the next sensisble section
-        if (nextTypes != -1) {
-            p.tokensJumpTo(nextTypes);
-        } else if (nextArrays != -1) {
-            p.tokensJumpTo(nextArrays);
-        } else if (nextFunction != -1) {
-            p.tokensJumpTo(nextFunction);
-        } else if (nextMain != -1) {
-            p.tokensJumpTo(nextMain);
         }
 
         throw new Exception("Unable to recover");

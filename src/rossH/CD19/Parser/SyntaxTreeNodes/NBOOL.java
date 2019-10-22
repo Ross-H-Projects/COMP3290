@@ -199,6 +199,10 @@ public class NBOOL {
 
         // <expr>
         TreeNode expr = expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            return expr;
+        }
+
         optAddSub.setRight(expr);
         return optAddSub;
     }
