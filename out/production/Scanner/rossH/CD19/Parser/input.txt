@@ -4,7 +4,8 @@ CD19 ExampleAST
 		c  b,
 		e 1 2,
 		f
-		
+		e : f,
+		arr : b
 		
 	 
 main

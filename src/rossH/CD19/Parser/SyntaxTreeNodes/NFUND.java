@@ -84,6 +84,7 @@ public class NFUND {
             dlist = NDLIST.generateTreeNode(p);
 
             if (dlist.getNodeType() == TreeNodeType.NUNDEF) {
+                dlist = null;
                 try {
                     errorRecoveryDlist(p);
                 } catch (Exception e) {
@@ -102,11 +103,9 @@ public class NFUND {
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
         if (stats.getNodeType() == TreeNodeType.NUNDEF) {
-            try {
-                errorRecoveryStats(p);
-            } catch (Exception e) {
-                return NFUNDNode;
-            }
+            // stats are a necessary part of the function body
+            // therefore we will just return an invalid NFUND
+            return NFUNDNode;
         }
 
         // end
@@ -128,6 +127,32 @@ public class NFUND {
         // in failing that we need to go to either the next 'function' token
         // or 'main' token
 
-        int next
+        int nextBegin = p.nextTokenOccursAt(Token.TBEGN);
+        int nextFunction = p.nextTokenOccursAt(Token.TFUNC);
+        int nextMain = p.nextTokenOccursAt(Token.TMAIN);
+
+        if (nextBegin == -1) {
+            if (nextFunction != -1) {
+                p.tokensJumpTo(nextFunction);
+                return;
+            } else if (nextFunction != -1) {
+                p.tokensJumpTo(nextMain);
+                return;
+            }
+            throw new Exception("Unable to recover");
+        }
+
+        if (nextFunction != -1 && nextBegin < nextFunction) {
+            p.tokensJumpTo(nextBegin);
+            return;
+        }
+
+        if (nextMain != -1 && nextBegin < nextMain) {
+            p.tokensJumpTo(nextBegin);
+            return;
+        }
+
+        throw new Exception("Unable to recover");
     }
+
 }

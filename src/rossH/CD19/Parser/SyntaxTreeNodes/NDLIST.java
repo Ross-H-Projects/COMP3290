@@ -19,6 +19,13 @@ public class NDLIST {
 
         // <decl>
         TreeNode decl = sdeclOrArrdecl(p);
+        if (decl.getNodeType() == TreeNodeType.NUNDEF) {
+            try {
+                errorRecovery(p);
+            } catch (Exception e) {
+                return NDLISTNode;
+            }
+        }
 
         // <opt_dlist>
         TreeNode dlistOptional = dlistOptional(p);
@@ -31,6 +38,7 @@ public class NDLIST {
         NDLISTNode.setRight(dlistOptional);
         return NDLISTNode;
     }
+
 
     //  <opt_dlist> --> , <dlist> | ε
     public static TreeNode dlistOptional (CD19Parser p) {
@@ -56,14 +64,16 @@ public class NDLIST {
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            System.out.println("NDLIST :: sdeclOArrdecl :: expected identifier ::  ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an identifier");
+            // prematurely end parsing due to irrecoverable error
+            return decl;
         }
 
         // :
         if (p.getTokenAhead(1).value() != Token.TCOLN) {
-            System.out.println("NDLIST :: sdeclOArrdecl :: expected ':' :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected the character ':'.");
+            // prematurely end parsing due to irrecoverable error
+            return decl;
         }
 
         // sdecl
@@ -84,4 +94,14 @@ public class NDLIST {
         p.generateSyntaxError("expected 'integer', 'real', 'boolean', or an identifer in locals declaration of function.");
         return decl;
     }
+
+    private static void errorRecovery (CD19Parser p) throws Exception {
+        // todo
+        //  we need to find the next comma token before the next 'begin' token
+        //  BUT we will not jump to that begin token as that will be handled in the NFUND errorRecovery for dlist
+
+        int nextComma = p.nextTokenOccursAt(Token.TCOMA);
+        int nextBegin = p.nextTokenOccursAt(Token.TBEGN);
+    }
+
 }
