@@ -20,12 +20,40 @@ public class NPLIST {
 
         // <param>
         TreeNode param = param(p);
+        if (param.getNodeType() == TreeNodeType.NUNDEF) {
+            try {
+                errorRecovery(p);
+            } catch (Exception e) {
+                return NPLISTNode;
+            }
+
+        }
 
         // <opt_params>
         TreeNode paramsOptional = paramsOptional(p);
-        if (paramsOptional == null) {
+
+        // param properly defined AND paramsOptional either non-existant or contains errors
+        // so we will just return param
+        if (param.getNodeType() != TreeNodeType.NUNDEF &&
+                (paramsOptional == null || paramsOptional.getNodeType() == TreeNodeType.NUNDEF)) {
             return param;
         }
+
+        // param contains errors AND paramsOptionalproperly defined
+        // so we will just return paramsOptional
+        if (paramsOptional != null && paramsOptional.getNodeType() != TreeNodeType.NUNDEF
+                && param.getNodeType() == TreeNodeType.NUNDEF) {
+            return paramsOptional;
+        }
+
+        // param contains errors and paramsOptionaleither non-existant or contains errors
+        if (param.getNodeType() == TreeNodeType.NUNDEF &&
+                (paramsOptional == null || paramsOptional.getNodeType() == TreeNodeType.NUNDEF)) {
+            return NPLISTNode;
+        }
+
+        // getting here implies both param and paramOptional
+        // were successfully defined
 
         NPLISTNode.setValue(TreeNodeType.NPLIST);
         NPLISTNode.setLeft(param);
@@ -54,6 +82,10 @@ public class NPLIST {
         TreeNode decl = new TreeNode(TreeNodeType.NARRC);
 
         TreeNode arrdecl = NARRD.generateTreeNode(p);
+        if (arrdecl.getNodeType() == TreeNodeType.NUNDEF) {
+            return arrdecl;
+        }
+
         decl.setLeft(arrdecl);
         return decl;
     }
@@ -67,14 +99,14 @@ public class NPLIST {
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            System.out.println("NPLIST :: sdeclOArrdecl :: expected identifier ::  ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an identifer.");
+            return decl;
         }
 
         // :
         if (p.getTokenAhead(1).value() != Token.TCOLN) {
-            System.out.println("NPLIST :: sdeclOArrdecl :: expected ':' :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an the character ':'.");
+            return decl;
         }
 
         // sdecl
@@ -96,7 +128,7 @@ public class NPLIST {
 
         // if the token after <id> : ... is not an identifier (typeid)
         // or integer, real, or boolean, then we've experienced an error
-        p.generateSyntaxError("expected 'integer', 'real', 'boolean', or an identifer after start of array / variable function parameter declaration.");
+        p.generateSyntaxError("expected 'integer', 'real', 'boolean', or an type identifer after start of array / variable function parameter declaration.");
         return decl;
     }
 
@@ -113,5 +145,28 @@ public class NPLIST {
         // <params>
         TreeNode params = generateTreeNode(p);
         return params;
+    }
+
+    private static void errorRecovery (CD19Parser p) throws Exception {
+        // we need to find the next occurrence of a comma token
+        // s.t. it occurs before the right paranthesis next
+
+        int nextComma = p.nextTokenOccursAt(Token.TCOMA);
+        int nextRightParanthesis = p.nextTokenOccursAt(Token.TRPAR);
+
+        if (nextComma == -1) {
+            if (nextRightParanthesis != -1) {
+                p.tokensJumpTo(nextRightParanthesis);
+                return;
+            }
+            throw new Exception("Unable to recover.");
+        }
+
+        if (nextRightParanthesis !=1 && nextComma < nextRightParanthesis) {
+            p.tokensJumpTo(nextComma);
+            return;
+        }
+        throw new Exception("Unable to recover.");
+
     }
 }

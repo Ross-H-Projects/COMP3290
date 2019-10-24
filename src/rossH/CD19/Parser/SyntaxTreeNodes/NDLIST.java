@@ -29,10 +29,28 @@ public class NDLIST {
 
         // <opt_dlist>
         TreeNode dlistOptional = dlistOptional(p);
-        if (dlistOptional == null) {
+        // decl properly defined AND dlistOptional either non-existant or contains errors
+        // so we will just return decl
+        if (decl.getNodeType() != TreeNodeType.NUNDEF &&
+                (dlistOptional == null || dlistOptional.getNodeType() == TreeNodeType.NUNDEF)) {
             return decl;
         }
 
+        // decl contains errors AND dlistOptional properly defined
+        // so we will just return dlistOptional
+        if (dlistOptional != null && dlistOptional.getNodeType() != TreeNodeType.NUNDEF
+                && decl.getNodeType() == TreeNodeType.NUNDEF) {
+            return dlistOptional;
+        }
+
+        // decl contains errors and dlistOptional either non-existant or contains errors
+        if (decl.getNodeType() == TreeNodeType.NUNDEF &&
+                (dlistOptional == null || dlistOptional.getNodeType() == TreeNodeType.NUNDEF)) {
+            return NDLISTNode;
+        }
+
+        // getting here implies both decl and dlistOptional
+        // were successfully defined
         NDLISTNode.setValue(TreeNodeType.NDLIST);
         NDLISTNode.setLeft(decl);
         NDLISTNode.setRight(dlistOptional);
@@ -96,12 +114,22 @@ public class NDLIST {
     }
 
     private static void errorRecovery (CD19Parser p) throws Exception {
-        // todo
-        //  we need to find the next comma token before the next 'begin' token
-        //  BUT we will not jump to that begin token as that will be handled in the NFUND errorRecovery for dlist
+        // we need to find the next comma token before the next 'begin' token
+        // BUT we will not jump to that begin token as that will be handled in the NFUND errorRecovery for dlist
 
         int nextComma = p.nextTokenOccursAt(Token.TCOMA);
         int nextBegin = p.nextTokenOccursAt(Token.TBEGN);
+
+        if (nextComma == -1) {
+            throw new Exception("Unable to recover");
+        }
+
+        if (nextBegin != -1 && nextComma < nextBegin) {
+            p.tokensJumpTo(nextComma);
+            return;
+        }
+
+        throw new Exception("Unable to recover");
     }
 
 }

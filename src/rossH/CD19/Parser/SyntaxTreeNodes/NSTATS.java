@@ -1,5 +1,6 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
+import com.sun.source.tree.Tree;
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
@@ -49,41 +50,75 @@ public class NSTATS {
             strStat = NIFTH.generateTreeNode(p);
         }
 
+        // handle invalid strStat
+        if (isStrStat && strStat.getNodeType() == TreeNodeType.NUNDEF) {
+            try {
+                errorRecovery(p);
+            } catch (Exception e) {
+                return NSTATSNode;
+            }
+        }
+
         if (!isStrStat) {
             // <stat>
             stat = stat(p);
-            if (stat != null && stat.getNodeType() == TreeNodeType.NUNDEF) {
-                System.out.println("NSTATS :: ERROR RECOVERY - exiting...");
-                System.exit(1);
+            if (stat.getNodeType() == TreeNodeType.NUNDEF) {
+                try {
+                    errorRecovery(p);
+                } catch (Exception e) {
+                    return NSTATSNode;
+                }
             }
 
             // ;
-            if (!p.currentTokenIs(Token.TSEMI)) {
-                System.out.println("NSTATS :: Expected a semi comma");
-                System.exit(1);
+            if (stat.getNodeType() != TreeNodeType.NUNDEF) {
+                if (!p.currentTokenIs(Token.TSEMI)) {
+                    stat = new TreeNode(TreeNodeType.NUNDEF);
+                    p.generateSyntaxError("Statements must end with a semi-comma");
+                    try {
+                        errorRecovery(p);
+                    } catch (Exception e) {
+                        return NSTATSNode;
+                    }
+                } else {
+                    p.moveToNextToken();
+                }
             }
-            p.moveToNextToken();
+        }
+
+        // simplify code
+        if (isStrStat) {
+            stat = strStat;
         }
 
         // <opt_stats>
         TreeNode statsOptions = optStats(p);
-        if (statsOptions == null) {
-            if (strStat != null) {
-                return strStat;
-            }
+
+        // stat properly defined AND statsOptions either non-existant or contains errors
+        // so we will just return stat
+        if (stat.getNodeType() != TreeNodeType.NUNDEF &&
+                (statsOptions == null || statsOptions.getNodeType() == TreeNodeType.NUNDEF)) {
             return stat;
         }
 
-        NSTATSNode.setRight(statsOptions);
-
-
-        if (strStat != null) {
-            NSTATSNode.setLeft(strStat);
-        } else {
-            NSTATSNode.setLeft(stat);
+        // stat contains errors AND statsOptions properly defined
+        // so we will just return statsOptions
+        if (statsOptions != null && statsOptions.getNodeType() != TreeNodeType.NUNDEF
+                && stat.getNodeType() == TreeNodeType.NUNDEF) {
+            return statsOptions;
         }
 
+        // stat contains errors and statsOptions either non-existant or contains errors
+        if (stat.getNodeType() == TreeNodeType.NUNDEF &&
+                (statsOptions == null || statsOptions.getNodeType() == TreeNodeType.NUNDEF)) {
+            return NSTATSNode;
+        }
+
+        // getting here implies both (stat OR strStat) and statsOptions
+        // are both defined properly
         NSTATSNode.setValue(TreeNodeType.NSTATS);
+        NSTATSNode.setLeft(stat);
+        NSTATSNode.setRight(statsOptions);
         return NSTATSNode;
     }
 
@@ -91,12 +126,10 @@ public class NSTATS {
     // <stat>     --> <asgnOrCallStat>
     public static TreeNode stat (CD19Parser p) {
 
-
         // <repstat>
         if (p.currentTokenIs(Token.TREPT)) {
             return NREPT.generateTreeNode(p);
         }
-
 
         // <iostat>
         if (p.currentTokenIs(Token.TINPT)) { // input
@@ -124,7 +157,7 @@ public class NSTATS {
     public static TreeNode optStats (CD19Parser p) {
         // critera under which we don't need
         // another <stat> / <stats> is if
-        // current token is end, else, or until
+        // current token is 'end', 'else', or 'until'
 
         // end, or else, or until
         if (p.currentTokenIs(Token.TEND) || p.currentTokenIs(Token.TELSE) || p.currentTokenIs(Token.TUNTL)) {
@@ -139,8 +172,8 @@ public class NSTATS {
     public static TreeNode asgnOrCallStat (CD19Parser p) {
         // asgnstat and callstat both being with an identifier
         if (!p.currentTokenIs(Token.TIDEN)) {
-            System.out.println("NSTATS :: asgOrCallStat :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an identifer");
+            return new TreeNode(TreeNodeType.NUNDEF);
         }
 
         // <callstat>
@@ -158,23 +191,30 @@ public class NSTATS {
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            System.out.println(" <var> --> <id>[<expr>].<id>");
             var = NARRV.generateTreeNode(p);
         } else { // NISVM: <var> --> <id>
-            System.out.println("<var> --> <id>");
             var = NSIVM.generateTreeNode(p);
+        }
+
+        // handle var error recovery
+        if (var.getNodeType() == TreeNodeType.NUNDEF) {
+            return var;
         }
 
         // <asgnop>
         TreeNode asgnop = asgnop(p);
         if (asgnop == null) {
-            System.out.println("NSTATS :: asgnstat :: asgnop :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an assignment operator: '=', '+=', '-=', '*=', or '/='.");
+            return new TreeNode(TreeNodeType.NUNDEF);
         }
         p.moveToNextToken();
 
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
+        // handle bool error recovery
+        if (bool.getNodeType() == TreeNodeType.NUNDEF) {
+            return bool;
+        }
 
         asgnop.setLeft(var);
         asgnop.setRight(bool);
@@ -195,6 +235,62 @@ public class NSTATS {
         }
 
         return null;
+    }
+
+    private static void errorRecovery (CD19Parser p) throws Exception {
+        // we need to move to the next occurence of any of the following tokens
+        // ';' (and one more past that). 'repeat', 'for', 'if', 'input', 'print', 'printline', or 'return'
+        // which ever occurs first we will move to that one
+
+        int nextViableTokenOccurence[] = new int[8];
+        nextViableTokenOccurence[0] = p.nextTokenOccursAt(Token.TSEMI);
+
+        // handle going one past the semi colon if it occurs
+        if (nextViableTokenOccurence[0] != -1) {
+            nextViableTokenOccurence[0] += 1;
+        }
+
+        nextViableTokenOccurence[1] = p.nextTokenOccursAt(Token.TREPT);
+        nextViableTokenOccurence[2] = p.nextTokenOccursAt(Token.TFOR);
+        nextViableTokenOccurence[3] = p.nextTokenOccursAt(Token.TIFTH);
+        nextViableTokenOccurence[4] = p.nextTokenOccursAt(Token.TINPT);
+        nextViableTokenOccurence[5] = p.nextTokenOccursAt(Token.TPRIN);
+        nextViableTokenOccurence[6] = p.nextTokenOccursAt(Token.TPRIN);
+        nextViableTokenOccurence[7] = p.nextTokenOccursAt(Token.TRETN);
+
+        int minNextViableOccurence = -1;
+        boolean atleastOneViableOccurenceFound = false;
+        for (int i = 0; i < nextViableTokenOccurence.length; i++) {
+            if (!atleastOneViableOccurenceFound && nextViableTokenOccurence[i] != -1) {
+                atleastOneViableOccurenceFound = true;
+                minNextViableOccurence = nextViableTokenOccurence[i];
+            } else if (atleastOneViableOccurenceFound && nextViableTokenOccurence[i] != -1 &&
+                    nextViableTokenOccurence[i] < minNextViableOccurence) {
+                minNextViableOccurence = nextViableTokenOccurence[i];
+            }
+        }
+
+        if (!atleastOneViableOccurenceFound) {
+            throw new Exception("Unable to recover");
+        }
+
+        // the next viable token within stats ALSO
+        // needs to occur before the next occurence of the tokens:
+        // 'end', 'else', or 'until'
+
+        int nextEnd = p.nextTokenOccursAt(Token.TEND);
+        int nextElse = p.nextTokenOccursAt(Token.TELSE);
+        int nextUntil = p.nextTokenOccursAt(Token.TUNTL);
+
+        if (nextEnd != -1 && minNextViableOccurence <= nextEnd) {
+            p.tokensJumpTo(minNextViableOccurence);
+        } else if (nextElse != -1 && minNextViableOccurence <= nextElse) {
+            p.tokensJumpTo(minNextViableOccurence);
+        } else if (nextUntil != -1 && minNextViableOccurence <= nextUntil) {
+            p.tokensJumpTo(minNextViableOccurence);
+        } else {
+            throw new Exception("Unable to recover.");
+        }
     }
 
 }

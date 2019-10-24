@@ -45,6 +45,9 @@ public class NFUND {
         TreeNode plist = null;
         if (!p.currentTokenIs(Token.TRPAR)) {
             plist = NPLIST.generateTreeNode(p);
+            if (plist.getNodeType() == TreeNodeType.NUNDEF) {
+                plist = null;
+            }
         }
 
         // )

@@ -1,24 +1,17 @@
 CD19 ExampleAST
-	arrays
-		a : b,
-		c  b,
-		e 1 2,
-		f
-		e : f,
-		arr : b
+	function abc () : void
+	begin 
+		a = 1;
+		b = 2;
+		c = 2 a;
+		d = 1 + 2;
+		e = x = x;
+	end
 		
 	 
 main
-	i:integer, j:integer, k:integer
+	i:integer
 begin
-	if( i == (2+3) )
-		printline "i is equal to 5";
-	end
-
-	a = 1;
-
-	if ( true )
-		a = 2;
-	end  
+	u = 2; 
 end CD19 ExampleAST
 
