@@ -359,6 +359,9 @@ public class NBOOL {
 
             // <bool>
             TreeNode bool = generateTreeNode(p);
+            if (bool.getNodeType() == TreeNodeType.NUNDEF) {
+                return bool;
+            }
 
             if (p.currentTokenIs(Token.TRPAR)) { // )
                 p.moveToNextToken();

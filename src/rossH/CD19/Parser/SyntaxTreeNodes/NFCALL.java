@@ -10,19 +10,15 @@ public class NFCALL {
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected an identifer");
-            System.out.println("NFCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected an identifer.");
+            return NFCALLNode;
         }
         TreeNode id = NSIVM.generateTreeNode(p);
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected (");
-            System.out.println("NFCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character '('");
+            return NFCALLNode;
         }
         p.moveToNextToken();
 
@@ -40,10 +36,8 @@ public class NFCALL {
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected ) after elist");
-            System.out.println("NFCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected ')' list of parameters for function call.");
+            return NFCALLNode;
         }
         p.moveToNextToken();
 

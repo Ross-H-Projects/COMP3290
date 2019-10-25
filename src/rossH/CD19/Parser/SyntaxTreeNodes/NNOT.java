@@ -12,25 +12,30 @@ public class NNOT {
         TreeNode NNOTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         if (!p.currentTokenIs(Token.TNOT)) {
-            p.generateSyntaxError("expected keyword 'not'");
-            System.out.println("NNOT :: error recovery :: ending program..");
-            System.exit(1);
+            p.generateSyntaxError("expected keyword 'not'.");
+            return NNOTNode;
         }
         p.moveToNextToken();
 
         // <expr>
         TreeNode expr1 = NBOOL.expr(p);
+        if (expr1.getNodeType() == TreeNodeType.NUNDEF) {
+            return NNOTNode;
+        }
 
         // <relop>
         TreeNode relop = NBOOL.relop(p);
         if (relop == null) {
-            System.out.println("NNOT :: relop :: error recovery :: ending program..");
-            System.exit(1);
+            p.generateSyntaxError("Expected characters '==', '!=', '>', '<', '>=' or '<='");
+            return NNOTNode;
         }
         p.moveToNextToken();
 
         // <expr>
         TreeNode expr2 = NBOOL.rel(p);
+        if (expr2.getNodeType() == TreeNodeType.NUNDEF) {
+            return NNOTNode;
+        }
 
         NNOTNode.setValue(TreeNodeType.NNOT);
         NNOTNode.setMiddle(relop);

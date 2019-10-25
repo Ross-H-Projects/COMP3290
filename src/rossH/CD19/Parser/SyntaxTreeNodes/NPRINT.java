@@ -9,15 +9,16 @@ public class NPRINT {
         TreeNode NPRINTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         if (!p.currentTokenIs(Token.TPRIN)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'print'");
-            System.out.println("NPRINT :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'print'.");
+            return NPRINTNode;
         }
         p.moveToNextToken();
 
         // <prlist>
         TreeNode prlist = NPRLST.generateTreeNode(p);
+        if (prlist.getNodeType() == TreeNodeType.NUNDEF) {
+            return NPRINTNode;
+        }
 
         NPRINTNode.setValue(TreeNodeType.NPRINT);
         NPRINTNode.setLeft(prlist);

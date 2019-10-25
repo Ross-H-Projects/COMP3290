@@ -9,15 +9,16 @@ public class NPRLN {
         TreeNode NPRlNNode = new TreeNode(TreeNodeType.NUNDEF);
 
         if (!p.currentTokenIs(Token.TPRLN)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'printline'");
-            System.out.println("NPRINT :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'printline'.");
+            return NPRlNNode;
         }
         p.moveToNextToken();
 
         // <prlist>
         TreeNode prlist = NPRLST.generateTreeNode(p);
+        if (prlist.getNodeType() == TreeNodeType.NUNDEF) {
+            return NPRlNNode;
+        }
 
         NPRlNNode.setValue(TreeNodeType.NPRLN);
         NPRlNNode.setLeft(prlist);
