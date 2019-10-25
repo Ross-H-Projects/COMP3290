@@ -1,14 +1,10 @@
 CD19 ExampleAST
+
 	function abc () : void
 	begin 
-		a = 1;
-		b = 2;
-		c = 2 a;
-		d = 1 + 2;
-		e = x = x;
+		return;
 	end
-		
-	 
+ 
 main
 	i:integer
 begin

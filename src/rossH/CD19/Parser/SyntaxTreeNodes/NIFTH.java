@@ -27,46 +27,53 @@ public class NIFTH {
 
         // if
         if (!p.currentTokenIs(Token.TIFTH)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'if'");
-            System.out.println("NIFTH :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'if'.");
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
         }
         p.moveToNextToken();
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected character (");
-            System.out.println("NIFTH :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character '('.");
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
         }
         p.moveToNextToken();
 
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
+        if (bool.getNodeType() == TreeNodeType.NUNDEF) {
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
+        }
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected character )");
-            System.out.println("NIFTH :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character ')'.");
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
         }
         p.moveToNextToken();
 
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
+        if (stats.getNodeType() == TreeNodeType.NUNDEF) {
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
+        }
 
         // <opt_else>
         TreeNode  elseStats = elseIfOptional(p);
+        if (elseStats.getNodeType() == TreeNodeType.NUNDEF) {
+            errorRecoveryToEnd(p);
+            return NIFTHNode;
+        }
 
         // end
         if (!p.currentTokenIs(Token.TEND)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'end'");
-            System.out.println("NIFTH :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'end'.");
+            return NIFTHNode;
         }
         p.moveToNextToken();
 
@@ -98,5 +105,16 @@ public class NIFTH {
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
         return stats;
+    }
+
+    public static void errorRecoveryToEnd (CD19Parser p) {
+        int nextEndOccurence = p.nextTokenOccursAt(Token.TEND);
+        try {
+            if (nextEndOccurence != -1) {
+                p.tokensJumpTo(nextEndOccurence);
+            }
+        } catch (Exception e) {
+
+        }
     }
 }

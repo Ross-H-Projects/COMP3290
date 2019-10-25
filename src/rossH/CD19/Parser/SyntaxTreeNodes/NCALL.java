@@ -11,23 +11,20 @@ public class NCALL {
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected an identifer");
-            System.out.println("NCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected an identifer.");
+            return NCALLNode;
         }
         TreeNode id = NSIVM.generateTreeNode(p);
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected (");
-            System.out.println("NCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected '('.");
+            return NCALLNode;
         }
         p.moveToNextToken();
 
-        NCALLNode.setValue(TreeNodeType.NCALL);
-        NCALLNode.setLeft(id);
+
 
         // implies we are parsing the grammar: <id> ( )
         if (p.currentTokenIs(Token.TRPAR)) {
@@ -37,13 +34,26 @@ public class NCALL {
 
         // <elist>
         TreeNode elist = NEXPL.generateTreeNode(p);
+        // handle <elist> error recovery
+        if (elist.getNodeType() == TreeNodeType.NUNDEF) {
+            // )
+            if (!p.currentTokenIs(Token.TRPAR)) {
+                p.getCurrentToken();
+                p.generateSyntaxError("expected ')' expression list in call.");
+                return NCALLNode;
+            }
+            p.moveToNextToken();
+
+            NCALLNode.setValue(TreeNodeType.NCALL);
+            NCALLNode.setLeft(id);
+            return NCALLNode;
+        }
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected ) after elist");
-            System.out.println("NCALL :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected ')' expression list in call.");
+            return NCALLNode;
         }
         p.moveToNextToken();
 

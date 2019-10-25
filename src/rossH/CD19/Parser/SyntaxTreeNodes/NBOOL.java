@@ -339,7 +339,7 @@ public class NBOOL {
             return new TreeNode(TreeNodeType.NTRUE);
         } else if (p.currentTokenIs(Token.TFALS)) { // false
             p.moveToNextToken();
-            return new TreeNode(TreeNodeType.NTRUE);
+            return new TreeNode(TreeNodeType.NFALS);
         }
 
         // <intlit> | <realit>
@@ -394,10 +394,8 @@ public class NBOOL {
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            System.out.println("<var> --> <id>[<expr>].<id>");
             var = NARRV.generateTreeNode(p);
         } else { // NISVM: <var> --> <id>
-            System.out.println("<var> --> <id>");
             var = NSIVM.generateTreeNode(p);
         }
 

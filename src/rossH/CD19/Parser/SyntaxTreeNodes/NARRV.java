@@ -16,38 +16,43 @@ public class NARRV {
 
         // <id>
         if (!p.currentTokenIs(Token.TIDEN)) {
-            p.getCurrentToken();
-            System.out.println("NARRV :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected an identifier.");
+            return NARRVNode;
         }
         TreeNode id1 = NSIVM.generateTreeNode(p);
 
         // [
         if (!p.currentTokenIs(Token.TLBRK)) {
-            System.out.println("NARRV :: missing left bracket ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected the character '['.");
+            return NARRVNode;
         }
-        p.moveToNextToken();;
+        p.moveToNextToken();
 
         // <expr>
         TreeNode expr = NBOOL.expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            return NARRVNode;
+        }
 
         // ]
         if (!p.currentTokenIs(Token.TRBRK)) {
-            System.out.println("NARRV :: missing right bracket ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected the character ']'.");
+            return NARRVNode;
         }
         p.moveToNextToken();
 
         // .
         if (!p.currentTokenIs(Token.TDOT)) {
-            System.out.println("NARRV :: missing dot operator ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("Expected the character '.'.");
+            return NARRVNode;
         }
         p.moveToNextToken();
 
         // <id>
         TreeNode id2 = NSIVM.generateTreeNode(p);
+        if (id2.getNodeType() == TreeNodeType.NUNDEF) {
+            return NARRVNode;
+        }
 
         NARRVNode.setValue(TreeNodeType.NARRV);
         NARRVNode.setLeft(id1);

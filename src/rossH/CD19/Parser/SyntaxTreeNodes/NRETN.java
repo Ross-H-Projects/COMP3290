@@ -19,18 +19,19 @@ public class NRETN {
 
         // return
         if (!p.currentTokenIs(Token.TRETN)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'return'");
-            System.out.println("NRETN :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'return'.");
+            return NRETNNode;
         }
         p.moveToNextToken();
 
-        NRETNNode.setValue(TreeNodeType.NRETN);
+
 
         // <opt_exp>
         TreeNode exprOptional = exprOptional(p);
         if (exprOptional == null) {
+            NRETNNode.setValue(TreeNodeType.NRETN);
+            return NRETNNode;
+        } else if (exprOptional.getNodeType() == TreeNodeType.NUNDEF) {
             return NRETNNode;
         }
 

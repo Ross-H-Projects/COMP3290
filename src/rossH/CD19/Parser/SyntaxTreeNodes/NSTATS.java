@@ -53,7 +53,7 @@ public class NSTATS {
         // handle invalid strStat
         if (isStrStat && strStat.getNodeType() == TreeNodeType.NUNDEF) {
             try {
-                errorRecovery(p);
+                errorRecoveryStrStat(p);
             } catch (Exception e) {
                 return NSTATSNode;
             }
@@ -170,7 +170,7 @@ public class NSTATS {
 
     // <asgnOrCallStat> --> <asgnstat> | <callstat>
     public static TreeNode asgnOrCallStat (CD19Parser p) {
-        // asgnstat and callstat both being with an identifier
+        // asgnstat and callstat both start with an identifier
         if (!p.currentTokenIs(Token.TIDEN)) {
             p.generateSyntaxError("Expected an identifer");
             return new TreeNode(TreeNodeType.NUNDEF);
@@ -178,7 +178,8 @@ public class NSTATS {
 
         // <callstat>
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
-            return NCALL.generateTreeNode(p);
+            TreeNode callstat = NCALL.generateTreeNode(p);
+            return callstat;
         }
 
         // <asgnstat>
@@ -238,11 +239,11 @@ public class NSTATS {
     }
 
     private static void errorRecovery (CD19Parser p) throws Exception {
-        // we need to move to the next occurence of any of the following tokens
-        // ';' (and one more past that). 'repeat', 'for', 'if', 'input', 'print', 'printline', or 'return'
-        // which ever occurs first we will move to that one
+        // we need to move to the earliest next occurence of any of the following tokens
+        // ';' (and one more past that). 'repeat', 'for', 'if', 'input', 'print', 'printline', 'return',
+        // 'end', 'else', or 'until'
 
-        int nextViableTokenOccurence[] = new int[8];
+        int nextViableTokenOccurence[] = new int[11];
         nextViableTokenOccurence[0] = p.nextTokenOccursAt(Token.TSEMI);
 
         // handle going one past the semi colon if it occurs
@@ -257,6 +258,9 @@ public class NSTATS {
         nextViableTokenOccurence[5] = p.nextTokenOccursAt(Token.TPRIN);
         nextViableTokenOccurence[6] = p.nextTokenOccursAt(Token.TPRIN);
         nextViableTokenOccurence[7] = p.nextTokenOccursAt(Token.TRETN);
+        nextViableTokenOccurence[8]= p.nextTokenOccursAt(Token.TEND);
+        nextViableTokenOccurence[9] = p.nextTokenOccursAt(Token.TELSE);
+        nextViableTokenOccurence[10] = p.nextTokenOccursAt(Token.TUNTL);
 
         int minNextViableOccurence = -1;
         boolean atleastOneViableOccurenceFound = false;
@@ -270,26 +274,52 @@ public class NSTATS {
             }
         }
 
+
+
         if (!atleastOneViableOccurenceFound) {
             throw new Exception("Unable to recover");
+        } else {
+            p.tokensJumpTo(minNextViableOccurence);
+        }
+    }
+
+    public static void errorRecoveryStrStat (CD19Parser p) throws Exception {
+        // when recovering from an error that resulted in
+        // in attempting to parse a stStat we need to consider
+        // that we have already gone to the next occurence of the token 'end',
+        // so we need to jump the parser to the next occurence of any of the following tokens:
+        // 'repeat', 'for', 'if', 'input', 'print', 'printline', 'return', or an
+        //  identifier
+        //  ALSO which ever occurs first we will jump to
+
+        int nextViableTokenOccurence[] = new int[8];
+
+        nextViableTokenOccurence[0] = p.nextTokenOccursAt(Token.TREPT);
+        nextViableTokenOccurence[1] = p.nextTokenOccursAt(Token.TFOR);
+        nextViableTokenOccurence[2] = p.nextTokenOccursAt(Token.TIFTH);
+        nextViableTokenOccurence[3] = p.nextTokenOccursAt(Token.TINPT);
+        nextViableTokenOccurence[4] = p.nextTokenOccursAt(Token.TPRIN);
+        nextViableTokenOccurence[5] = p.nextTokenOccursAt(Token.TPRIN);
+        nextViableTokenOccurence[6] = p.nextTokenOccursAt(Token.TRETN);
+        nextViableTokenOccurence[7] = p.nextTokenOccursAt(Token.TIDEN);
+
+        int minNextViableOccurence = -1;
+        boolean atleastOneViableOccurenceFound = false;
+        for (int i = 0; i < nextViableTokenOccurence.length; i++) {
+            if (!atleastOneViableOccurenceFound && nextViableTokenOccurence[i] != -1) {
+                atleastOneViableOccurenceFound = true;
+                minNextViableOccurence = nextViableTokenOccurence[i];
+            } else if (atleastOneViableOccurenceFound && nextViableTokenOccurence[i] != -1 &&
+                    nextViableTokenOccurence[i] < minNextViableOccurence) {
+                minNextViableOccurence = nextViableTokenOccurence[i];
+            }
         }
 
-        // the next viable token within stats ALSO
-        // needs to occur before the next occurence of the tokens:
-        // 'end', 'else', or 'until'
 
-        int nextEnd = p.nextTokenOccursAt(Token.TEND);
-        int nextElse = p.nextTokenOccursAt(Token.TELSE);
-        int nextUntil = p.nextTokenOccursAt(Token.TUNTL);
-
-        if (nextEnd != -1 && minNextViableOccurence <= nextEnd) {
-            p.tokensJumpTo(minNextViableOccurence);
-        } else if (nextElse != -1 && minNextViableOccurence <= nextElse) {
-            p.tokensJumpTo(minNextViableOccurence);
-        } else if (nextUntil != -1 && minNextViableOccurence <= nextUntil) {
-            p.tokensJumpTo(minNextViableOccurence);
+        if (!atleastOneViableOccurenceFound) {
+            throw new Exception("Unable to recover");
         } else {
-            throw new Exception("Unable to recover.");
+            p.tokensJumpTo(minNextViableOccurence);
         }
     }
 

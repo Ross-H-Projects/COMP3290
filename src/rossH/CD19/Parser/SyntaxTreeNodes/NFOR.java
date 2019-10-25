@@ -12,18 +12,17 @@ public class NFOR {
         // for
         if (!p.currentTokenIs(Token.TFOR)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'for'");
-            System.out.println("NFOR :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'for'.");
+            return NFORNode;
         }
         p.moveToNextToken();
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
+            errorRecoveryToEnd(p);
             p.getCurrentToken();
-            p.generateSyntaxError("expected character (");
-            System.out.println("NFOR :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character '('.");
+            return NFORNode;
         }
         p.moveToNextToken();
 
@@ -31,45 +30,73 @@ public class NFOR {
         TreeNode asgnList = new TreeNode(TreeNodeType.NUNDEF);
         if (p.currentTokenIs(Token.TIDEN)) {
             asgnList = NASGNS.generateTreeNode(p);
+            // <asgnlist> is not a necessary part for NFOR
+            // so just set it null
+            if (asgnList.getNodeType() == TreeNodeType.NUNDEF) {
+                asgnList = null;
+            }
         }
 
         // ;
         if (!p.currentTokenIs(Token.TSEMI)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected character ;");
-            System.out.println("NFOR :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            errorRecoveryToEnd(p);
+            p.generateSyntaxError("expected character ';'.");
+            return NFORNode;
         }
         p.moveToNextToken();
 
         // <bool>
         TreeNode bool = NBOOL.generateTreeNode(p);
+        // <bool> is a necessary part of NFOR
+        // so if it fails, fail the entire NFOR
+        if (bool.getNodeType() == TreeNodeType.NUNDEF) {
+            errorRecoveryToEnd(p);
+            return NFORNode;
+        }
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
+            errorRecoveryToEnd(p);
             p.getCurrentToken();
-            p.generateSyntaxError("expected character )");
-            System.out.println("NFOR :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected character ')'");
+            return NFORNode;
         }
         p.moveToNextToken();
 
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
+        // <stats> is a necessary part of NFOR
+        // so if it fails, fail the entire NFOR
+        if (stats.getNodeType() == TreeNodeType.NUNDEF) {
+            errorRecoveryToEnd(p);
+            return NFORNode;
+        }
 
         // end
         if (!p.currentTokenIs(Token.TEND)) {
             p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'end'");
-            System.out.println("NFOR :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'end'.");
+            return NFORNode;
         }
         p.moveToNextToken();
 
+        // getting here imples all necessary parts of
+        // NFOR were parsed correctly
         NFORNode.setValue(TreeNodeType.NFOR);
         NFORNode.setLeft(asgnList);
         NFORNode.setMiddle(bool);
         NFORNode.setRight(stats);
         return NFORNode;
+    }
+
+    public static void errorRecoveryToEnd (CD19Parser p) {
+        int nextEndOccurence = p.nextTokenOccursAt(Token.TEND);
+        try {
+            if (nextEndOccurence != -1) {
+                p.tokensJumpTo(nextEndOccurence);
+            }
+        } catch (Exception e) {
+
+        }
     }
 }
