@@ -233,8 +233,10 @@ public class TreeNode {
     //	whatever you like tree output routine.
     //
 
-    private static BufferedWriter xmlFileWriter;
+    private static BufferedWriter lstFileWriter;
+    public static void setLstFileWriter(BufferedWriter fileWriter) { lstFileWriter = fileWriter;}
 
+    private static BufferedWriter xmlFileWriter;
     public static void setXmlFileWriter (BufferedWriter fileWriter) {
         xmlFileWriter = fileWriter;
     }
@@ -250,35 +252,42 @@ public class TreeNode {
             }
             count = 0;
         }
-        ;
+
         if (xmlFileWriter != null) {
             xmlFileWriter.append("<nodeType value=\"" + PRINTNODE[tr.nodeValue] + " \"/>\n");
         }
-        System.out.print(PRINTNODE[tr.nodeValue] + " ");
+        String nodeType = PRINTNODE[tr.nodeValue] + " ";
+        nodeType = padToSeven(nodeType);
+
+        System.out.print(nodeType);
         count++;
 
-        if (count % 7 == 0)  {
+        if (count >= 10)  {
+            count = 0;
             System.out.println();
         }
 
         if (tr.getSymbolRecord() != null) {
-            String toPrint = tr.getSymbolRecord().getLexeme();
-            System.out.print(toPrint + " ");
+            String toPrint = tr.getSymbolRecord().getLexeme() + " ";
+
             if (xmlFileWriter != null) {
                 String toPrintXml = toPrint.replace("\"", "");
                 xmlFileWriter.append("<nodeSymbolValue value=\"" + toPrintXml + " \"/>\n");
             }
-            count++;
-            if (count % 7 == 0) {
+
+            toPrint = padToSeven(toPrint);
+            System.out.print(toPrint);
+            lstFileWriter.append(toPrint);
+
+            int countIncreaseBy = (toPrint.length() / 7);
+            count += countIncreaseBy;
+            if (count >= 10) {
+                count = 0;
                 System.out.println();
+                lstFileWriter.append("\n");
             };
         }
 
-        /*if (tr.getNodeType()  != null) {
-            out.print(  tr.type.getName() + " ");
-            count++;
-            if (count%7 == 0) out.println();
-        }*/
 
         // pre-order traversal of syntax tree
         if (tr.left   != null) {
@@ -317,14 +326,26 @@ public class TreeNode {
             }
         }
 
-        if (tr.nodeValue == NPROG && count % 7 != 0) {
+        /*if (tr.nodeValue == NPROG && count % 7 != 0) {
             System.out.println();
-        };
+        };*/
 
         if (tr.nodeValue == NPROG) {
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</root>");
             }
         }
+    }
+
+    public static String padToSeven (String s) {
+        if (s.length() % 7 == 0) {
+            return s;
+        }
+
+        int paddingAmount = 7 - (s.length() % 7);
+        for (int i = 0; i < paddingAmount; i++) {
+            s += " ";
+        }
+        return s;
     }
 }

@@ -53,30 +53,45 @@ public class A3 {
 
 
         try {
+            BufferedWriter lstFileWriter = new BufferedWriter(new FileWriter("output.lst", false));
+            TreeNode.setLstFileWriter(lstFileWriter);
+            lstFileWriter.write("");
+
             if (debug) {
+                // write parsed grammar to screen and
+                // output.lst file and treeOutput.xml
                 BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
                 TreeNode.setXmlFileWriter(xmlFileWriter);
                 xmlFileWriter.write("");
                 TreeNode.printTree(NPROG, "");
                 xmlFileWriter.close();
             } else {
+                // write parsed grammar to screen and
+                // output.lst file
                 TreeNode.printTree(NPROG, "");
+            }
+
+
+
+            // print syntax tree parsing errors to screen
+            // and output.lst file
+            List<String> syntaxErrors = parser.getSyntaxErrors();
+            if (syntaxErrors.size() > 0) {
+                System.out.println();
+                System.out.println();
+                System.out.println("Errors: ");
+                System.out.println();
+            }
+
+            for (int i = 0; i < syntaxErrors.size(); i++) {
+                System.out.println(syntaxErrors.get(i));
             }
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);
         }
 
-        System.out.println();
-        System.out.println();
-        System.out.println("Errors: ");
-        System.out.println();
 
-        // print syntax tree parsing errors
-        List<String> syntaxErrors = parser.getSyntaxErrors();
-        for (int i = 0; i < syntaxErrors.size(); i++) {
-            System.out.println(syntaxErrors.get(i));
-        }
     }
 
 }
