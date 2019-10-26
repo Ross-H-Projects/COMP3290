@@ -1,10 +1,9 @@
 
-package rossH.CD19.Parser;
 
-import com.sun.source.tree.Tree;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Scanner.CD19Scanner;
 import rossH.CD19.Scanner.Token;
+import rossH.CD19.Parser.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,6 +14,7 @@ import java.util.List;
 
 public class A3 {
     public static void main(String[] args) {
+        boolean debug = true;
 
         // get source program content
         String sourceFileName = null;
@@ -31,27 +31,37 @@ public class A3 {
         CD19Scanner scanner = new CD19Scanner(sourceText);
         List<Token> tokens = new LinkedList<>();
         Token token;
+        boolean isLexicalErrorPresent = false;
         while (!scanner.eof()) {
             token = scanner.getToken();
-            scanner.printToken(token);
+            if (token.value() == Token.TUNDF) {
+                isLexicalErrorPresent = true;
+                break;
+            }
             tokens.add(token);
         }
 
-        System.out.println();
-        System.out.println();
+        if (isLexicalErrorPresent) {
+            System.out.println("Error(s) occured while performing lexical analysis. Not going on to perform Syntax analysis.");
+            System.out.println("Ending program...");
+            return;
+        }
 
         // transform tokens into a synatax tree
         CD19Parser parser = new CD19Parser(tokens);
         TreeNode NPROG = parser.parse();
-        System.out.println();
-        System.out.println();
+
 
         try {
-            BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
-            TreeNode.setXmlFileWriter(xmlFileWriter);
-            xmlFileWriter.write("");
-            TreeNode.printTree(NPROG, "");
-            xmlFileWriter.close();
+            if (debug) {
+                BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
+                TreeNode.setXmlFileWriter(xmlFileWriter);
+                xmlFileWriter.write("");
+                TreeNode.printTree(NPROG, "");
+                xmlFileWriter.close();
+            } else {
+                TreeNode.printTree(NPROG, "");
+            }
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);

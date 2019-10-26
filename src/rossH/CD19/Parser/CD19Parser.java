@@ -44,9 +44,6 @@ public class CD19Parser {
     }
 
     public void moveToNextToken () {
-        System.out.print("Current Token is: " + tokens.get(tokenPos).getTokenObjString());
-        System.out.print(" || Next Token is: " + tokens.get(tokenPos + 1).getTokenObjString());
-        System.out.println();
         tokenPos++;
 
     }
@@ -73,8 +70,6 @@ public class CD19Parser {
     }
 
     public void generateSyntaxError (String s) {
-        System.out.println(s);
-
         String syntaxErrorString = "Error occured at line ";
         syntaxErrorString += " " + tokens.get(tokenPos).getLn() + ":\n\t";
         syntaxErrorString += s;
@@ -82,8 +77,6 @@ public class CD19Parser {
     }
 
     public void generateSyntaxError (String s, int lineNo) {
-        System.out.println(s);
-
         String syntaxErrorString = "Error occured at line " + lineNo + ":\n\t";
         syntaxErrorString += s;
         syntaxErrors.add(syntaxErrorString);

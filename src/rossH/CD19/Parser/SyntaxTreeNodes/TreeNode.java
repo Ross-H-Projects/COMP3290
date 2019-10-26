@@ -233,7 +233,7 @@ public class TreeNode {
     //	whatever you like tree output routine.
     //
 
-    public static BufferedWriter xmlFileWriter;
+    private static BufferedWriter xmlFileWriter;
 
     public static void setXmlFileWriter (BufferedWriter fileWriter) {
         xmlFileWriter = fileWriter;

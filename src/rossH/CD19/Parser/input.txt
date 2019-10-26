@@ -1,13 +1,9 @@
 CD19 ExampleAST
-
-	function abc () : void
-	begin 
-		a = ( a +  ;
-	end
- 
 main
-	i:integer
+	i:integer, j:integer, k:integer
 begin
-	u = 2; 
+	input i;
+	input j;
+	k = i + j;
+	printline k;
 end CD19 ExampleAST
-

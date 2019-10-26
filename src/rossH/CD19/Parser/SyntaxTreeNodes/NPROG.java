@@ -56,10 +56,10 @@ public class NPROG {
 
         // <mainbody>
         TreeNode main = NMAIN.generateTreeNode(p);
+        // <mainbody> is a necessary section of NPROG, so if we fail to parse
+        // hat then we will fail to parse NPROG entirely
         if (main != null && main.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NPROG :: main :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //errorRecoveryToEnd(p);
+            return NPROGNode;
         }
 
         // construct actual tree node

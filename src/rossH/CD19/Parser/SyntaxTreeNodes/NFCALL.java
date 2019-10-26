@@ -22,25 +22,40 @@ public class NFCALL {
         }
         p.moveToNextToken();
 
-        NFCALLNode.setValue(TreeNodeType.NFCALL);
-        NFCALLNode.setLeft(id);
-
         // implies we are parsing the grammar: <id> ( )
         if (p.currentTokenIs(Token.TRPAR)) {
             p.moveToNextToken();
+            NFCALLNode.setValue(TreeNodeType.NFCALL);
+            NFCALLNode.setLeft(id);
             return NFCALLNode;
         }
 
         // <elist>
         TreeNode elist = NEXPL.generateTreeNode(p);
+        // handle <elist> error recovery
+        if (elist.getNodeType() == TreeNodeType.NUNDEF) {
+            // )
+            if (!p.currentTokenIs(Token.TRPAR)) {
+                p.getCurrentToken();
+                p.generateSyntaxError("expected ')' in function call.");
+                return NFCALLNode;
+            }
+            p.moveToNextToken();
+
+            NFCALLNode.setValue(TreeNodeType.NFCALL);
+            NFCALLNode.setLeft(id);
+            return NFCALLNode;
+        }
 
         // )
         if (!p.currentTokenIs(Token.TRPAR)) {
-            p.generateSyntaxError("expected ')' list of parameters for function call.");
+            p.generateSyntaxError("expected ')' after list of parameters for function call.");
             return NFCALLNode;
         }
         p.moveToNextToken();
 
+        NFCALLNode.setValue(TreeNodeType.NFCALL);
+        NFCALLNode.setLeft(id);
         NFCALLNode.setRight(elist);
         return NFCALLNode;
     }

@@ -1,5 +1,6 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
+import jdk.nashorn.api.tree.Tree;
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
@@ -23,20 +24,25 @@ public class NBOOL {
 
         // <rel>
         TreeNode rel = rel(p);
+        if (rel.getNodeType() == TreeNodeType.NUNDEF) {
+            return NBOOLNode;
+        }
 
         // <bool_r>
         TreeNode boolR = boolR(p);
+        if (boolR != null && boolR.getNodeType() == TreeNodeType.NUNDEF) {
+            return NBOOLNode;
+        }
 
-        // construct the actual TreeNode
-
+        // <bool>  -> <rel> <bool_r>
         if (boolR != null) {
             NBOOLNode.setValue(TreeNodeType.NBOOL);
             NBOOLNode.setLeft(rel);
             NBOOLNode.setRight(boolR);
-
             return NBOOLNode;
         }
 
+        // <bool> -> <rel>
         return rel;
 
     }
@@ -55,9 +61,15 @@ public class NBOOL {
 
         // <rel>
         TreeNode rel = rel(p);
+        if (rel.getNodeType() == TreeNodeType.NUNDEF) {
+            return rel;
+        }
 
         // <bool_r>
         TreeNode boolR = boolR(p);
+        if (boolR != null && boolR.getNodeType() == TreeNodeType.NUNDEF) {
+            return boolR;
+        }
 
         logop.setLeft(rel);
         if (boolR != null) {
@@ -74,7 +86,6 @@ public class NBOOL {
         } else if (p.currentTokenIs(Token.TXOR)) {
             return new TreeNode(TreeNodeType.NXOR);
         }
-
         return null;
     }
 
@@ -104,9 +115,16 @@ public class NBOOL {
 
         // <expr>
         TreeNode expr = expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            return expr;
+        }
 
         // <opt_relop_expr>
         TreeNode optRelopExpr = optRelopExpr(p);
+        if (optRelopExpr != null && optRelopExpr.getNodeType() == TreeNodeType.NUNDEF) {
+            return optRelopExpr;
+        }
+
         if (optRelopExpr != null) {
             optRelopExpr.setLeft(expr);
             return optRelopExpr;
@@ -127,6 +145,9 @@ public class NBOOL {
 
         // <expr>
         TreeNode expr = expr(p);
+        if (expr.getNodeType() == TreeNodeType.NUNDEF) {
+            return expr;
+        }
 
         relop.setRight(expr);
         return relop;
@@ -147,7 +168,6 @@ public class NBOOL {
         } else if (p.currentTokenIs(Token.TLEQL))  { // <=
             return new TreeNode(TreeNodeType.NLEQ);
         }
-
         return null;
     }
 
@@ -173,6 +193,9 @@ public class NBOOL {
 
         // <opt_add_sub>
         TreeNode optAddSub = optAddSub(p);
+        if (optAddSub != null && optAddSub.getNodeType() == TreeNodeType.NUNDEF) {
+            return optAddSub;
+        }
 
         if (optAddSub == null) {
             return term;
@@ -186,7 +209,6 @@ public class NBOOL {
     public static TreeNode optAddSub (CD19Parser p) {
         TreeNode optAddSub = new TreeNode(TreeNodeType.NUNDEF);
 
-        p.getCurrentToken();
 
         if (p.currentTokenIs(Token.TPLUS)) { // +
             optAddSub.setValue(TreeNodeType.NADD);
@@ -232,6 +254,9 @@ public class NBOOL {
 
         // <multDivModOpt>
         TreeNode multDivModNothing = multDivModNothing(p);
+        if (multDivModNothing != null && multDivModNothing.getNodeType() == TreeNodeType.NUNDEF) {
+            return multDivModNothing;
+        }
 
         if (multDivModNothing == null) {
             return fact;
@@ -258,6 +283,10 @@ public class NBOOL {
 
         // <term>
         TreeNode term = term(p);
+        if (term.getNodeType() == TreeNodeType.NUNDEF) {
+            return term;
+        }
+
         multDivModNothing.setRight(term);
         return multDivModNothing;
     }
@@ -283,6 +312,9 @@ public class NBOOL {
 
         // <fact_r>
         TreeNode factR = factR(p);
+        if (factR != null && factR.getNodeType() == TreeNodeType.NUNDEF) {
+            return factR;
+        }
 
         if (factR == null) {
             return exponent;
@@ -307,6 +339,10 @@ public class NBOOL {
 
         // <fact>
         TreeNode fact = fact(p);
+        if (fact.getNodeType() == TreeNodeType.NUNDEF) {
+            return fact;
+        }
+
         factR.setRight(fact);
         return factR;
     }
@@ -391,7 +427,8 @@ public class NBOOL {
     private static TreeNode varOrFnCall (CD19Parser p) {
         // <fncall>
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
-            return NFCALL.generateTreeNode(p);
+            TreeNode fncall = NFCALL.generateTreeNode(p);
+            return fncall;
         }
 
         // <var>

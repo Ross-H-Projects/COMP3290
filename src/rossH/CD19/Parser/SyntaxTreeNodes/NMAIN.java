@@ -21,10 +21,12 @@ public class NMAIN {
 
         // <slist>
         TreeNode slist = NSDLST.generateTreeNode(p);
+        // list is a necessary section of NMAIN
+        // thus if we fail to parse it, then we must fail parsing
+        // the entirety of NMAIN
         if (slist != null && slist.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NSDLST :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //errorRecoveryToEnd(p);
+            // prematurely end parsing due to irrecoverable error
+            return NMAINNode;
         }
 
         // begin
@@ -37,10 +39,10 @@ public class NMAIN {
 
         // <stats>
         TreeNode stats = NSTATS.generateTreeNode(p);
+        // <stats> are a necessary section of NMAIN, so if we fail to parse
+        // <stats> we fail to parse the entirety  of NMAIN
         if (stats != null && stats.getNodeType() == TreeNodeType.NUNDEF) {
-            System.out.println("NSTATS :: ERROR RECOVERY - exiting...");
-            System.exit(1);
-            //errorRecoveryToEnd(p);
+            return NMAINNode;
         }
 
         // end

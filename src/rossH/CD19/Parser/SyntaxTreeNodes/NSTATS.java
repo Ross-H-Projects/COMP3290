@@ -285,7 +285,7 @@ public class NSTATS {
 
     public static void errorRecoveryStrStat (CD19Parser p) throws Exception {
         // when recovering from an error that resulted in
-        // in attempting to parse a stStat we need to consider
+        // in attempting to parse a strStat we need to consider
         // that we have already gone to the next occurence of the token 'end',
         // so we need to jump the parser to the next occurence of any of the following tokens:
         // 'repeat', 'for', 'if', 'input', 'print', 'printline', 'return', or an

@@ -4,18 +4,69 @@
 <child which="right">
 <nodeType value="NMAIN "/>
 <child which="left">
+<nodeType value="NSDLST "/>
+<child which="left">
 <nodeType value="NSDECL "/>
 <nodeSymbolValue value="i "/>
 </child>
 <child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="j "/>
+</child>
+<child which="right">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="k "/>
+</child>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NINPUT "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="i "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NINPUT "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="j "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
 <nodeType value="NASGN "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="u "/>
+<nodeSymbolValue value="k "/>
 </child>
 <child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2 "/>
+<nodeType value="NADD "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="i "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="j "/>
+</child>
+</child>
+</child>
+<child which="right">
+<nodeType value="NPRLN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="k "/>
+</child>
+</child>
+</child>
 </child>
 </child>
 </child>

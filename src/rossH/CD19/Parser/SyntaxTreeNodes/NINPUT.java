@@ -10,18 +10,18 @@ public class NINPUT {
 
         // input
         if (!p.currentTokenIs(Token.TINPT)) {
-            p.getCurrentToken();
-            p.generateSyntaxError("expected the keyword 'input'");
-            System.out.println("NINPUT :: ERROR RECOVERY - exiting...");
-            System.exit(1);
+            p.generateSyntaxError("expected the keyword 'input'.");
+            return NINPUTNode;
         }
         p.moveToNextToken();
 
-        NINPUTNode.setValue(TreeNodeType.NINPUT);
-
         // <vlist>
         TreeNode vlist = NVLIST.generateTreeNode(p);
+        if (vlist.getNodeType() == TreeNodeType.NUNDEF) {
+            return NINPUTNode;
+        }
 
+        NINPUTNode.setValue(TreeNodeType.NINPUT);
         NINPUTNode.setLeft(vlist);
         return NINPUTNode;
     }
