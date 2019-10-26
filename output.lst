@@ -1,0 +1,9 @@
+NPROG  ExampleAST    NMAIN  NSDLST NSDECL i      NSDLST NSDECL j      
+NSDECL k      NSTATS NINPUT NSIMV  i      NSTATS NINPUT NSIMV  j      
+NSTATS NASGN  NSIMV  k      NADD   NSIMV  i      NSIMV  j      NASGN  
+NSIMV  j      NILIT  2      
+
+Errors:
+
+Error occured at line  9:
+	Statements must end with a semi-comma

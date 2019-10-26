@@ -260,11 +260,13 @@ public class TreeNode {
         nodeType = padToSeven(nodeType);
 
         System.out.print(nodeType);
+        lstFileWriter.append(nodeType);
         count++;
 
         if (count >= 10)  {
             count = 0;
             System.out.println();
+            lstFileWriter.append("\n");
         }
 
         if (tr.getSymbolRecord() != null) {

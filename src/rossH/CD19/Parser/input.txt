@@ -5,5 +5,7 @@ begin
 	input i;
 	input j;
 	k = i + j;
-	printline k;
+	printline k
+	a = 1 + 2;
+	j = 2;
 end CD19 ExampleAST

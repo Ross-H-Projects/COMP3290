@@ -41,6 +41,7 @@ public class A3 {
             tokens.add(token);
         }
 
+        // don't do syntax analysis if lexical analysis failed
         if (isLexicalErrorPresent) {
             System.out.println("Error(s) occured while performing lexical analysis. Not going on to perform Syntax analysis.");
             System.out.println("Ending program...");
@@ -72,26 +73,22 @@ public class A3 {
             }
 
 
-
             // print syntax tree parsing errors to screen
             // and output.lst file
             List<String> syntaxErrors = parser.getSyntaxErrors();
             if (syntaxErrors.size() > 0) {
-                System.out.println();
-                System.out.println();
-                System.out.println("Errors: ");
-                System.out.println();
+                System.out.print("\n\nErrors:\n\n");
+                lstFileWriter.append("\n\nErrors:\n\n");
             }
 
             for (int i = 0; i < syntaxErrors.size(); i++) {
                 System.out.println(syntaxErrors.get(i));
+                lstFileWriter.append(syntaxErrors.get(i));
             }
+            lstFileWriter.close();
         } catch (Exception e) {
             System.out.println(e);
-            System.exit(1);
         }
-
-
     }
 
 }
