@@ -1,13 +1,14 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
 
 public class NMAIN {
 
     // <mainbody> --> main <slist> begin <stats> end CD19 <id>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, String programId) {
         TreeNode NMAINNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
@@ -69,8 +70,14 @@ public class NMAIN {
         }
         // insert program id identifier into symbol table
         currentToken = p.getCurrentToken();
-        p.insertSymbolIdentifier(currentToken);
+        SymbolTableRecord stRec = p.insertSymbolIdentifier(currentToken);
+        NMAINNode.setSymbolRecord(stRec);
         p.moveToNextToken();
+
+        // semantic analysis
+        if (NMAINNode.getSymbolRecord().getLexeme() != programId) {
+            p.generateSemanticError("Expected program ids to match");
+        }
 
         // construct actual tree node
         NMAINNode = new TreeNode(TreeNodeType.NMAIN, slist, stats);

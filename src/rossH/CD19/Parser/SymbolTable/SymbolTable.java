@@ -10,7 +10,11 @@ public class SymbolTable {
     }
 
     public void setSymbolTableRecord (SymbolTableRecord STRec) {
-        symbols.put(STRec.hashCode(), STRec);
+        try {
+            symbols.put(STRec.hashCode(), STRec);
+        } catch (Exception e) {
+            int a = 1;
+        }
     }
 
     public SymbolTableRecord getSymbolTableRecord (int key) {
@@ -26,7 +30,6 @@ public class SymbolTable {
     }
 
     public boolean contains (SymbolTableRecord stRec) {
-        // stub
-        return true;
+        return symbols.containsKey(stRec.hashCode());
     }
 }

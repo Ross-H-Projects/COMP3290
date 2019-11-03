@@ -14,13 +14,28 @@ import java.util.List;
 public class CD19Parser {
     private List<Token> tokens;
     private List<String> syntaxErrors;
+    private List<String> semanticErrors;
     private SymbolTable symbolTableIdentifiers;
     private int tokenPos = 0;
+
+    private boolean isSemanticallyValid;
+
+    private int currentBaseRegister0Offset;
+    private int currentBaseRegister1Offset;
+    private int currentBaseRegister2Offset;
+
 
     public CD19Parser (List<Token> tokens) {
         this.tokens = tokens;
         this.symbolTableIdentifiers = new SymbolTable();
         syntaxErrors = new LinkedList<String>();
+        semanticErrors = new LinkedList<String>();
+        isSemanticallyValid = true;
+        currentBaseRegister0Offset = 0;
+        currentBaseRegister1Offset = 0;
+        currentBaseRegister2Offset = 0;
+
+
         TreeNode.setup();
     }
 
@@ -34,7 +49,7 @@ public class CD19Parser {
         // Add to symbol Table or get Symbol Table reference
         SymbolTableRecord stRec = new SymbolTableRecord(token.value(), token.getStr());
 
-        if (!symbolTableIdentifiers.contains(stRec)) {
+        if (symbolTableIdentifiers.contains(stRec)) {
             // MAY NEED KEEP TRACK OF symbol table record in Token??
             stRec = symbolTableIdentifiers.getSymbolTableRecord(stRec);
         }
@@ -82,6 +97,21 @@ public class CD19Parser {
         syntaxErrors.add(syntaxErrorString);
     }
 
+    public void generateSemanticError (String s) {
+        String semanticErrorString = "Error (semantic) occured at line";
+        semanticErrorString += " " + tokens.get(tokenPos).getLn() + ":\n\t";
+        semanticErrorString += s;
+        semanticErrors.add(semanticErrorString);
+        isSemanticallyValid = false;
+    }
+
+    public void generateSemanticError (String s, int lineNo) {
+        String semanticErrorString = "Error (semantic) occured at line " + lineNo + ":\n\t";
+        semanticErrorString += s;
+        semanticErrors.add(semanticErrorString);
+        isSemanticallyValid = false;
+    }
+
     public void tokensJumpTo (int pos) {
         tokenPos = pos;
     }
@@ -93,5 +123,21 @@ public class CD19Parser {
             }
         }
         return -1;
+    }
+
+    public int getBaseReigtserOffset(int i) {
+        int oldBaseRegisterOffset = -1;
+        if (i == 0) {
+            oldBaseRegisterOffset = currentBaseRegister0Offset;
+            currentBaseRegister0Offset += 8;
+        } else if (i == 1) {
+            oldBaseRegisterOffset = currentBaseRegister1Offset;
+            currentBaseRegister1Offset += 8;
+        } else if (i == 2) {
+            oldBaseRegisterOffset = currentBaseRegister2Offset;
+            currentBaseRegister2Offset += 8;
+        }
+
+        return oldBaseRegisterOffset;
     }
 }

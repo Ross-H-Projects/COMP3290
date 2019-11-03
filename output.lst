@@ -1,9 +1,4 @@
-NPROG  ExampleAST    NMAIN  NSDLST NSDECL i      NSDLST NSDECL j      
-NSDECL k      NSTATS NINPUT NSIMV  i      NSTATS NINPUT NSIMV  j      
-NSTATS NASGN  NSIMV  k      NADD   NSIMV  i      NSIMV  j      NASGN  
-NSIMV  j      NILIT  2      
-
-Errors:
-
-Error occured at line  9:
-	Statements must end with a semi-comma
+NPROG  test  DEBUG: -873614422     NMAIN  NSDLST NSDECL x  DEBUG: 117238     
+NSDLST NSDECL y  DEBUG: 118200     NSDECL z  DEBUG: 119162     NSTATS 
+NASGN  NSIMV  x  DEBUG: 117238     NILIT  2  DEBUG: 49929      NASGN  
+NSIMV  y  DEBUG: 118200     NILIT  7  DEBUG: 54739      

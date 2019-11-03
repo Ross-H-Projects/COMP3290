@@ -12,9 +12,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
+import rossH.CD19.Scanner.Token;
 
 public class TreeNode {
+
+    private static int index = 0;
+    private int idx;
 
     public enum TreeNodeDataType {
         Integer,
@@ -84,6 +89,8 @@ public class TreeNode {
         right = null;
         symbolRecord = null;
         dataType = null;
+
+        idx = ++index;
     }
 
     public TreeNode (TreeNodeType nValue, SymbolTableRecord st) {
@@ -147,6 +154,19 @@ public class TreeNode {
 
     public void setSymbolRecord(SymbolTableRecord stRec) {
         this.symbolRecord = stRec;
+    }
+
+    public SymbolDataType getSymbolRecordDataType() {
+        if (this.symbolRecord != null) {
+            return this.symbolRecord.getSymbolDataType();
+        }
+        return null;
+    }
+
+    public void setSymbolRecordDataType(Token currentToken, int baseRegister, int offset) {
+        if (this.symbolRecord != null) {
+            this.symbolRecord.setDataType(currentToken, baseRegister, offset);
+        }
     }
 
     public static void setup () {
@@ -271,6 +291,7 @@ public class TreeNode {
 
         if (tr.getSymbolRecord() != null) {
             String toPrint = tr.getSymbolRecord().getLexeme() + " ";
+            toPrint += " DEBUG: " + tr.getSymbolRecord().hashCode() + " ";
 
             if (xmlFileWriter != null) {
                 String toPrintXml = toPrint.replace("\"", "");

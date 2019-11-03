@@ -92,10 +92,7 @@ public class NSDLST {
             p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
             return sdecl;
         }
-        // todo
-        //  add symbol reference to symbol type (sdecl stype)
-        //      currentToken = p.getCurrentToken();
-        //      p.insertSymbolIdentifier((currentToken));
+        sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
         p.moveToNextToken();
 
         sdecl.setValue(TreeNodeType.NSDECL);
