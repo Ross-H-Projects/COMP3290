@@ -38,35 +38,27 @@ public class CD19CodeGenerator {
 
     public String generateCode (TreeNode programNode) {
 
+        LinkedList<Integer> opCodes = new LinkedList<Integer>();
+
         // we need to traverse the tree via post order
         TreeNode mainbodyNode = programNode.getRight();
 
 
         // we need to generate code for declarations before main body
         TreeNode slistNode = mainbodyNode.getLeft();
-        List<Integer> slistOpcodes = generateDeclarations(slistNode);
+        generateDeclarations(slistNode, opCodes);
 
         // we need to generate code for statements in main body
         TreeNode statsNode = mainbodyNode.getRight();
-        generateMainBodyStatements(statsNode, slistOpcodes);
+        generateMainBodyStatements(statsNode, opCodes);
 
-        System.out.println("\n\n");
 
-        for (int i = 0; i < slistOpcodes.size(); i++) {
-            System.out.print(slistOpcodes.get(i));
-            System.out.print(" ");
-            if ((i + 1) % 8 == 0) {
-                System.out.println();
-            }
-        }
-
-        return "";
+        return convertOpCodesListToModFile(opCodes);
     }
 
-    public List<Integer> generateDeclarations (TreeNode declarations) {
+    public void generateDeclarations (TreeNode declarations, LinkedList<Integer> opCodes) {
         // curently only supporting:
         // integer declarations
-        LinkedList<Integer> opCodes = new LinkedList<Integer>();
 
         int noOfDeclarations = generateDeclarationsRecursive(declarations, opCodes, 0);
 
@@ -79,8 +71,6 @@ public class CD19CodeGenerator {
         //  instead of just 00 here
         opCodes.addFirst(00);
         opCodes.addFirst(42);
-
-        return opCodes;
     }
 
     public int generateDeclarationsRecursive (TreeNode declarations, List<Integer> opCodes, int noOfDeclarationsSofar) {
@@ -118,13 +108,49 @@ public class CD19CodeGenerator {
         }
     }
 
-    public List<Integer> generateMainBodyStatements (TreeNode statements, List<Integer> opCodes) {
+    public void generateMainBodyStatements (TreeNode statements, List<Integer> opCodes) {
         // currently only supporting:
         // a = x
         // x -> int literal | variables | addition of variabls / literals
         // ie currently only supports nstats, nasgn, nsimv, nilit,
         StatementGenerator.generateCode(statements, opCodes);
 
-        return opCodes;
+    }
+
+    public String convertOpCodesListToModFile (List<Integer> opCodes) {
+        String modFileContents = "";
+        int modFileLength = (int) Math.ceil( ((double) opCodes.size()) / 8.0);
+
+        modFileContents += modFileLength + "\n  ";
+
+        int opsThisLine = 0;
+        for (int i = 0; i < opCodes.size(); i++) {
+            opsThisLine++;
+            modFileContents += convertToByteRepresentation(opCodes.get(i)) + "  ";
+            if (((i + 1) % 8 == 0) && (i != opCodes.size() - 1)) {
+                opsThisLine = 0;
+                modFileContents += "\n  ";
+            }
+        }
+
+        // figure out if we need to pad the last line
+        if ((opsThisLine != 0) &&(opsThisLine != 8)) {
+            for (int i = 0; i < (8 - opsThisLine); i++) {
+                modFileContents += "00  ";
+            }
+        }
+
+        modFileContents += "\n0\n0\n0";
+
+        return modFileContents;
+    }
+
+    public String convertToByteRepresentation (int o) {
+        String s = o + "";
+        if (s.length() == 1) {
+            s = "0" + s;
+        }
+
+        return s;
     }
 }

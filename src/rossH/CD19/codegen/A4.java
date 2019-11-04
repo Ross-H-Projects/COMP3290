@@ -93,8 +93,17 @@ public class A4 {
         // transform parse tree / abstract syntax tree into opcodes
         CD19CodeGenerator codeGenerator = new CD19CodeGenerator();
 
-        codeGenerator.generateCode(NPROG);
+        String modFileContents = codeGenerator.generateCode(NPROG);
+        System.out.println();
+        System.out.println(modFileContents);
 
+        try {
+            BufferedWriter programModFile = new BufferedWriter(new FileWriter(".\\src\\rossH\\CD19\\codegen\\myProgram.mod", false));
+            programModFile.write(modFileContents);
+            programModFile.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }

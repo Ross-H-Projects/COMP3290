@@ -88,6 +88,10 @@ public class SymbolTableRecord {
         return this.baseRegister + 90;
     }
 
+    public int getBaseRegisterForValue () {
+        return this.baseRegister + 80;
+    }
+
     public int getOffset () {
         return this.offset;
     }
