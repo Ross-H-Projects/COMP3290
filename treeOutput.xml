@@ -16,8 +16,15 @@
 <nodeSymbolValue value="y  DEBUG: 118200  "/>
 </child>
 <child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
 <nodeType value="NSDECL "/>
 <nodeSymbolValue value="z  DEBUG: 119162  "/>
+</child>
+<child which="right">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="a  DEBUG: 95112  "/>
+</child>
 </child>
 </child>
 </child>
@@ -56,40 +63,57 @@
 <nodeSymbolValue value="z  DEBUG: 119162  "/>
 </child>
 <child which="right">
-<nodeType value="NADD "/>
+<nodeType value="NMUL "/>
 <child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="7  DEBUG: 54739  "/>
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: 117238  "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  DEBUG: 118200  "/>
+</child>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NPRLN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="z  DEBUG: 119162  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="a  DEBUG: 95112  "/>
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
 <nodeSymbolValue value="10  DEBUG: 1509283  "/>
 </child>
 </child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NPLEQ "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="a  DEBUG: 95112  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="1  DEBUG: 48967  "/>
+</child>
 </child>
 <child which="right">
 <nodeType value="NPRLN "/>
 <child which="left">
-<nodeType value="NPRLST "/>
-<child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  DEBUG: 119162  "/>
-</child>
-<child which="right">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  DEBUG: 49929  "/>
-</child>
-<child which="right">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="3  DEBUG: 50891  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="4  DEBUG: 51853  "/>
+<nodeSymbolValue value="a  DEBUG: 95112  "/>
 </child>
 </child>
 </child>
