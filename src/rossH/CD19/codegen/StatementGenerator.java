@@ -16,8 +16,8 @@ public class StatementGenerator {
 
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NASGN) {
             generateNASGNCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPLEQ) {
-            generateNPLEQCode(treeNode.getRight(), opCodes);
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPLEQ) {
+            generateNPLEQCode(treeNode.getLeft(), opCodes);
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLN) {
             generateNPRLNCode(treeNode.getLeft(), opCodes);
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRINT) {
@@ -36,8 +36,8 @@ public class StatementGenerator {
             generateNPLEQCode(treeNode.getRight(), opCodes);
         } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPRLN) {
             generateNPRLNCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRINT) {
-            generateNPRINTCode(treeNode.getLeft(), opCodes);
+        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPRINT) {
+            generateNPRINTCode(treeNode.getRight(), opCodes);
         }
     }
 
@@ -86,6 +86,9 @@ public class StatementGenerator {
         } else if (treeNode.getRight().getNodeType() == TreeNodeType.NMUL) {
             generateNMULCode(treeNode.getRight(), opCodes);
         }
+
+        // do an add
+        opCodes.add(11);
 
         // do a store at the end
         opCodes.add(43);
