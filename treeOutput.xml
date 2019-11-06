@@ -1,30 +1,23 @@
 <root>
 <nodeType value="NPROG "/>
-<nodeSymbolValue value="test  DEBUG: -873614422  "/>
+<nodeSymbolValue value="test  "/>
 <child which="right">
 <nodeType value="NMAIN "/>
 <child which="left">
 <nodeType value="NSDLST "/>
 <child which="left">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="x  DEBUG: 117238  "/>
+<nodeSymbolValue value="x  "/>
 </child>
 <child which="right">
 <nodeType value="NSDLST "/>
 <child which="left">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="y  DEBUG: 118200  "/>
-</child>
-<child which="right">
-<nodeType value="NSDLST "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="z  DEBUG: 119162  "/>
+<nodeSymbolValue value="y  "/>
 </child>
 <child which="right">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="a  DEBUG: 95112  "/>
-</child>
+<nodeSymbolValue value="z  "/>
 </child>
 </child>
 </child>
@@ -34,91 +27,22 @@
 <nodeType value="NASGN "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: 117238  "/>
+<nodeSymbolValue value="x  "/>
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="2  DEBUG: 49929  "/>
+<nodeSymbolValue value="1  "/>
 </child>
 </child>
 <child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
 <nodeType value="NASGN "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: 118200  "/>
+<nodeSymbolValue value="z  "/>
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="7  DEBUG: 54739  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  DEBUG: 119162  "/>
-</child>
-<child which="right">
-<nodeType value="NMUL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: 117238  "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: 118200  "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  DEBUG: 119162  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: 95112  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="10  DEBUG: 1509283  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPLEQ "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: 95112  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: 48967  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: 95112  "/>
-</child>
-</child>
-</child>
-</child>
-</child>
+<nodeSymbolValue value="23  "/>
 </child>
 </child>
 </child>

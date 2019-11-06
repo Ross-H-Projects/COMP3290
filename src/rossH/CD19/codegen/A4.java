@@ -15,6 +15,7 @@ import java.util.List;
 public class A4 {
     public static void main (String args[]) {
         boolean debug = true;
+        boolean debugMore = false;
 
         // get source program content
         String sourceFileName = null;
@@ -64,12 +65,12 @@ public class A4 {
                 BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
                 TreeNode.setXmlFileWriter(xmlFileWriter);
                 xmlFileWriter.write("");
-                TreeNode.printTree(NPROG, "");
+                TreeNode.printTree(NPROG, "", debugMore);
                 xmlFileWriter.close();
             } else {
                 // write parsed grammar to screen and
                 // output.lst file
-                TreeNode.printTree(NPROG, "");
+                TreeNode.printTree(NPROG, "", debugMore);
             }
 
 
@@ -91,6 +92,7 @@ public class A4 {
         }
 
         // transform parse tree / abstract syntax tree into opcodes
+
         CD19CodeGenerator codeGenerator = new CD19CodeGenerator();
 
         String modFileContents = codeGenerator.generateCode(NPROG);
@@ -104,6 +106,7 @@ public class A4 {
         } catch (Exception e) {
             System.out.println(e);
         }
+
     }
 
 }

@@ -1,254 +1,166 @@
 package rossH.CD19.codegen;
 
+import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
 
+import java.beans.Expression;
 import java.util.List;
 
 public class StatementGenerator {
-    public static void generateCode (TreeNode treeNode, List<Integer> opCodes) {
+    public static void generateCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         if (treeNode == null) {
             return;
         }
 
-        // traverse via post order
-        // left, right, root
-
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NASGN) {
-            generateNASGNCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPLEQ) {
-            generateNPLEQCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLN) {
-            generateNPRLNCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRINT) {
-            generateNPRINTCode(treeNode.getLeft(), opCodes);
-        }
-
-        if (treeNode.getRight() == null ) {
+        // code gen for single statement
+        if (treeNode.getNodeType() != TreeNodeType.NSTATS) {
+            generateStatementCode(treeNode, codeGenerator);
             return;
         }
 
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NSTATS) {
-            generateCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NASGN) {
-            generateNASGNCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPLEQ) {
-            generateNPLEQCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPRLN) {
-            generateNPRLNCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPRINT) {
-            generateNPRINTCode(treeNode.getRight(), opCodes);
-        }
+        // gen for left
+        generateCode(treeNode.getLeft(), codeGenerator);
+
+        // gen for right
+        generateCode(treeNode.getRight(), codeGenerator);
     }
 
-    public static void generateNASGNCode (TreeNode treeNode, List<Integer> opCodes) {
+    public static void generateStatementCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        if (treeNode.getNodeType() == TreeNodeType.NASGN) {
+            generateNASGNCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NPLEQ) {
+            generateNPLEQCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NPRLN) {
+            generateNPRLNCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NPRINT) {
+            generateNPRINTCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NINPUT) {
+            generateNINPUTCode(treeNode, codeGenerator);
+        }
+
+    }
+
+    public static void generateNASGNCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
 
         // todo
         //  need to eventually implement for NARRV
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateNSIVMCode(treeNode.getLeft(), opCodes);
+            codeGenerator.generateNSIVMCode(treeNode.getLeft());
         }
 
         // todo
-        //  need to eventually implement for bool, expressions, reals, boolean etc
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NADD) {
-            generateNADDCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NMUL) {
-            generateNMULCode(treeNode.getRight(), opCodes);
-        }
+        //  need to eventually implement for bool, real, boolean etc
+        //  NEED TO EVENTUALLY CHANGE THIS TO BoolGenerator
+        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
 
         // do a store at the end
-        opCodes.add(43);
+        codeGenerator.addToOpCodes("43");
     }
 
-    public static void generateNPLEQCode (TreeNode treeNode, List<Integer> opCodes) {
+    public static void generateNPLEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         // todo (MAYBE? - not sure if NARRV supports this type of operation)
         //  need to eventually implement for NARRV
 
         // load address we are storing result into
-        generateNSIVMCode(treeNode.getLeft(), opCodes);
+        codeGenerator.generateNSIVMCode(treeNode.getLeft());
 
         // load value of the address we want to add to
-        generateLoadVariableCode(treeNode.getLeft(), opCodes);
+        codeGenerator.generateLoadVariableCode(treeNode.getLeft());
 
         // todo
-        //  need to eventually implement for bool, expressions, reals, boolean etc
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NADD) {
-            generateNADDCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NMUL) {
-            generateNMULCode(treeNode.getRight(), opCodes);
-        }
+        //  need to eventually implement for bool, real, boolean etc
+        //  NEED TO EVENTUALLY CHANGE THIS TO BoolGenerator
+        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
 
         // do an add
-        opCodes.add(11);
+        codeGenerator.addToOpCodes("11");
 
         // do a store at the end
-        opCodes.add(43);
+        codeGenerator.addToOpCodes("43");
     }
 
-    public static void generateNSIVMCode (TreeNode treeNode, List<Integer> opCodes) {
-        // load address
-        // specific to base address
-        int baseAddressLoadInstruction = treeNode.getSymbolRecord().getBaseRegister();
-        int offset = treeNode.getSymbolRecord().getOffset();
-        opCodes.add(baseAddressLoadInstruction);
-        // specify offset
+    public static void generateNPRLNCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         // todo
-        //  eventually support larger address size
-        opCodes.add(0);
-        opCodes.add(0);
-        opCodes.add(0);
-        opCodes.add(offset);
-    }
+        //  support string print
 
-    public static void generateNILITCode (TreeNode treeNode, List<Integer> opCodes) {
-        String integerliteralLexeme = treeNode.getSymbolRecord().getLexeme();
-        int integerLiteral = Integer.parseInt(integerliteralLexeme);
-        // todo (maybe?)
-        //  support larger integers
-        opCodes.add(42);
-        opCodes.add(0);
-        opCodes.add(integerLiteral);
-    }
-
-    public static void generateNADDCode (TreeNode treeNode, List<Integer> opCodes) {
-        // currently only supports addition of literals / variables
-        // so we need:
-        // todo
-        //  add capability of expressions to be added
-
-        // gen for left
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getLeft(), opCodes);
-        }
-
-        // gen for right
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getRight(), opCodes);
-        }
-
-        // do an add op code at the end
-        opCodes.add(11);
-    }
-
-    public static void generateNMULCode (TreeNode treeNode, List<Integer> opCodes) {
-        // currently only supports addition of literals / variables
-        // so we need:
-        // todo
-        //  add capability of expressions to be added
-
-        // gen for left
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getLeft(), opCodes);
-        }
-
-        // gen for right
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getRight(), opCodes);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getRight(), opCodes);
-        }
-
-        // do an multiplication op code at the end
-        opCodes.add(13);
-    }
-
-    public static void generateLoadVariableCode (TreeNode treeNode, List<Integer> opCodes) {
-        int baseAddressValueInstruction = treeNode.getSymbolRecord().getBaseRegisterForValue();
-        int offset = treeNode.getSymbolRecord().getOffset();
-        opCodes.add(baseAddressValueInstruction);
-        // specify offset
-        // todo
-        //  eventually support larger address size
-        opCodes.add(0);
-        opCodes.add(0);
-        opCodes.add(0);
-        opCodes.add(offset);
-    }
-
-    public static void generateNPRLNCode (TreeNode treeNode, List<Integer> opCodes) {
-        // todo
-        //  currently only supports printing of on variable, not a list of variables / literals
-        //  need to support more
-
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getLeft(), opCodes);
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLST) {
+            generateNPRLSTCode(treeNode.getLeft(), codeGenerator);
+        } else { // expression
+            ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
             // VALPR
-            opCodes.add(62);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getLeft(), opCodes);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLST) {
-            generateNPRLSTCode(treeNode.getLeft(), opCodes);
+            codeGenerator.addToOpCodes("62");
         }
 
         // NEWLN
-        opCodes.add(65);
+        codeGenerator.addToOpCodes("65");
     }
 
-    public static void generateNPRINTCode (TreeNode treeNode, List<Integer> opCodes) {
+    public static void generateNPRINTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         // todo
-        //  currently only supports printing of on variable, not a list of variables / literals
-        //  need to support more like actual expressions and string
+        //  support string print
 
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getLeft(), opCodes);
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLST) {
+            generateNPRLSTCode(treeNode.getLeft(), codeGenerator);
+        } else { // expression
+            ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
             // VALPR
-            opCodes.add(62);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getLeft(), opCodes);
-            // VALPR
-            opCodes.add(62);
-        }  else if (treeNode.getLeft().getNodeType() == TreeNodeType.NPRLST) {
-            generateNPRLSTCode(treeNode.getLeft(), opCodes);
+            codeGenerator.addToOpCodes("62");
         }
     }
 
-    public static void generateNPRLSTCode (TreeNode treeNode, List<Integer> opCodes) {
+    public static void generateNPRLSTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         // todo
         //  currently only supports printing of on variable, not a list of variables / literals
         //  need to support more like actual expressions and string
 
         // left
-        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getLeft(), opCodes);
-            // VALPR
-            opCodes.add(62);
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getLeft(), opCodes);
-            // VALPR
-            opCodes.add(62);
-        }
+        // todo
+        //  support string printing
+        ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
 
         if (treeNode.getRight() == null) {
             return;
         }
 
         // right
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NSIMV) {
-            generateLoadVariableCode(treeNode.getRight(), opCodes);
+        if (treeNode.getRight().getNodeType() == TreeNodeType.NPRLST) {
+            generateNPRLSTCode(treeNode.getRight(), codeGenerator);
+        } else { // expression
+            ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
             // VALPR
-            opCodes.add(62);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NILIT) {
-            generateNILITCode(treeNode.getRight(), opCodes);
-            // VALPR
-            opCodes.add(62);
-        } else if (treeNode.getRight().getNodeType() == TreeNodeType.NPRLST) {
-            generateNPRLSTCode(treeNode.getRight(), opCodes);
+            codeGenerator.addToOpCodes("62");
         }
     }
 
+    public static void generateNINPUTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        if (treeNode == null) {
+            return;
+        }
+
+        // todo
+        //  add support for reading into array elements
+        if (treeNode.getNodeType() == TreeNodeType.NSIMV) {
+            codeGenerator.generateNSIVMCode(treeNode);
+
+            SymbolDataType dt = treeNode.getSymbolRecord().getSymbolDataType();
+
+            if (dt == SymbolDataType.Integer) {
+                // READI  - read integer
+                codeGenerator.addToOpCodes("61");
+            } else if (dt == SymbolDataType.Real) {
+                // READF  - read float
+                codeGenerator.addToOpCodes("60");
+            }
+
+            codeGenerator.addToOpCodes("43");
+            return;
+        }
+
+        // getting hee implies we are in a NVLIST
+        generateNINPUTCode(treeNode.getLeft(), codeGenerator);
+        generateNINPUTCode(treeNode.getRight(), codeGenerator);
+    }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class A3 {
     public static void main(String[] args) {
         boolean debug = true;
+        boolean debugMore = false;
 
         // get source program content
         String sourceFileName = null;
@@ -64,12 +65,12 @@ public class A3 {
                 BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
                 TreeNode.setXmlFileWriter(xmlFileWriter);
                 xmlFileWriter.write("");
-                TreeNode.printTree(NPROG, "");
+                TreeNode.printTree(NPROG, "", debugMore);
                 xmlFileWriter.close();
             } else {
                 // write parsed grammar to screen and
                 // output.lst file
-                TreeNode.printTree(NPROG, "");
+                TreeNode.printTree(NPROG, "", debugMore);
             }
 
 

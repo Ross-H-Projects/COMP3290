@@ -261,7 +261,7 @@ public class TreeNode {
         xmlFileWriter = fileWriter;
     }
 
-    public static void printTree(TreeNode tr, String nodePos) throws IOException {
+    public static void printTree(TreeNode tr, String nodePos, boolean debug) throws IOException {
         if (tr.nodeValue == NUNDEF) {
             return;
         }
@@ -291,7 +291,10 @@ public class TreeNode {
 
         if (tr.getSymbolRecord() != null) {
             String toPrint = tr.getSymbolRecord().getLexeme() + " ";
-            toPrint += " DEBUG: " + tr.getSymbolRecord().hashCode() + " ";
+
+            if (debug == true) {
+                toPrint += " DEBUG: " + tr.getSymbolRecord().hashCode() + " ";
+            }
 
             if (xmlFileWriter != null) {
                 String toPrintXml = toPrint.replace("\"", "");
@@ -318,7 +321,7 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"left\">\n");
             }
 
-            printTree(tr.left, "left");
+            printTree(tr.left, "left", debug);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");
@@ -330,7 +333,7 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"middle\">\n");
             }
 
-            printTree(tr.middle, "middle");
+            printTree(tr.middle, "middle", debug);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");
@@ -342,7 +345,7 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"right\">\n");
             }
 
-            printTree(tr.right, "right");
+            printTree(tr.right, "right", debug);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");

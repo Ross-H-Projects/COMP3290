@@ -2,18 +2,10 @@ CD19 test
 main
 	x : integer,
 	y : integer,
-	z : integer,
-	a : integer
+	z : integer
 begin
-	x = 2;
-	y = 7;
-	z = x * y;
-
-	printline z;
-
-	a = 10;
-	a += 1;
-
-	printline a;
+	x = 1;
+	z = 23;
+	
 end 
 CD19 test
