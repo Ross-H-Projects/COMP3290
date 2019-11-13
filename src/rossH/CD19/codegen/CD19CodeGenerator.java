@@ -1,6 +1,7 @@
 
 package rossH.CD19.codegen;
 
+import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
 
@@ -35,6 +36,10 @@ public class CD19CodeGenerator {
 
     public String generateCode (TreeNode programNode) {
 
+        TreeNode globalsNode = programNode.getLeft();
+        GlobalsGenerator.generateCode(globalsNode, this);
+
+
         TreeNode mainbodyNode = programNode.getRight();
 
         // we need to generate code for declarations before main body
@@ -66,17 +71,19 @@ public class CD19CodeGenerator {
         // curently only supporting:
         // integer declarations
 
-        String noOfDeclarations = "" + generateDeclarationsRecursive(declarations, opCodes, 0);
+        opCodes.add("42");
+        int opCodeStartPosForDeclaration = opCodes.size();
+        // we will replace the blank 00 00 with an actual count of the declaratiosn needed after we have generated and counted the
+        // declarations needed
+        opCodes.add("00");
+        opCodes.add("00");
+        opCodes.add("52");
+        int noOfDeclarations = generateDeclarationsRecursive(declarations, opCodes, 0);
 
-        // need to add allocation of stack memory backwards
-        // 42  00  03  52
-        opCodes.addFirst("52");
-        opCodes.addFirst(noOfDeclarations);
-        // todo
-        //  add support for larger amount of declarations
-        //  instead of just 00 here
-        opCodes.addFirst("00");
-        opCodes.addFirst("42");
+        String[] noOFDeclarationsByteRep = convertAdressToByteRep(noOfDeclarations);
+
+        opCodes.set(opCodeStartPosForDeclaration, noOFDeclarationsByteRep[2]);
+        opCodes.set(opCodeStartPosForDeclaration + 1, noOFDeclarationsByteRep[3]);
     }
 
     public int generateDeclarationsRecursive (TreeNode declarations, List<String> opCodes, int noOfDeclarationsSofar) {
@@ -110,6 +117,12 @@ public class CD19CodeGenerator {
             opCodes.add("00");
             // store
             opCodes.add("43");
+
+            if (declarations.getSymbolRecord().getSymbolDataType() == SymbolDataType.Real) {
+                // turn the top of the stack to real / float
+                //opCodes.add("09");
+            }
+
             return 1;
         }
     }
@@ -217,21 +230,21 @@ public class CD19CodeGenerator {
         // by this time all instruction op codes have been added AND
         // we know how many integer literals will be needed
         // i.e. we know the starting pos for our float constants
-        int integerConstantsStartingPos = opCodes.size();
+        int floatConstantsStartingPos = opCodes.size() + (integerConstants.size() * 8);
 
         // instruction op code pos  ->   relative pos in integer constants
-        for (Map.Entry<Integer, Integer> entry : integerConstantToInstructionMapping.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : floatConstantToInstructionMapping.entrySet()) {
             int instructionOpCodePos = entry.getKey();
-            int relativeIntegerConstantPos = entry.getValue();
+            int relativeFloatConstantPos = entry.getValue();
 
-            int actualIntegerConstantPos = (relativeIntegerConstantPos - 1) * 8 + integerConstantsStartingPos;
-            String intCosPosByteRep[] = convertAdressToByteRep(actualIntegerConstantPos);
+            int actualFloatConstantPos = (relativeFloatConstantPos - 1) * 8 + floatConstantsStartingPos;
+            String floatCosPosByteRep[] = convertAdressToByteRep(actualFloatConstantPos);
 
             // resolve the instruction space address to use the integer constant
-            opCodes.set(instructionOpCodePos + 1, intCosPosByteRep[0]);
-            opCodes.set(instructionOpCodePos + 2, intCosPosByteRep[1]);
-            opCodes.set(instructionOpCodePos + 3, intCosPosByteRep[2]);
-            opCodes.set(instructionOpCodePos + 4, intCosPosByteRep[3]);
+            opCodes.set(instructionOpCodePos + 1, floatCosPosByteRep[0]);
+            opCodes.set(instructionOpCodePos + 2, floatCosPosByteRep[1]);
+            opCodes.set(instructionOpCodePos + 3, floatCosPosByteRep[2]);
+            opCodes.set(instructionOpCodePos + 4, floatCosPosByteRep[3]);
         }
     }
 
@@ -258,8 +271,10 @@ public class CD19CodeGenerator {
         }
 
         // float constants section
-        modFileContents += "0\n";
-        // todo
+        modFileContents += floatConstants.size() + "\n";
+        for (int i = 0; i < floatConstants.size(); i++) {
+            modFileContents += "  " + floatConstants.get(i) + "\n";
+        }
 
         // string constants section
         modFileContents += "0\n";
@@ -301,4 +316,13 @@ public class CD19CodeGenerator {
         byteRep[3] = "" + lowerByte;
         return byteRep;
     }
+
+    public void addToOpCodesFirst (String s) {
+        opCodes.addFirst(s);
+    }
+
+    public void setOpCodes (int index, String s) {
+        opCodes.set(index, s);
+    }
+
 }

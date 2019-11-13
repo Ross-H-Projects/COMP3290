@@ -98,6 +98,10 @@ public class Token {
     //private StRec symbol;	// symbol table entry - set by Parser in Part 3 - not used in Part 1
     // This does require a "stub" class for StRec, however........
 
+    public Token(int t) {
+        tid = t;
+    }
+
     public Token(int t, int ln, int p, String s) {  //Constructor takes in token number, line, column & lexeme
         tid = t;
         line = ln;

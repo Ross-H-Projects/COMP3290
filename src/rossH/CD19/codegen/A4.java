@@ -15,7 +15,7 @@ import java.util.List;
 public class A4 {
     public static void main (String args[]) {
         boolean debug = true;
-        boolean debugMore = false;
+        boolean debugMore = true;
 
         // get source program content
         String sourceFileName = null;
@@ -92,6 +92,7 @@ public class A4 {
         }
 
         // transform parse tree / abstract syntax tree into opcodes
+
 
         CD19CodeGenerator codeGenerator = new CD19CodeGenerator();
 

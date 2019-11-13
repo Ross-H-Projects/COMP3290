@@ -293,7 +293,8 @@ public class TreeNode {
             String toPrint = tr.getSymbolRecord().getLexeme() + " ";
 
             if (debug == true) {
-                toPrint += " DEBUG: " + tr.getSymbolRecord().hashCode() + " ";
+                toPrint += " DEBUG: [" + tr.getSymbolRecord().hashCode() + " || " + tr.getSymbolRecordDataType();
+                toPrint += " || br: " + tr.getSymbolRecord().getBaseRegister() + ", o: " + tr.getSymbolRecord().getOffset() + " ]\n";
             }
 
             if (xmlFileWriter != null) {
