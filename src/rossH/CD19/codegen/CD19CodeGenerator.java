@@ -11,6 +11,23 @@ import java.util.List;
 import java.util.Map;
 
 public class CD19CodeGenerator {
+
+    class typeField {
+        String name;
+        int offSet;
+
+        typeField (String s, int o) {
+            this.name = s;
+            this.offSet = o;
+        }
+
+        @Override
+        public int hashCode () {
+            return name.hashCode();
+        }
+    }
+    HashMap<String, HashMap<String, typeField> > types;
+
     LinkedList<String> opCodes;
 
 
@@ -21,6 +38,8 @@ public class CD19CodeGenerator {
     HashMap<Integer, Integer> integerConstantToInstructionMapping;
     HashMap<Integer, Integer> floatConstantToInstructionMapping;
     HashMap<Integer, Integer> stringConstantToInstructionMapping;
+    
+    
 
     public CD19CodeGenerator () {
         opCodes = new LinkedList<String>();
@@ -32,6 +51,8 @@ public class CD19CodeGenerator {
         integerConstantToInstructionMapping = new HashMap<Integer, Integer>();
         floatConstantToInstructionMapping = new HashMap<Integer, Integer>();
         stringConstantToInstructionMapping = new HashMap<Integer, Integer>();
+
+        types = new HashMap<String, HashMap<String, typeField> >();
     }
 
     public String generateCode (TreeNode programNode) {
@@ -324,5 +345,42 @@ public class CD19CodeGenerator {
     public void setOpCodes (int index, String s) {
         opCodes.set(index, s);
     }
+
+    public void createTypes (TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NRTYPE) {
+            HashMap<String, typeField> fields = new HashMap<>();
+            createFieldsForType(treeNode.getLeft(), fields, 0);
+
+            types.put(treeNode.getSymbolRecord().getLexeme(), fields);
+        }
+
+        createTypes(treeNode.getLeft());
+        createTypes(treeNode.getRight());
+    }
+
+    public int  createFieldsForType (TreeNode treeNode, HashMap<String, typeField> fields, int currentOffset) {
+        if (treeNode == null) {
+            return currentOffset;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NSDECL) {
+            fields.put(treeNode.getSymbolRecord().getLexeme(),  new typeField(treeNode.getSymbolRecord().getLexeme(), currentOffset));
+            currentOffset += 8;
+        }
+
+        currentOffset = createFieldsForType(treeNode.getLeft(), fields, currentOffset);
+        currentOffset = createFieldsForType(treeNode.getRight(), fields, currentOffset);
+
+        return currentOffset;
+
+    }
+
+
+
+
 
 }

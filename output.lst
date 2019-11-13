@@ -1,47 +1,6 @@
-NPROG  test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
-     NGLOB  
-NILIST NINIT  a  DEBUG: [95112 || Void || br: 91, o: 0 ]
-      NILIT  
-1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NILIST NINIT  b  DEBUG: [96074 || Void || br: 91, o: 8 ]
-      
-NADD   NSIMV  a  DEBUG: [95112 || Void || br: 91, o: 0 ]
-      NILIT  
-2  DEBUG: [49929 || null || br: 90, o: 0 ]
-      NILIST NINIT  c  DEBUG: [97036 || Void || br: 91, o: 16 ]
-     
-NILIT  10  DEBUG: [1509283 || null || br: 90, o: 0 ]
-   NINIT  d  DEBUG: [97998 || Void || br: 91, o: 24 ]
-     
-NADD   NSIMV  a  DEBUG: [95112 || Void || br: 91, o: 0 ]
-      NADD   
-NSIMV  b  DEBUG: [96074 || Void || br: 91, o: 8 ]
-      NSIMV  c  DEBUG: [97036 || Void || br: 91, o: 16 ]
-     
-NMAIN  NSDLST NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 32 ]
- 
-NSDLST NSDECL y  DEBUG: [118200 || Integer || br: 91, o: 40 ]
- NSDECL 
-z  DEBUG: [119162 || Integer || br: 91, o: 48 ]
- NSTATS NASGN  NSIMV  
-x  DEBUG: [117238 || Integer || br: 91, o: 32 ]
- NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      
-NSTATS NASGN  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 40 ]
- 
-NILIT  2  DEBUG: [49929 || null || br: 90, o: 0 ]
-      NSTATS NASGN  
-NSIMV  z  DEBUG: [119162 || Integer || br: 91, o: 48 ]
- NADD   NSIMV  
-a  DEBUG: [95112 || Void || br: 91, o: 0 ]
-      NADD   NSIMV  b  DEBUG: [96074 || Void || br: 91, o: 8 ]
-      
-NADD   NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 32 ]
- NSIMV  
-y  DEBUG: [118200 || Integer || br: 91, o: 40 ]
- NSTATS NPRLN  NSIMV  
-a  DEBUG: [95112 || Void || br: 91, o: 0 ]
-      NSTATS NPRLN  NSIMV  
-z  DEBUG: [119162 || Integer || br: 91, o: 48 ]
- NPRLN  NSIMV  d  DEBUG: [97998 || Void || br: 91, o: 24 ]
-     
+NPROG  test   NGLOB  NTYPEL NRTYPE position      NFLIST NSDECL startPos      
+NFLIST NSDECL time   NSDECL velocity      NTYPEL NRTYPE abc    NFLIST 
+NSDECL zzz    NFLIST NSDECL xxx    NFLIST NSDECL arb1   NSDECL foo    
+NTYPEL NRTYPE junk   NSDECL kkk    NTYPEL NRTYPE junk2  NSDECL kkk2   
+NRTYPE junk3  NSDECL kkk3   NMAIN  NSDECL x      NASGN  NSIMV  x      
+NILIT  1      

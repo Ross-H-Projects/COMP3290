@@ -1,20 +1,35 @@
 CD19 test
-constants
-	a = 1,
-	b = a + 2,
-	c = 10,
-	d = a + b + c
+types
+	position is
+		startPos : real,
+		time : integer,
+		velocity: boolean
+	end
+	
+	abc is
+		zzz : boolean,
+		xxx : integer,
+		arb1 : real,
+		foo : integer
+	end
+	
+	junk is
+		kkk : integer
+	end
+	
+	junk2 is
+		kkk2 : integer
+	end
+	
+	junk3 is
+		kkk3 : integer
+	end
 main
-	x : integer,
-	y : integer,
-	z : integer
+	x : integer
+
 
 begin
 	x = 1;
-	y = 2;
-	z = a + b + x + y;
-	printline a;
-	printline z;
-	printline d;
+
 end 
 CD19 test
