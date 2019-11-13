@@ -29,15 +29,18 @@ public class ExpressionGenerator {
 
 
     public static void generateNILITCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
-        // todo - change this to add to constants and shit like in generateNFLITCode
+        String integerLexeme = treeNode.getSymbolRecord().getLexeme();
 
-        String integerliteralLexeme = treeNode.getSymbolRecord().getLexeme();
-        String integerLiteral = "" + Integer.parseInt(integerliteralLexeme);
-        // todo (maybe?)
-        //  support larger integers
-        codeGenerator.addToOpCodes("42");
+        codeGenerator.addToOpCodes("80");
+        int opCodePosForConstantLoad = codeGenerator.getAmountOfOpCodes() - 1;
+
+        // just add nothing for now, we will replace this later when we generate constants section
         codeGenerator.addToOpCodes("00");
-        codeGenerator.addToOpCodes(integerLiteral);
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+
+        codeGenerator.addToIntegerConstants(integerLexeme, opCodePosForConstantLoad);
     }
 
 

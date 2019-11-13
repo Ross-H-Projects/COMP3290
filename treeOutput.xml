@@ -16,8 +16,29 @@
 <nodeSymbolValue value="y  "/>
 </child>
 <child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
 <nodeType value="NSDECL "/>
 <nodeSymbolValue value="z  "/>
+</child>
+<child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="a  "/>
+</child>
+<child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="b  "/>
+</child>
+<child which="right">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="c  "/>
+</child>
+</child>
+</child>
 </child>
 </child>
 </child>
@@ -35,6 +56,8 @@
 </child>
 </child>
 <child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
 <nodeType value="NASGN "/>
 <child which="left">
 <nodeType value="NSIMV "/>
@@ -43,6 +66,60 @@
 <child which="right">
 <nodeType value="NILIT "/>
 <nodeSymbolValue value="23  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="200  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="a  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="0  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="b  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="400  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="c  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="-1  "/>
+</child>
+</child>
+</child>
+</child>
 </child>
 </child>
 </child>

@@ -377,11 +377,23 @@ public class NBOOL {
             return new TreeNode(TreeNodeType.NFALS);
         }
 
+        boolean negativeNumberLiteral = false;
+        if (p.currentTokenIs(Token.TMINS)) {
+            negativeNumberLiteral = true;
+            p.moveToNextToken();
+        }
+
         // <intlit> | <realit>
         if (p.currentTokenIs(Token.TILIT) || p.currentTokenIs(Token.TFLIT)) { // <intlit>
             TreeNodeType type = (p.currentTokenIs(Token.TILIT)) ? TreeNodeType.NILIT : TreeNodeType.NFLIT;
             TreeNode litNode = new TreeNode(type);
             Token lit = p.getCurrentToken();
+
+            if (negativeNumberLiteral) {
+                lit.setLexeme( "-" + lit.getStr());
+            }
+
+
             p.moveToNextToken();
             SymbolTableRecord stRec = p.insertSymbolIdentifier(lit);
             litNode.setSymbolRecord(stRec);

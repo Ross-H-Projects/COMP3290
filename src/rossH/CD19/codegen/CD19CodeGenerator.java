@@ -7,6 +7,7 @@ import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class CD19CodeGenerator {
     LinkedList<String> opCodes;
@@ -44,19 +45,21 @@ public class CD19CodeGenerator {
         TreeNode statsNode = mainbodyNode.getRight();
         generateMainBodyStatements(statsNode);
 
-        // todo
+
         //  generate integer constants section AND fix instruction section
         //  to refer to integer constants section
+        resolveIntegerConstants();
 
         //  generate float constants section AND fix instruction section
         //  to refer to float constants section
-        generateFloatConsants();
+        resolveFloatConsants();
 
         // todo
         //  generate string constants section AND fix instruction section
         //  to refer to string constants section
 
         String instructionSection = convertOpCodesListToModFile(opCodes);
+        return instructionSection;
     }
 
     public void generateDeclarations (TreeNode declarations) {
@@ -118,6 +121,13 @@ public class CD19CodeGenerator {
         // ie currently only supports nstats, nasgn, nsimv, nilit,
         StatementGenerator.generateCode(statements, this);
 
+        // figure out if we need to pad the instruction op codes
+        if (opCodes.size() % 8 != 0) {
+            int amountToPadBy = 8 - (opCodes.size() % 8);
+            for (int i = 0; i < amountToPadBy; i++) {
+                opCodes.add("00");
+            }
+        }
     }
 
     public void generateNSIVMCode (TreeNode treeNode) {
@@ -156,45 +166,104 @@ public class CD19CodeGenerator {
         return opCodes.size();
     }
 
+    public void addToIntegerConstants (String i, int opCodePosForInteger) {
+
+        int newIntegerConstantPos = 0;
+        if (!integerConstants.contains(i)) {
+            integerConstants.add(i);
+            newIntegerConstantPos = integerConstants.size();
+        } else {
+            newIntegerConstantPos = integerConstants.indexOf(i) + 1;
+        }
+
+        integerConstantToInstructionMapping.put(opCodePosForInteger, newIntegerConstantPos);
+    }
+
     public void addToFloatConstants (String f, int opCodePosForConstant) {
 
         int newFloatConstantPos = 0;
         if (!floatConstants.contains(f)) {
             floatConstants.add(f);
-            newFloatConstantPos = floatConstants.size() - 1;
+            newFloatConstantPos = floatConstants.size();
         } else {
-            newFloatConstantPos = floatConstants.indexOf(f);
+            newFloatConstantPos = floatConstants.indexOf(f) + 1;
         }
 
         floatConstantToInstructionMapping.put(opCodePosForConstant, newFloatConstantPos);
     }
 
-    public String generateFloatConsants () {
-        int sizeOfFloatConstants = floatConstants.size();
+    public void resolveIntegerConstants () {
+        // by this time all instruction op codes have been added, i.e. we know the size of
+        // the instruction op codes
+        int integerConstantsStartingPos = opCodes.size();
+
+        // instruction op code pos  ->   relative pos in integer constants
+        for (Map.Entry<Integer, Integer> entry : integerConstantToInstructionMapping.entrySet()) {
+            int instructionOpCodePos = entry.getKey();
+            int relativeIntegerConstantPos = entry.getValue();
+
+            int actualIntegerConstantPos = (relativeIntegerConstantPos - 1) * 8 + integerConstantsStartingPos;
+            String intCosPosByteRep[] = convertAdressToByteRep(actualIntegerConstantPos);
+
+            // resolve the instruction space address to use the integer constant
+            opCodes.set(instructionOpCodePos + 1, intCosPosByteRep[0]);
+            opCodes.set(instructionOpCodePos + 2, intCosPosByteRep[1]);
+            opCodes.set(instructionOpCodePos + 3, intCosPosByteRep[2]);
+            opCodes.set(instructionOpCodePos + 4, intCosPosByteRep[3]);
+        }
+    }
+
+    public void resolveFloatConsants () {
+        // by this time all instruction op codes have been added AND
+        // we know how many integer literals will be needed
+        // i.e. we know the starting pos for our float constants
+        int integerConstantsStartingPos = opCodes.size();
+
+        // instruction op code pos  ->   relative pos in integer constants
+        for (Map.Entry<Integer, Integer> entry : integerConstantToInstructionMapping.entrySet()) {
+            int instructionOpCodePos = entry.getKey();
+            int relativeIntegerConstantPos = entry.getValue();
+
+            int actualIntegerConstantPos = (relativeIntegerConstantPos - 1) * 8 + integerConstantsStartingPos;
+            String intCosPosByteRep[] = convertAdressToByteRep(actualIntegerConstantPos);
+
+            // resolve the instruction space address to use the integer constant
+            opCodes.set(instructionOpCodePos + 1, intCosPosByteRep[0]);
+            opCodes.set(instructionOpCodePos + 2, intCosPosByteRep[1]);
+            opCodes.set(instructionOpCodePos + 3, intCosPosByteRep[2]);
+            opCodes.set(instructionOpCodePos + 4, intCosPosByteRep[3]);
+        }
     }
 
     public String convertOpCodesListToModFile (List<String> opCodes) {
         String modFileContents = "";
+
+        // op code section
         int modFileLength = (int) Math.ceil( ((double) opCodes.size()) / 8.0);
 
         modFileContents += modFileLength + "\n  ";
 
-        int opsThisLine = 0;
         for (int i = 0; i < opCodes.size(); i++) {
-            opsThisLine++;
             modFileContents += convertToByteRepresentation(opCodes.get(i)) + "  ";
             if (((i + 1) % 8 == 0) && (i != opCodes.size() - 1)) {
-                opsThisLine = 0;
                 modFileContents += "\n  ";
             }
         }
 
-        // figure out if we need to pad the last line
-        if ((opsThisLine != 0) &&(opsThisLine != 8)) {
-            for (int i = 0; i < (8 - opsThisLine); i++) {
-                modFileContents += "00  ";
-            }
+        // integer constants section
+        modFileContents += "\n";
+        modFileContents += integerConstants.size() + "\n";
+        for (int i = 0; i < integerConstants.size(); i++) {
+            modFileContents += "  " + integerConstants.get(i) + "\n";
         }
+
+        // float constants section
+        modFileContents += "0\n";
+        // todo
+
+        // string constants section
+        modFileContents += "0\n";
+        // todo
 
         return modFileContents;
     }
@@ -205,5 +274,31 @@ public class CD19CodeGenerator {
         }
 
         return o;
+    }
+
+    public String[] convertAdressToByteRep (int actualIntegerConstantPos) {
+        String[] byteRep = new String[4];
+
+        // we can cheat a little bit since we know we are only working with 64 Kbits of memory
+        byteRep[0] = "00";
+        byteRep[1] = "00";
+
+        if (actualIntegerConstantPos <= 255) {
+            byteRep[2] = "00";
+            byteRep[3] = "" + actualIntegerConstantPos;
+            return byteRep;
+        }
+
+        // the number to represent is >= 256
+
+        // get the lower byte first as we need it to calculate the hiher byte
+        int lowerByte = actualIntegerConstantPos % 256;
+
+        // calculate the higher byte
+        int higherByte = (actualIntegerConstantPos - lowerByte) / 256;
+
+        byteRep[2] = "" + higherByte;
+        byteRep[3] = "" + lowerByte;
+        return byteRep;
     }
 }

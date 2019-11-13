@@ -121,6 +121,10 @@ public class Token {
 
     public String getStr() { return str; }
 
+    public void setLexeme(String s) {
+        this.str = s;
+    }
+
     public String getTokenObjString () {
         String s = TPRINT[tid];
 
