@@ -21,7 +21,7 @@ public class NMAIN {
         p.moveToNextToken();
 
         // <slist>
-        TreeNode slist = NSDLST.generateTreeNode(p);
+        TreeNode slist = NSDLST.generateTreeNode(p, true);
         // list is a necessary section of NMAIN
         // thus if we fail to parse it, then we must fail parsing
         // the entirety of NMAIN

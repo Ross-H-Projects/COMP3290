@@ -27,6 +27,7 @@ public class GlobalsGenerator {
         codeGenerator.createTypes(treeNode.getMiddle());
 
         // arrays
+        generateArraysSection(treeNode.getRight(), codeGenerator);
     }
 
 
@@ -88,7 +89,61 @@ public class GlobalsGenerator {
     }
 
     public static void generateArraysSection (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
-        
+        if (treeNode == null) {
+            return;
+        }
+
+        codeGenerator.addToOpCodes("42");
+        int opCodeStartPosForArrays = codeGenerator.getAmountOfOpCodes();
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("52");
+        int noOfArrays = generateArrays(treeNode, codeGenerator, 0);
+
+        // we will replace the blank 00 00 with an actual count of the constants needed after we have generated and counted the
+        // constants needed
+
+        String[] noOFArrayssByteRep = codeGenerator.convertAdressToByteRep(noOfArrays);
+
+        codeGenerator.setOpCodes(opCodeStartPosForArrays, noOFArrayssByteRep[2]);
+        codeGenerator.setOpCodes(opCodeStartPosForArrays + 1, noOFArrayssByteRep[3]);
+    }
+
+    public static int generateArrays (TreeNode treeNode, CD19CodeGenerator codeGenerator, int noOfConstantsSoFar) {
+        if (treeNode == null) {
+            return  noOfConstantsSoFar;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NARRD) {
+            // we need to map the array we are trying to declare with the ArrayType
+            // we have compiled in code generator
+
+            // firstly load the address of the array we are declaring
+            codeGenerator.generateNSIVMCode(treeNode);
+
+            // next get the array type needed
+            CD19CodeGenerator.ArrayType arrayType = codeGenerator.arrays.get(treeNode.getLeft().getSymbolRecord().getLexeme());
+            HashMap<String, CD19CodeGenerator.TypeField> typesForArray = codeGenerator.types.get(arrayType.typeId);
+
+            ExpressionGenerator.generateCode(arrayType.expr, codeGenerator);
+            codeGenerator.addToOpCodes("42");
+            String amountOfFieldsAsByte[] = codeGenerator.convertAdressToByteRep(typesForArray.size());
+            codeGenerator.addToOpCodes(amountOfFieldsAsByte[2]);
+            codeGenerator.addToOpCodes(amountOfFieldsAsByte[3]);
+            codeGenerator.addToOpCodes("13");
+
+            // add ARRAY op
+            codeGenerator.addToOpCodes("53");
+
+
+            noOfConstantsSoFar++;
+            return noOfConstantsSoFar;
+        }
+
+        noOfConstantsSoFar = generateArrays(treeNode.getLeft(), codeGenerator, noOfConstantsSoFar);
+        noOfConstantsSoFar = generateArrays(treeNode.getRight(), codeGenerator, noOfConstantsSoFar);
+
+        return noOfConstantsSoFar;
     }
 
 

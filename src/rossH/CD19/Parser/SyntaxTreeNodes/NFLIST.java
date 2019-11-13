@@ -18,7 +18,7 @@ public class NFLIST {
         TreeNode NFLISTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <sdecl>
-        TreeNode sdecl = NSDLST.sdecl(p);
+        TreeNode sdecl = NSDLST.sdecl(p, false);
         if (sdecl.getNodeType() == TreeNodeType.NUNDEF) {
             return NFLISTNode;
         }

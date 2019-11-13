@@ -18,11 +18,11 @@ public class NSDLST {
     */
 
 
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, boolean offsetNeeded) {
         TreeNode slist = new TreeNode(TreeNodeType.NUNDEF);
 
         // <sdecl>
-        TreeNode sdecl = sdecl(p);
+        TreeNode sdecl = sdecl(p, offsetNeeded);
         if (sdecl != null && sdecl.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -32,7 +32,7 @@ public class NSDLST {
         }
 
         // <opt_slist>
-        TreeNode sdeclOptional = optSlist(p);
+        TreeNode sdeclOptional = optSlist(p, offsetNeeded);
 
         // sdecl properly defined AND sdecl either non-existant or contains errors
         // so we will just return sdecl
@@ -63,7 +63,7 @@ public class NSDLST {
     }
 
     // <sdecl> --> <id> : <stype>
-    public static TreeNode sdecl (CD19Parser p) {
+    public static TreeNode sdecl (CD19Parser p, boolean offsetNeeded) {
         TreeNode sdecl = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
@@ -92,7 +92,9 @@ public class NSDLST {
             p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
             return sdecl;
         }
-        sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
+        if (offsetNeeded) {
+            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
+        }
         p.moveToNextToken();
 
         sdecl.setValue(TreeNodeType.NSDECL);
@@ -100,7 +102,7 @@ public class NSDLST {
     }
 
     // <opt_slist>  --> , <slist> | ɛ
-    public static TreeNode optSlist (CD19Parser p) {
+    public static TreeNode optSlist (CD19Parser p, boolean offsetNeeded) {
 
         // ɛ
         if (!p.currentTokenIs(Token.TCOMA)) {
@@ -111,7 +113,7 @@ public class NSDLST {
         p.moveToNextToken();
 
         // <slist>
-        TreeNode slist = generateTreeNode(p);
+        TreeNode slist = generateTreeNode(p, offsetNeeded);
         return slist;
 
     }

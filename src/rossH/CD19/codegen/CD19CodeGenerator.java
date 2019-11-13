@@ -5,6 +5,7 @@ import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
 
+import javax.lang.model.type.ArrayType;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.Map;
 
 public class CD19CodeGenerator {
 
-    class typeField {
-        String name;
-        int offSet;
+    public class TypeField {
+        public String name;
+        public int offSet;
 
-        typeField (String s, int o) {
+        TypeField (String s, int o) {
             this.name = s;
             this.offSet = o;
         }
@@ -26,7 +27,24 @@ public class CD19CodeGenerator {
             return name.hashCode();
         }
     }
-    HashMap<String, HashMap<String, typeField> > types;
+
+    public class ArrayType {
+        public String name;
+        public TreeNode expr;
+        public String typeId;
+
+        ArrayType (String s, TreeNode e, String t) {
+            this.name = s;
+            this.expr = e;
+            this.typeId = t;
+        }
+
+        @Override
+        public int hashCode () {
+            return name.hashCode();
+        }
+    }
+
 
     LinkedList<String> opCodes;
 
@@ -38,9 +56,9 @@ public class CD19CodeGenerator {
     HashMap<Integer, Integer> integerConstantToInstructionMapping;
     HashMap<Integer, Integer> floatConstantToInstructionMapping;
     HashMap<Integer, Integer> stringConstantToInstructionMapping;
-    
-    
 
+    HashMap<String, HashMap<String, TypeField> > types;
+    HashMap<String, ArrayType> arrays;
     public CD19CodeGenerator () {
         opCodes = new LinkedList<String>();
 
@@ -52,7 +70,8 @@ public class CD19CodeGenerator {
         floatConstantToInstructionMapping = new HashMap<Integer, Integer>();
         stringConstantToInstructionMapping = new HashMap<Integer, Integer>();
 
-        types = new HashMap<String, HashMap<String, typeField> >();
+        types = new HashMap<String, HashMap<String, TypeField> >();
+        arrays = new HashMap<String, ArrayType>();
     }
 
     public String generateCode (TreeNode programNode) {
@@ -338,10 +357,6 @@ public class CD19CodeGenerator {
         return byteRep;
     }
 
-    public void addToOpCodesFirst (String s) {
-        opCodes.addFirst(s);
-    }
-
     public void setOpCodes (int index, String s) {
         opCodes.set(index, s);
     }
@@ -352,23 +367,27 @@ public class CD19CodeGenerator {
         }
 
         if (treeNode.getNodeType() == TreeNodeType.NRTYPE) {
-            HashMap<String, typeField> fields = new HashMap<>();
+            HashMap<String, TypeField> fields = new HashMap<>();
             createFieldsForType(treeNode.getLeft(), fields, 0);
 
             types.put(treeNode.getSymbolRecord().getLexeme(), fields);
+        } else if (treeNode.getNodeType() == TreeNodeType.NATYPE) {
+            ArrayType arrayType = new ArrayType(treeNode.getSymbolRecord().getLexeme(), treeNode.getLeft(), treeNode.getRight().getSymbolRecord().getLexeme());
+
+            arrays.put(treeNode.getSymbolRecord().getLexeme(), arrayType);
         }
 
         createTypes(treeNode.getLeft());
         createTypes(treeNode.getRight());
     }
 
-    public int  createFieldsForType (TreeNode treeNode, HashMap<String, typeField> fields, int currentOffset) {
+    public int createFieldsForType (TreeNode treeNode, HashMap<String, TypeField> fields, int currentOffset) {
         if (treeNode == null) {
             return currentOffset;
         }
 
         if (treeNode.getNodeType() == TreeNodeType.NSDECL) {
-            fields.put(treeNode.getSymbolRecord().getLexeme(),  new typeField(treeNode.getSymbolRecord().getLexeme(), currentOffset));
+            fields.put(treeNode.getSymbolRecord().getLexeme(),  new TypeField(treeNode.getSymbolRecord().getLexeme(), currentOffset));
             currentOffset += 8;
         }
 

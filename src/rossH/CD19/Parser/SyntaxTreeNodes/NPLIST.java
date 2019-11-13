@@ -112,7 +112,7 @@ public class NPLIST {
         int potentialStype = p.getTokenAhead(2).value();
         if (potentialStype == Token.TINTG || potentialStype == Token.TREAL || potentialStype == Token.TBOOL) {
             decl.setValue(TreeNodeType.NSIMP);
-            TreeNode sdecl = NSDLST.sdecl(p);
+            TreeNode sdecl = NSDLST.sdecl(p, true);
             decl.setLeft(sdecl);
             return decl;
         }

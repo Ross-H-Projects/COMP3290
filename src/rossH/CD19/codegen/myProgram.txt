@@ -1,29 +1,20 @@
 CD19 test
+constants
+	SIZE = 10
+
 types
-	position is
-		startPos : real,
-		time : integer,
-		velocity: boolean
+	student is
+		studentNo : real,
+		age : integer
 	end
 	
-	abc is
-		zzz : boolean,
-		xxx : integer,
-		arb1 : real,
-		foo : integer
-	end
+	students is array[SIZE] of student
 	
-	junk is
-		kkk : integer
-	end
+arrays
+	uonStudents : students,
+	uonStudents2 : students
 	
-	junk2 is
-		kkk2 : integer
-	end
-	
-	junk3 is
-		kkk3 : integer
-	end
+
 main
 	x : integer
 

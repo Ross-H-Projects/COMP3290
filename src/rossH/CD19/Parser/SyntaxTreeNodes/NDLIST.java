@@ -97,7 +97,7 @@ public class NDLIST {
         // sdecl
         int potentialStype = p.getTokenAhead(2).value();
         if (potentialStype == Token.TINTG || potentialStype == Token.TREAL || potentialStype == Token.TBOOL) {
-            TreeNode sdecl = NSDLST.sdecl(p);
+            TreeNode sdecl = NSDLST.sdecl(p, false);
             return sdecl;
         }
 
