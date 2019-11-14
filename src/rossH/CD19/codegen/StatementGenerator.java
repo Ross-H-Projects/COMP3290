@@ -45,10 +45,10 @@ public class StatementGenerator {
 
     public static void generateNASGNCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
 
-        // todo
-        //  need to eventually implement for NARRV
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
+            codeGenerator.generateNARRVCode(treeNode.getLeft());
         }
 
         // todo

@@ -11,8 +11,7 @@ types
 	students is array[SIZE] of student
 	
 arrays
-	uonStudents : students,
-	uonStudents2 : students
+	uonStudents : students
 	
 
 main
@@ -21,6 +20,8 @@ main
 
 begin
 	x = 1;
+	
+	printline x;
 
 end 
 CD19 test

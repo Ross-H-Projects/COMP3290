@@ -135,6 +135,8 @@ public class GlobalsGenerator {
             // add ARRAY op
             codeGenerator.addToOpCodes("53");
 
+            //codeGenerator.addToOpCodes("52");
+
 
             noOfConstantsSoFar++;
             return noOfConstantsSoFar;

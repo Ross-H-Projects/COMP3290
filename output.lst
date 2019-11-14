@@ -13,16 +13,14 @@ NSDECL age  DEBUG: [92845380 || null || br: 90, o: 0 ]
 NSIMV  SIZE  DEBUG: [-1846035768 || Void || br: 91, o: 0 ]
     NSIMV  
 student  DEBUG: [442853564 || null || br: 90, o: 0 ]
-   NALIST NARRD  
-uonStudents  DEBUG: [-1394099810 || Void || br: 91, o: 8 ]
-    NSIMV  
-students  DEBUG: [843615286 || null || br: 90, o: 0 ]
-  NARRD  uonStudents2  DEBUG: [-267426990 || Void || br: 91, o: 16 ]
-   
+   NARRD  uonStudents  DEBUG: [-1394099810 || Void || br: 91, o: 8 ]
+    
 NSIMV  students  DEBUG: [843615286 || null || br: 90, o: 0 ]
   NMAIN  
-NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 24 ]
- NASGN  NSIMV  
-x  DEBUG: [117238 || Integer || br: 91, o: 24 ]
+NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
+ NSTATS NASGN  
+NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
  NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
       
+NPRLN  NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
+ 

@@ -187,15 +187,53 @@ public class CD19CodeGenerator {
         // load address
         // specific to base address
         String baseAddressLoadInstruction = "" + treeNode.getSymbolRecord().getBaseRegister();
-        String offset = "" + treeNode.getSymbolRecord().getOffset();
+        int offset = treeNode.getSymbolRecord().getOffset();
+        String[] offsetByteRep = convertAdressToByteRep(offset);
+
         opCodes.add(baseAddressLoadInstruction);
-        // specify offset
-        // todo
-        //  eventually support larger address size
-        opCodes.add("00");
-        opCodes.add("00");
-        opCodes.add("00");
-        opCodes.add(offset);
+        opCodes.add(offsetByteRep[0]);
+        opCodes.add(offsetByteRep[1]);
+        opCodes.add(offsetByteRep[2]);
+        opCodes.add(offsetByteRep[3]);
+
+    }
+
+    public void generateNARRVCode (TreeNode treeNode) {
+
+        // load the array descripton
+
+        String arrayDescriptionAddressLoadInstruction = "" + treeNode.getLeft().getSymbolRecord().getBaseRegister();
+        int arrayDescriptionOffset = treeNode.getLeft().getSymbolRecord().getOffset();
+        String[] arrayDescriptionOffsetByteRep = convertAdressToByteRep(arrayDescriptionOffset);
+
+        opCodes.add(arrayDescriptionAddressLoadInstruction);
+        opCodes.add(arrayDescriptionOffsetByteRep[0]);
+        opCodes.add(arrayDescriptionOffsetByteRep[1);
+        opCodes.add(arrayDescriptionOffsetByteRep[2]);
+        opCodes.add(arrayDescriptionOffsetByteRep[3]);
+
+        // get the amount of fields for the type this array uses as an element
+        ArrayType arrayType = arrays.get(treeNode.getLeft().getSymbolRecord().getLexeme());
+        String typeId = arrayType.typeId;
+        HashMap<String, TypeField> fieldsForType = types.get(typeId);
+        String sizeOfEachElement = "" + fieldsForType.size();
+
+        // evaluate expression
+        ExpressionGenerator.generateCode(treeNode.getMiddle(), this);
+
+        // muliply the expression by the amount of fields per element
+        opCodes.add(sizeOfEachElement);
+        opCodes.add("13");
+
+        // we also need to consider which fields we are trying to access
+        //
+
+        // run INDEX which will consume the array description load address
+        // and the result of the expression * amount of fields per element
+        opCodes.add("54");
+
+
+
     }
 
     public void generateLoadVariableCode (TreeNode treeNode) {
