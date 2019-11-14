@@ -1,12 +1,16 @@
 CD19 test
 
 main
-	x : integer
+	x : integer,
+	y : integer
 begin
-	x = 0;
+	x = 26;
+	y = 33;
 	
 	if ( x > 1 )
 		printline x;
+	else
+		printline y;
 	end
 	
 	printline 10;

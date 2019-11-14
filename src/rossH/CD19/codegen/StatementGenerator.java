@@ -194,7 +194,54 @@ public class StatementGenerator {
     }
 
     public static void generateNIFTECode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        codeGenerator.addToOpCodes("90");
+        int fillWithInstructionToJumpToForElseProgramCounter = codeGenerator.getAmountOfOpCodes();
+        // we will fill this with the proper address to jump to after we have
+        // added op codes for evaluating the bool and the instruction area
+        // if the bool evaluates to be true;
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
 
+        BooleanGenerator.generateCode(treeNode.getLeft(), codeGenerator);
+
+        // BF
+        codeGenerator.addToOpCodes("36");
+
+        // generate statement op codes to execute if bool evaluates to true
+        generateCode(treeNode.getMiddle(), codeGenerator);
+
+        codeGenerator.addToOpCodes("90");
+        int fillWithInstructionToJumpToForEndProgramCounter = codeGenerator.getAmountOfOpCodes();
+        // we will fill this with the proper address to jump to after we have
+        // added the statement op codes for if and else sections
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+
+        // br
+        codeGenerator.addToOpCodes("37");
+
+        int instructionAddressToJumpToForElse = codeGenerator.getAmountOfOpCodes();
+        String[] instructionAddressToJumpToForElseByteRep = codeGenerator.convertAddressToByteRep(instructionAddressToJumpToForElse);
+
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForElseProgramCounter, instructionAddressToJumpToForElseByteRep[0]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForElseProgramCounter + 1, instructionAddressToJumpToForElseByteRep[1]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForElseProgramCounter + 2, instructionAddressToJumpToForElseByteRep[2]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForElseProgramCounter+ 3, instructionAddressToJumpToForElseByteRep[3]);
+
+        // generate statement op codes to executeif bool evaluates to false
+        generateCode(treeNode.getRight(), codeGenerator);
+
+        int instructionAddressToJumpToForEnd = codeGenerator.getAmountOfOpCodes();
+        String[] instructionAddressToJumpToForEndByteRep = codeGenerator.convertAddressToByteRep(instructionAddressToJumpToForEnd);
+
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter, instructionAddressToJumpToForEndByteRep[0]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 1, instructionAddressToJumpToForEndByteRep[1]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 2, instructionAddressToJumpToForEndByteRep[2]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 3, instructionAddressToJumpToForEndByteRep[3]);
     }
 
 

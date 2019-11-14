@@ -1,3 +1,4 @@
-NPROG  test   NMAIN  NSDECL x      NSTATS NASGN  NSIMV  x      NILIT  
-0      NSTATS NIFTH  NGRT   NSIMV  x      NILIT  1      NPRLN  NSIMV  
-x      NPRLN  NILIT  10     
+NPROG  test   NMAIN  NSDLST NSDECL x      NSDECL y      NSTATS NASGN  
+NSIMV  x      NILIT  26     NSTATS NASGN  NSIMV  y      NILIT  33     
+NSTATS NIFTE  NGRT   NSIMV  x      NILIT  1      NPRLN  NSIMV  x      
+NPRLN  NSIMV  y      NPRLN  NILIT  10     

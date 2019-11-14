@@ -27,9 +27,9 @@ public class BooleanGenerator {
         } else if (treeNode.getNodeType() == TreeNodeType.NGRT) {
             generateNGRTCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NLEQ) {
-
+            generateNLEQCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NLSS) {
-
+            generateNLSSCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NGEQ) {
 
         } else  {
@@ -46,4 +46,26 @@ public class BooleanGenerator {
         // gt
         codeGenerator.addToOpCodes("21");
     }
+
+    public static void generateNLEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
+        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // sub
+        codeGenerator.addToOpCodes("12");
+        // le
+        codeGenerator.addToOpCodes("24");
+    }
+
+    public static void generateNLSSCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
+        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // sub
+        codeGenerator.addToOpCodes("12");
+        // lt
+        codeGenerator.addToOpCodes("23");
+    }
 }
+
+
