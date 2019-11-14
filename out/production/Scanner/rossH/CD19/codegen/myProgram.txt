@@ -1,27 +1,14 @@
 CD19 test
-constants
-	SIZE = 10
-
-types
-	student is
-		studentNo : real,
-		age : integer
-	end
-	
-	students is array[SIZE] of student
-	
-arrays
-	uonStudents : students
-	
 
 main
 	x : integer
-
-
 begin
-	x = 1;
+	x = 0;
 	
-	printline x;
-
+	if ( x > 1 )
+		printline x;
+	end
+	
+	printline 10;
 end 
 CD19 test

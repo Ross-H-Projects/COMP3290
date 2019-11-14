@@ -47,7 +47,7 @@ public class GlobalsGenerator {
         // we will replace the blank 00 00 with an actual count of the constants needed after we have generated and counted the
         // constants needed
 
-        String[] noOFConstantsByteRep = codeGenerator.convertAdressToByteRep(noOfConstants);
+        String[] noOFConstantsByteRep = codeGenerator.convertAddressToByteRep(noOfConstants);
 
         codeGenerator.setOpCodes(opCodeStartPosForConstants, noOFConstantsByteRep[2]);
         codeGenerator.setOpCodes(opCodeStartPosForConstants + 1, noOFConstantsByteRep[3]);
@@ -103,7 +103,7 @@ public class GlobalsGenerator {
         // we will replace the blank 00 00 with an actual count of the constants needed after we have generated and counted the
         // constants needed
 
-        String[] noOFArrayssByteRep = codeGenerator.convertAdressToByteRep(noOfArrays);
+        String[] noOFArrayssByteRep = codeGenerator.convertAddressToByteRep(noOfArrays);
 
         codeGenerator.setOpCodes(opCodeStartPosForArrays, noOFArrayssByteRep[2]);
         codeGenerator.setOpCodes(opCodeStartPosForArrays + 1, noOFArrayssByteRep[3]);
@@ -123,11 +123,14 @@ public class GlobalsGenerator {
 
             // next get the array type needed
             CD19CodeGenerator.ArrayType arrayType = codeGenerator.arrays.get(treeNode.getLeft().getSymbolRecord().getLexeme());
+
+            codeGenerator.arrayToArrayTypeMappings.put(treeNode.getSymbolRecord().getLexeme(), treeNode.getLeft().getSymbolRecord().getLexeme());
+
             HashMap<String, CD19CodeGenerator.TypeField> typesForArray = codeGenerator.types.get(arrayType.typeId);
 
             ExpressionGenerator.generateCode(arrayType.expr, codeGenerator);
             codeGenerator.addToOpCodes("42");
-            String amountOfFieldsAsByte[] = codeGenerator.convertAdressToByteRep(typesForArray.size());
+            String amountOfFieldsAsByte[] = codeGenerator.convertAddressToByteRep(typesForArray.size());
             codeGenerator.addToOpCodes(amountOfFieldsAsByte[2]);
             codeGenerator.addToOpCodes(amountOfFieldsAsByte[3]);
             codeGenerator.addToOpCodes("13");

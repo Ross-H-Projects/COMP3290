@@ -15,6 +15,8 @@ public class ExpressionGenerator {
             generateNFLITCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateLoadVariableCode(treeNode);
+        } else if (treeNode.getNodeType() == TreeNodeType.NARRV) {
+            codeGenerator.generateLoadArrayElementCode(treeNode);
         } else if (treeNode.getNodeType() == TreeNodeType.NADD) {
             generateNADDCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NSUB) {

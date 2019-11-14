@@ -59,6 +59,8 @@ public class CD19CodeGenerator {
 
     HashMap<String, HashMap<String, TypeField> > types;
     HashMap<String, ArrayType> arrays;
+    HashMap<String, String> arrayToArrayTypeMappings;
+
     public CD19CodeGenerator () {
         opCodes = new LinkedList<String>();
 
@@ -72,6 +74,7 @@ public class CD19CodeGenerator {
 
         types = new HashMap<String, HashMap<String, TypeField> >();
         arrays = new HashMap<String, ArrayType>();
+        arrayToArrayTypeMappings = new HashMap<String, String>();
     }
 
     public String generateCode (TreeNode programNode) {
@@ -120,7 +123,7 @@ public class CD19CodeGenerator {
         opCodes.add("52");
         int noOfDeclarations = generateDeclarationsRecursive(declarations, opCodes, 0);
 
-        String[] noOFDeclarationsByteRep = convertAdressToByteRep(noOfDeclarations);
+        String[] noOFDeclarationsByteRep = convertAddressToByteRep(noOfDeclarations);
 
         opCodes.set(opCodeStartPosForDeclaration, noOFDeclarationsByteRep[2]);
         opCodes.set(opCodeStartPosForDeclaration + 1, noOFDeclarationsByteRep[3]);
@@ -188,7 +191,7 @@ public class CD19CodeGenerator {
         // specific to base address
         String baseAddressLoadInstruction = "" + treeNode.getSymbolRecord().getBaseRegister();
         int offset = treeNode.getSymbolRecord().getOffset();
-        String[] offsetByteRep = convertAdressToByteRep(offset);
+        String[] offsetByteRep = convertAddressToByteRep(offset);
 
         opCodes.add(baseAddressLoadInstruction);
         opCodes.add(offsetByteRep[0]);
@@ -202,38 +205,44 @@ public class CD19CodeGenerator {
 
         // load the array descripton
 
-        String arrayDescriptionAddressLoadInstruction = "" + treeNode.getLeft().getSymbolRecord().getBaseRegister();
+        String arrayDescriptionAddressLoadInstruction = "" + treeNode.getLeft().getSymbolRecord().getBaseRegisterForValue();
         int arrayDescriptionOffset = treeNode.getLeft().getSymbolRecord().getOffset();
-        String[] arrayDescriptionOffsetByteRep = convertAdressToByteRep(arrayDescriptionOffset);
+        String[] arrayDescriptionOffsetByteRep = convertAddressToByteRep(arrayDescriptionOffset);
 
         opCodes.add(arrayDescriptionAddressLoadInstruction);
         opCodes.add(arrayDescriptionOffsetByteRep[0]);
-        opCodes.add(arrayDescriptionOffsetByteRep[1);
+        opCodes.add(arrayDescriptionOffsetByteRep[1]);
         opCodes.add(arrayDescriptionOffsetByteRep[2]);
         opCodes.add(arrayDescriptionOffsetByteRep[3]);
 
         // get the amount of fields for the type this array uses as an element
-        ArrayType arrayType = arrays.get(treeNode.getLeft().getSymbolRecord().getLexeme());
+        String arrayTypeId = arrayToArrayTypeMappings.get(treeNode.getLeft().getSymbolRecord().getLexeme());
+        ArrayType arrayType = arrays.get(arrayTypeId);
         String typeId = arrayType.typeId;
         HashMap<String, TypeField> fieldsForType = types.get(typeId);
-        String sizeOfEachElement = "" + fieldsForType.size();
+        String[] sizeOfEachElementByteRep = convertAddressToByteRep(fieldsForType.size());
 
         // evaluate expression
         ExpressionGenerator.generateCode(treeNode.getMiddle(), this);
 
         // muliply the expression by the amount of fields per element
-        opCodes.add(sizeOfEachElement);
+        opCodes.add("42");
+        opCodes.add(sizeOfEachElementByteRep[2]);
+        opCodes.add(sizeOfEachElementByteRep[3]);
         opCodes.add("13");
 
         // we also need to consider which fields we are trying to access
-        //
+        String fieldId = treeNode.getRight().getSymbolRecord().getLexeme();
+        TypeField typeField = fieldsForType.get(fieldId);
+        String[] fieldOffsetByteRep = convertAddressToByteRep(typeField.offSet / 8);
+        opCodes.add("42");
+        opCodes.add(fieldOffsetByteRep[2]);
+        opCodes.add(fieldOffsetByteRep[3]);
+        opCodes.add("11");
 
         // run INDEX which will consume the array description load address
         // and the result of the expression * amount of fields per element
         opCodes.add("54");
-
-
-
     }
 
     public void generateLoadVariableCode (TreeNode treeNode) {
@@ -247,6 +256,11 @@ public class CD19CodeGenerator {
         opCodes.add("00");
         opCodes.add("00");
         opCodes.add(offset);
+    }
+
+    public void generateLoadArrayElementCode (TreeNode treeNode) {
+        generateNARRVCode(treeNode);
+        opCodes.add("40");
     }
 
     public void addToOpCodes(String opCode) {
@@ -294,7 +308,7 @@ public class CD19CodeGenerator {
             int relativeIntegerConstantPos = entry.getValue();
 
             int actualIntegerConstantPos = (relativeIntegerConstantPos - 1) * 8 + integerConstantsStartingPos;
-            String intCosPosByteRep[] = convertAdressToByteRep(actualIntegerConstantPos);
+            String intCosPosByteRep[] = convertAddressToByteRep(actualIntegerConstantPos);
 
             // resolve the instruction space address to use the integer constant
             opCodes.set(instructionOpCodePos + 1, intCosPosByteRep[0]);
@@ -316,7 +330,7 @@ public class CD19CodeGenerator {
             int relativeFloatConstantPos = entry.getValue();
 
             int actualFloatConstantPos = (relativeFloatConstantPos - 1) * 8 + floatConstantsStartingPos;
-            String floatCosPosByteRep[] = convertAdressToByteRep(actualFloatConstantPos);
+            String floatCosPosByteRep[] = convertAddressToByteRep(actualFloatConstantPos);
 
             // resolve the instruction space address to use the integer constant
             opCodes.set(instructionOpCodePos + 1, floatCosPosByteRep[0]);
@@ -369,7 +383,7 @@ public class CD19CodeGenerator {
         return o;
     }
 
-    public String[] convertAdressToByteRep (int actualIntegerConstantPos) {
+    public String[] convertAddressToByteRep (int actualIntegerConstantPos) {
         String[] byteRep = new String[4];
 
         // we can cheat a little bit since we know we are only working with 64 Kbits of memory

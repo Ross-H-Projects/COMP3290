@@ -64,7 +64,7 @@ public class NIFTH {
 
         // <opt_else>
         TreeNode  elseStats = elseIfOptional(p);
-        if (elseStats.getNodeType() == TreeNodeType.NUNDEF) {
+        if (elseStats != null && elseStats.getNodeType() == TreeNodeType.NUNDEF) {
             errorRecoveryToEnd(p);
             return NIFTHNode;
         }

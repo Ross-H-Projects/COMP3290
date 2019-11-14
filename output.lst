@@ -1,26 +1,3 @@
-NPROG  test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
-     NGLOB  
-NINIT  SIZE  DEBUG: [-1846035768 || Void || br: 91, o: 0 ]
-    NILIT  
-10  DEBUG: [1509283 || null || br: 90, o: 0 ]
-   NTYPEL NRTYPE student  DEBUG: [442853564 || null || br: 90, o: 0 ]
-   
-NFLIST NSDECL studentNo  DEBUG: [381219518 || null || br: 90, o: 0 ]
- 
-NSDECL age  DEBUG: [92845380 || null || br: 90, o: 0 ]
- NATYPE students  DEBUG: [843615286 || null || br: 90, o: 0 ]
-  
-NSIMV  SIZE  DEBUG: [-1846035768 || Void || br: 91, o: 0 ]
-    NSIMV  
-student  DEBUG: [442853564 || null || br: 90, o: 0 ]
-   NARRD  uonStudents  DEBUG: [-1394099810 || Void || br: 91, o: 8 ]
-    
-NSIMV  students  DEBUG: [843615286 || null || br: 90, o: 0 ]
-  NMAIN  
-NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
- NSTATS NASGN  
-NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
- NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      
-NPRLN  NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 16 ]
- 
+NPROG  test   NMAIN  NSDECL x      NSTATS NASGN  NSIMV  x      NILIT  
+0      NSTATS NIFTH  NGRT   NSIMV  x      NILIT  1      NPRLN  NSIMV  
+x      NPRLN  NILIT  10     

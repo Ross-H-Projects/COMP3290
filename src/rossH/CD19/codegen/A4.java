@@ -15,7 +15,7 @@ import java.util.List;
 public class A4 {
     public static void main (String args[]) {
         boolean debug = true;
-        boolean debugMore = true;
+        boolean debugMore = false;
 
         // get source program content
         String sourceFileName = null;
@@ -107,6 +107,7 @@ public class A4 {
         } catch (Exception e) {
             System.out.println(e);
         }
+
 
     }
 

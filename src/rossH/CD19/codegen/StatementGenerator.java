@@ -39,6 +39,10 @@ public class StatementGenerator {
             generateNPRINTCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NINPUT) {
             generateNINPUTCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NIFTE) {
+            generateNIFTECode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NIFTH) {
+            generateNIFTHCode(treeNode, codeGenerator);
         }
 
     }
@@ -47,14 +51,11 @@ public class StatementGenerator {
 
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
-        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) {
             codeGenerator.generateNARRVCode(treeNode.getLeft());
         }
 
-        // todo
-        //  need to eventually implement for bool, real, boolean etc
-        //  NEED TO EVENTUALLY CHANGE THIS TO BoolGenerator
-        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
 
         // do a store at the end
         codeGenerator.addToOpCodes("43");
@@ -163,4 +164,38 @@ public class StatementGenerator {
         generateNINPUTCode(treeNode.getLeft(), codeGenerator);
         generateNINPUTCode(treeNode.getRight(), codeGenerator);
     }
+
+    public static void generateNIFTHCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        codeGenerator.addToOpCodes("90");
+        int fillWithInstructionToJumpProgramCounter = codeGenerator.getAmountOfOpCodes();
+        // we will fill this with the proper address to jump to after we have
+        // added op codes for evaluating the bool and the instruction area
+        // if the bool evaluates to be true;
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+
+        BooleanGenerator.generateCode(treeNode.getLeft(), codeGenerator);
+
+        // BF
+        codeGenerator.addToOpCodes("36");
+
+        // generate statement op codes to execute if bool evaluates to true
+        generateCode(treeNode.getRight(), codeGenerator);
+        int instructionAddressToJumpTo = codeGenerator.getAmountOfOpCodes();
+        String[] instructionAddressToJumpToByteRep = codeGenerator.convertAddressToByteRep(instructionAddressToJumpTo);
+
+        codeGenerator.setOpCodes(fillWithInstructionToJumpProgramCounter, instructionAddressToJumpToByteRep[0]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpProgramCounter + 1, instructionAddressToJumpToByteRep[1]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpProgramCounter + 2, instructionAddressToJumpToByteRep[2]);
+        codeGenerator.setOpCodes(fillWithInstructionToJumpProgramCounter + 3, instructionAddressToJumpToByteRep[3]);
+    }
+
+    public static void generateNIFTECode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+    }
+
+
 }
