@@ -1,5 +1,6 @@
 package rossH.CD19.codegen;
 
+import com.sun.source.tree.Tree;
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
@@ -49,6 +50,8 @@ public class StatementGenerator {
             generateNIFTECode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NIFTH) {
             generateNIFTHCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NREPT) {
+            generateNREPTCode(treeNode, codeGenerator);
         }
 
     }
@@ -236,29 +239,24 @@ public class StatementGenerator {
     }
 
     public static void generateNPRLSTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
-        // todo
-        //  currently only supports printing of on variable, not a list of variables / literals
-        //  need to support more like actual expressions and string
-
-
-        // todo
-        //  support string printing
-
-        // left
-        ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
-
-        if (treeNode.getRight() == null) {
+        if (treeNode == null) {
             return;
         }
 
-        // right
-        if (treeNode.getRight().getNodeType() == TreeNodeType.NPRLST) {
+        if (treeNode.getNodeType() == TreeNodeType.NPRLST) {
+            generateNPRLSTCode(treeNode.getLeft(), codeGenerator);
             generateNPRLSTCode(treeNode.getRight(), codeGenerator);
-        } else { // expression
-            ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
-            // VALPR
-            codeGenerator.addToOpCodes("62");
+            return;
         }
+
+        // todo
+        //  support printing strings
+
+        // implies we have a var, expression, or string to print
+        ExpressionGenerator.generateCode(treeNode, codeGenerator);
+
+        // valpr
+        codeGenerator.addToOpCodes("62");
     }
 
     public static void generateNINPUTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
@@ -367,6 +365,58 @@ public class StatementGenerator {
         codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 1, instructionAddressToJumpToForEndByteRep[1]);
         codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 2, instructionAddressToJumpToForEndByteRep[2]);
         codeGenerator.setOpCodes(fillWithInstructionToJumpToForEndProgramCounter + 3, instructionAddressToJumpToForEndByteRep[3]);
+    }
+
+    public static void generateNREPTCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        // create op codes for asgnlist
+        generateAsgnListCode(treeNode.getLeft(), codeGenerator);
+
+        int opCodeToJumpToIfBoolFalse = codeGenerator.getAmountOfOpCodes();
+
+        // generate op codes for statements within repeat
+        generateCode(treeNode.getMiddle(), codeGenerator);
+
+        // generate load address op codes that we will jump the program counter to
+        // if boolean evaluates false
+        String[] opCodeToJumpToIfBoolFalseByteRep = codeGenerator.convertAddressToByteRep(opCodeToJumpToIfBoolFalse);
+        codeGenerator.addToOpCodes("90");
+        codeGenerator.addToOpCodes(opCodeToJumpToIfBoolFalseByteRep[0]);
+        codeGenerator.addToOpCodes(opCodeToJumpToIfBoolFalseByteRep[1]);
+        codeGenerator.addToOpCodes(opCodeToJumpToIfBoolFalseByteRep[2]);
+        codeGenerator.addToOpCodes(opCodeToJumpToIfBoolFalseByteRep[3]);
+
+        // generate op codes to evaluate boolean
+
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        codeGenerator.addToOpCodes("36");
+    }
+
+    public static void generateAsgnListCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        if (treeNode == null) {
+            return;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NASGN) {
+            generateNASGNCode(treeNode, codeGenerator);
+            return;
+        } else if (treeNode.getNodeType() == TreeNodeType.NPLEQ) {
+            generateNPLEQCode(treeNode, codeGenerator);
+            return;
+        } else if (treeNode.getNodeType() == TreeNodeType.NMNEQ) {
+            generateNMNEQCode(treeNode, codeGenerator);
+            return;
+        } else if (treeNode.getNodeType() == TreeNodeType.NSTEQ) {
+            generateNSTEQCode(treeNode, codeGenerator);
+            return;
+        } else if (treeNode.getNodeType() == TreeNodeType.NDVEQ) {
+            generateNDVEQCode(treeNode, codeGenerator);
+            return;
+        }
+
+        // getting here implies we are in NASGNS node
+        generateAsgnListCode(treeNode.getLeft(), codeGenerator);
+        generateAsgnListCode(treeNode.getRight(), codeGenerator);
     }
 
 

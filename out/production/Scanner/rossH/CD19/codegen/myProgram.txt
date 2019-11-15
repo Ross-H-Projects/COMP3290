@@ -5,11 +5,29 @@ main
 	x : integer,
 	y : integer
 begin
-	x = 2;
-	y = 8;
+	x = 0;
+	y = 0;
 
+	print x, y;
+	printline;
+
+	x += 1;
+	y += 1;
 	
-	printline (x + y + 5);
+	print x, y;
+	printline;
+	
+	x += 2;
+	y += 2;
+	
+	print x, y;
+	printline;
+	
+	x += 3; 
+	y += 3;
+	
+	print x, y;
+	printline;
 	
 end 
 CD19 test
