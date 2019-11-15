@@ -54,14 +54,21 @@ public class StatementGenerator {
     }
 
     public static void generateNASGNCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        String convertTopOfStackToOpCode = "";
+
 
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getSymbolRecordDataType());
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) {
             codeGenerator.generateNARRVCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getRight().getSymbolRecordDataType());
         }
 
         BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // do an appopriate data conversion for the variable we are assigning to
+        codeGenerator.addToOpCodes(convertTopOfStackToOpCode);
 
         // do a store at the end
         codeGenerator.addToOpCodes("43");
@@ -69,7 +76,6 @@ public class StatementGenerator {
 
     public static void generateNPLEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
         String convertTopOfStackToOpCode = "";
-
 
         // load address we are storing result into
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
@@ -102,12 +108,15 @@ public class StatementGenerator {
     }
 
     public static void generateNMNEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        String convertTopOfStackToOpCode = "";
 
         // load address we are storing result into
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getSymbolRecordDataType());
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
             codeGenerator.generateNARRVCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getRight().getSymbolRecordDataType());
         }
 
 
@@ -124,17 +133,23 @@ public class StatementGenerator {
         // do a sub
         codeGenerator.addToOpCodes("12");
 
+        // do an appopriate data conversion for the variable we are assigning to
+        codeGenerator.addToOpCodes(convertTopOfStackToOpCode);
+
         // do a store at the end
         codeGenerator.addToOpCodes("43");
     }
 
     public static void generateNSTEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        String convertTopOfStackToOpCode = "";
 
         // load address we are storing result into
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getSymbolRecordDataType());
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
             codeGenerator.generateNARRVCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getRight().getSymbolRecordDataType());
         }
 
 
@@ -151,17 +166,23 @@ public class StatementGenerator {
         // do a mul
         codeGenerator.addToOpCodes("13");
 
+        // do an appopriate data conversion for the variable we are assigning to
+        codeGenerator.addToOpCodes(convertTopOfStackToOpCode);
+
         // do a store at the end
         codeGenerator.addToOpCodes("43");
     }
 
     public static void generateNDVEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        String convertTopOfStackToOpCode = "";
 
         // load address we are storing result into
         if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
             codeGenerator.generateNSIVMCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getSymbolRecordDataType());
         } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
             codeGenerator.generateNARRVCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getRight().getSymbolRecordDataType());
         }
 
 
@@ -177,6 +198,9 @@ public class StatementGenerator {
 
         // do a div
         codeGenerator.addToOpCodes("14");
+
+        // do an appopriate data conversion for the variable we are assigning to
+        codeGenerator.addToOpCodes(convertTopOfStackToOpCode);
 
         // do a store at the end
         codeGenerator.addToOpCodes("43");

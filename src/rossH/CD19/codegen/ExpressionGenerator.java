@@ -29,6 +29,12 @@ public class ExpressionGenerator {
             generateNMULCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NDIV) {
             generateNDIVCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NMOD) {
+            generateNMODCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NPOW) {
+            generateNPOWCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NBOOL) {
+            BooleanGenerator.generateCode(treeNode, codeGenerator);
         }
 
     }
@@ -132,6 +138,17 @@ public class ExpressionGenerator {
 
         // do a modulo op code at the end
         codeGenerator.addToOpCodes("15");
+    }
+
+    public static void generateNPOWCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        // gen for left
+        generateCode(treeNode.getLeft(), codeGenerator);
+
+        // gen for right
+        generateCode(treeNode.getRight(), codeGenerator);
+
+        // do a modulo op code at the end
+        codeGenerator.addToOpCodes("16");
     }
 
 }

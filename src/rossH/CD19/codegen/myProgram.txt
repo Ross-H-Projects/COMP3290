@@ -1,42 +1,15 @@
 CD19 test
-constants
-	C = 2
-types
-	arb is
-		foo : real
-	end
-	
-	arbArray is array[C] of arb
-	
-arrays
-	zzz : arbArray,
-	xxx : arbArray
+
 
 main
 	x : integer,
-	y : real,
-	a : integer,
-	b : integer
+	y : integer
 begin
-	x = 20;
-	y = 30.0;
+	x = 2;
+	y = 8;
+
 	
-	x += 30;
-	y += 5.5;
-	
-	zzz[0].foo = 0;
-	zzz[0].foo += 88.88;
-	
-	zzz[1].foo = 0;
-	zzz[1].foo += 99.99;
-	
-	
-	
-	xxx[0].foo = 0;
-	xxx[0].foo += 150.00;
-	
-	xxx[1].foo = 0;
-	xxx[1].foo += 160.00;
+	printline (x + y + 5);
 	
 end 
 CD19 test
