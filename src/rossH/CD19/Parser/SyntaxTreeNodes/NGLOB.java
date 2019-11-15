@@ -13,6 +13,8 @@ public class NGLOB {
         // <consts>
         TreeNode consts = consts(p);
 
+        p.setAmountOfCounts(countAmountOfConstants (consts, 0));
+
         // <types>
         TreeNode types = types(p);
 
@@ -100,5 +102,55 @@ public class NGLOB {
 
         // errors occured while attempting to parse the arrdecls
         return null;
+    }
+
+    public static void fixArrayOffsets (TreeNode nglobNode, int amountOfConstantsAndDeclarationsInMainBody) {
+
+        if (nglobNode == null) {
+            return;
+        }
+
+        TreeNode nalistNode = nglobNode.getRight();
+        if (nalistNode == null) {
+            return;
+        }
+
+        fixArrayOffsetsRecursive(nalistNode, amountOfConstantsAndDeclarationsInMainBody, 0);
+    }
+
+    public static int fixArrayOffsetsRecursive (TreeNode treeNode, int amountOfConstantsAndDeclarationsInMainBody, int arrayDeclarationsEncounteredSoFar) {
+        if (treeNode == null) {
+            return arrayDeclarationsEncounteredSoFar;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NARRD) {
+            treeNode.getSymbolRecord().setOffset(amountOfConstantsAndDeclarationsInMainBody * 8 + arrayDeclarationsEncounteredSoFar * 8);
+            arrayDeclarationsEncounteredSoFar++;
+            return arrayDeclarationsEncounteredSoFar;
+        }
+
+        // implis it is an nalist node
+
+        arrayDeclarationsEncounteredSoFar = fixArrayOffsetsRecursive(treeNode.getLeft(), amountOfConstantsAndDeclarationsInMainBody, arrayDeclarationsEncounteredSoFar);
+        arrayDeclarationsEncounteredSoFar = fixArrayOffsetsRecursive(treeNode.getRight(), amountOfConstantsAndDeclarationsInMainBody, arrayDeclarationsEncounteredSoFar);
+
+        return arrayDeclarationsEncounteredSoFar;
+    }
+
+    public static int countAmountOfConstants (TreeNode treeNode, int amountOfConstantsSoFar) {
+        if (treeNode == null) {
+            return amountOfConstantsSoFar;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NINIT) {
+            amountOfConstantsSoFar++;
+            return amountOfConstantsSoFar;
+        }
+
+        // getting here implies the node is NILIST
+        amountOfConstantsSoFar = countAmountOfConstants(treeNode.getLeft(), amountOfConstantsSoFar);
+        amountOfConstantsSoFar = countAmountOfConstants(treeNode.getRight(), amountOfConstantsSoFar);
+
+        return amountOfConstantsSoFar;
     }
 }

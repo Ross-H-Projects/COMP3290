@@ -30,6 +30,8 @@ public class NMAIN {
             return NMAINNode;
         }
 
+        p.setAmountOfDeclarationsInMainBody(NSDLST.countAmountOfDeclarations (slist, 0));
+
         // begin
         if (!p.currentTokenIs(Token.TBEGN)) {
             p.generateSyntaxError("Expected the keyword 'begin'");

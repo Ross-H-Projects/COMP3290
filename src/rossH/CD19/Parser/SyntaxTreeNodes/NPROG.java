@@ -62,6 +62,8 @@ public class NPROG {
             return NPROGNode;
         }
 
+        NGLOB.fixArrayOffsets(globals, p.getAmountOfDeclarationsInMainBody() + p.getAmountOfConstants());
+
         // construct actual tree node
         NPROGNode.setValue(TreeNodeType.NPROG);
         NPROGNode.setLeft(globals);

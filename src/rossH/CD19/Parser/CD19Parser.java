@@ -24,6 +24,9 @@ public class CD19Parser {
     private int currentBaseRegister1Offset;
     private int currentBaseRegister2Offset;
 
+    private int amountOfConstants;
+    private int amountOfDeclarationsInMainBody;
+
 
     public CD19Parser (List<Token> tokens) {
         this.tokens = tokens;
@@ -35,6 +38,8 @@ public class CD19Parser {
         currentBaseRegister1Offset = 0;
         currentBaseRegister2Offset = 0;
 
+        amountOfConstants = 0;
+        amountOfDeclarationsInMainBody = 0;
 
         TreeNode.setup();
     }
@@ -140,4 +145,22 @@ public class CD19Parser {
 
         return oldBaseRegisterOffset;
     }
+
+    public void setAmountOfCounts (int amount) {
+        this.amountOfConstants = amount;
+    }
+
+    public int getAmountOfConstants () {
+        return this.amountOfConstants;
+    }
+
+    public void setAmountOfDeclarationsInMainBody (int amount) {
+        this.amountOfDeclarationsInMainBody = amount;
+    }
+
+    public int getAmountOfDeclarationsInMainBody () {
+        return this.amountOfDeclarationsInMainBody;
+    }
+
+
 }

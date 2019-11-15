@@ -63,6 +63,7 @@ public class CD19CodeGenerator {
     HashMap<String, ArrayType> arrays;
     HashMap<String, String> arrayToArrayTypeMappings;
 
+
     public CD19CodeGenerator () {
         opCodes = new LinkedList<String>();
 
@@ -77,19 +78,30 @@ public class CD19CodeGenerator {
         types = new HashMap<String, HashMap<String, TypeField> >();
         arrays = new HashMap<String, ArrayType>();
         arrayToArrayTypeMappings = new HashMap<String, String>();
+
     }
 
     public String generateCode (TreeNode programNode) {
 
+
+
         TreeNode globalsNode = programNode.getLeft();
+        TreeNode mainbodyNode = programNode.getRight();
+        TreeNode slistNode = mainbodyNode.getLeft();
+
+        // we need to generate constants first
+        // constants
+        if (globalsNode != null && globalsNode.getLeft() != null) {
+            GlobalsGenerator.generateConstantsSection(globalsNode.getLeft(), this);
+        }
+
+        // we need to generate code for declarations before main body
+        generateDeclarations(slistNode);
+
         GlobalsGenerator.generateCode(globalsNode, this);
 
 
-        TreeNode mainbodyNode = programNode.getRight();
 
-        // we need to generate code for declarations before main body
-        TreeNode slistNode = mainbodyNode.getLeft();
-        generateDeclarations(slistNode);
 
         // we need to generate code for statements in main body
         TreeNode statsNode = mainbodyNode.getRight();
@@ -461,6 +473,21 @@ public class CD19CodeGenerator {
         return "09";
     }
 
+    public int countDeclarationsInMain (TreeNode treeNode, int amountOfDeclarationsSoFar) {
+        if (treeNode == null) {
+            return amountOfDeclarationsSoFar;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NSDECL) {
+            amountOfDeclarationsSoFar++;
+            return amountOfDeclarationsSoFar;
+        }
+
+        amountOfDeclarationsSoFar = countDeclarationsInMain(treeNode.getLeft(), amountOfDeclarationsSoFar);
+        amountOfDeclarationsSoFar = countDeclarationsInMain(treeNode.getRight(), amountOfDeclarationsSoFar);
+
+        return amountOfDeclarationsSoFar;
+    }
 
 
 

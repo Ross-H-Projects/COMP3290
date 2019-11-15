@@ -16,9 +16,6 @@ public class GlobalsGenerator {
             return;
         }
 
-        // constants
-        generateConstantsSection(treeNode.getLeft(), codeGenerator);
-
         // types
         // types are not actually represented in the memory op codes
         // as directly as arrays or primitives are, since they are only

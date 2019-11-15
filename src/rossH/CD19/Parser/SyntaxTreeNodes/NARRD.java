@@ -36,7 +36,8 @@ public class NARRD {
             return NARRDNode;
         }
 
-        NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
+        // we compute the offset after we have traversed the main body declarations
+        NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 1, 0);
 
         NARRDNode.setValue(TreeNodeType.NARRD);
         NARRDNode.setLeft(typeid);

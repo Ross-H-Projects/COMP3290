@@ -139,4 +139,20 @@ public class NSDLST {
 
         throw new Exception("Unable to Recover");
     }
+
+    public static int countAmountOfDeclarations (TreeNode treeNode, int amountOfDeclarationSoFar) {
+        if (treeNode == null) {
+            return amountOfDeclarationSoFar;
+        }
+
+        if (treeNode.getNodeType() == TreeNodeType.NSDECL) {
+            amountOfDeclarationSoFar++;
+            return amountOfDeclarationSoFar;
+        }
+
+        amountOfDeclarationSoFar = countAmountOfDeclarations(treeNode.getLeft(), amountOfDeclarationSoFar);
+        amountOfDeclarationSoFar = countAmountOfDeclarations(treeNode.getRight(), amountOfDeclarationSoFar);
+
+        return amountOfDeclarationSoFar;
+    }
 }

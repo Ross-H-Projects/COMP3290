@@ -107,4 +107,8 @@ public class SymbolTableRecord {
     public int getOffset () {
         return this.offset;
     }
+
+    public void setOffset (int o) {
+        this.offset = o;
+    }
 }
