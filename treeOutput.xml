@@ -18,7 +18,7 @@
 </child>
 </child>
 <child which="right">
-<nodeType value="NSTATS "/>
+<nodeType value="NREPT "/>
 <child which="left">
 <nodeType value="NASGN "/>
 <child which="left">
@@ -32,40 +32,7 @@
  "/>
 </child>
 </child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="0  DEBUG: [48005 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRINT "/>
-<child which="left">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-</child>
-</child>
-<child which="right">
+<child which="middle">
 <nodeType value="NSTATS "/>
 <child which="left">
 <nodeType value="NPLEQ "/>
@@ -81,6 +48,21 @@
 </child>
 </child>
 <child which="right">
+<nodeType value="NREPT "/>
+<child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
+ "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="0  DEBUG: [48005 || null || br: 90, o: 0 ]
+ "/>
+</child>
+</child>
+<child which="middle">
 <nodeType value="NSTATS "/>
 <child which="left">
 <nodeType value="NPLEQ "/>
@@ -96,103 +78,7 @@
 </child>
 </child>
 <child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRINT "/>
-<child which="left">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPLEQ "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  DEBUG: [49929 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPLEQ "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  DEBUG: [49929 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRINT "/>
-<child which="left">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPLEQ "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="3  DEBUG: [50891 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPLEQ "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="3  DEBUG: [50891 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NPRINT "/>
+<nodeType value="NPRLN "/>
 <child which="left">
 <nodeType value="NPRLST "/>
 <child which="left">
@@ -208,13 +94,32 @@
 </child>
 </child>
 </child>
+<child which="right">
+<nodeType value="NEQL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
+ "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="10  DEBUG: [1509283 || null || br: 90, o: 0 ]
+ "/>
 </child>
 </child>
 </child>
 </child>
+<child which="right">
+<nodeType value="NEQL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+ "/>
 </child>
-</child>
-</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="10  DEBUG: [1509283 || null || br: 90, o: 0 ]
+ "/>
 </child>
 </child>
 </child>
