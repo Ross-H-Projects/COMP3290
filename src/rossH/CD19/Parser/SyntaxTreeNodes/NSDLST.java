@@ -94,6 +94,8 @@ public class NSDLST {
         }
         if (offsetNeeded) {
             sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
+        } else {
+            sdecl.setSymbolRecordDataType(p.getCurrentToken());
         }
         p.moveToNextToken();
 

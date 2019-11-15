@@ -16,10 +16,12 @@ public class CD19CodeGenerator {
     public class TypeField {
         public String name;
         public int offSet;
+        public SymbolDataType dataType;
 
-        TypeField (String s, int o) {
+        TypeField (String s, int o, SymbolDataType d) {
             this.name = s;
             this.offSet = o;
+            this.dataType = d;
         }
 
         @Override
@@ -439,7 +441,7 @@ public class CD19CodeGenerator {
         }
 
         if (treeNode.getNodeType() == TreeNodeType.NSDECL) {
-            fields.put(treeNode.getSymbolRecord().getLexeme(),  new TypeField(treeNode.getSymbolRecord().getLexeme(), currentOffset));
+            fields.put(treeNode.getSymbolRecord().getLexeme(),  new TypeField(treeNode.getSymbolRecord().getLexeme(), currentOffset, treeNode.getSymbolRecord().getSymbolDataType()));
             currentOffset += 8;
         }
 
@@ -448,6 +450,15 @@ public class CD19CodeGenerator {
 
         return currentOffset;
 
+    }
+
+    public String getConvertOpCodeForSymbolDataType (SymbolDataType sdt) {
+        if (sdt == SymbolDataType.Integer) {
+            return "08";
+        }
+
+        // implies it is real
+        return "09";
     }
 
 

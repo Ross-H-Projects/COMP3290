@@ -169,6 +169,12 @@ public class TreeNode {
         }
     }
 
+    public void setSymbolRecordDataType (Token currentToken) {
+        if (this.symbolRecord != null) {
+            this.symbolRecord.setDataType(currentToken);
+        }
+    }
+
     public static void setup () {
         if (isSetup) {
             return;

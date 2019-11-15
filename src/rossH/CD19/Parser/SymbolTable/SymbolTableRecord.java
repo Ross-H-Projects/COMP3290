@@ -69,6 +69,18 @@ public class SymbolTableRecord {
 
     }
 
+    public void setDataType(Token currentToken) {
+        if (currentToken.value() == Token.TINTG) {
+            this.symbolDataType = SymbolDataType.Integer;
+        } else if (currentToken.value() == Token.TREAL) {
+            this.symbolDataType = SymbolDataType.Real;
+        } else if (currentToken.value() == Token.TBOOL) {
+            this.symbolDataType = SymbolDataType.Boolean;
+        } else {
+            this.symbolDataType = SymbolDataType.Void;
+        }
+    }
+
     public void setDataType(Token currentToken, int baseRegister, int offset) {
         this.baseRegister = baseRegister;
         this.offset = offset;

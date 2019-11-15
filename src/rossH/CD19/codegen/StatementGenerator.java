@@ -33,6 +33,12 @@ public class StatementGenerator {
             generateNASGNCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NPLEQ) {
             generateNPLEQCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NMNEQ) {
+            generateNMNEQCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NSTEQ) {
+            generateNSTEQCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NDVEQ) {
+            generateNDVEQCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NPRLN) {
             generateNPRLNCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NPRINT) {
@@ -62,22 +68,115 @@ public class StatementGenerator {
     }
 
     public static void generateNPLEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
-        // todo (MAYBE? - not sure if NARRV supports this type of operation)
-        //  need to eventually implement for NARRV
+        String convertTopOfStackToOpCode = "";
+
 
         // load address we are storing result into
-        codeGenerator.generateNSIVMCode(treeNode.getLeft());
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateNSIVMCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getSymbolRecordDataType());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateNARRVCode(treeNode.getLeft());
+            convertTopOfStackToOpCode = codeGenerator.getConvertOpCodeForSymbolDataType(treeNode.getLeft().getRight().getSymbolRecordDataType());
+        }
+
 
         // load value of the address we want to add to
-        codeGenerator.generateLoadVariableCode(treeNode.getLeft());
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateLoadVariableCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateLoadArrayElementCode(treeNode.getLeft());
+        }
 
-        // todo
-        //  need to eventually implement for bool, real, boolean etc
-        //  NEED TO EVENTUALLY CHANGE THIS TO BoolGenerator
-        ExpressionGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
 
         // do an add
         codeGenerator.addToOpCodes("11");
+
+        // do an appopriate data conversion for the variable we are assigning to
+        codeGenerator.addToOpCodes(convertTopOfStackToOpCode);
+
+        // do a store at the end
+        codeGenerator.addToOpCodes("43");
+    }
+
+    public static void generateNMNEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        // load address we are storing result into
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateNSIVMCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateNARRVCode(treeNode.getLeft());
+        }
+
+
+        // load value of the address we want to add to
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateLoadVariableCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateLoadArrayElementCode(treeNode.getLeft());
+        }
+
+
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // do a sub
+        codeGenerator.addToOpCodes("12");
+
+        // do a store at the end
+        codeGenerator.addToOpCodes("43");
+    }
+
+    public static void generateNSTEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        // load address we are storing result into
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateNSIVMCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateNARRVCode(treeNode.getLeft());
+        }
+
+
+        // load value of the address we want to add to
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateLoadVariableCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateLoadArrayElementCode(treeNode.getLeft());
+        }
+
+
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // do a mul
+        codeGenerator.addToOpCodes("13");
+
+        // do a store at the end
+        codeGenerator.addToOpCodes("43");
+    }
+
+    public static void generateNDVEQCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        // load address we are storing result into
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateNSIVMCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateNARRVCode(treeNode.getLeft());
+        }
+
+
+        // load value of the address we want to add to
+        if (treeNode.getLeft().getNodeType() == TreeNodeType.NSIMV) { // simple var
+            codeGenerator.generateLoadVariableCode(treeNode.getLeft());
+        } else if (treeNode.getLeft().getNodeType() == TreeNodeType.NARRV) { // array index
+            codeGenerator.generateLoadArrayElementCode(treeNode.getLeft());
+        }
+
+
+        BooleanGenerator.generateCode(treeNode.getRight(), codeGenerator);
+
+        // do a div
+        codeGenerator.addToOpCodes("14");
 
         // do a store at the end
         codeGenerator.addToOpCodes("43");
@@ -117,9 +216,11 @@ public class StatementGenerator {
         //  currently only supports printing of on variable, not a list of variables / literals
         //  need to support more like actual expressions and string
 
-        // left
+
         // todo
         //  support string printing
+
+        // left
         ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
 
         if (treeNode.getRight() == null) {

@@ -13,6 +13,10 @@ public class ExpressionGenerator {
             generateNILITCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NFLIT) {
             generateNFLITCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NTRUE) {
+            generateNTRUECode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NFALS) {
+            generateNFALSCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateLoadVariableCode(treeNode);
         } else if (treeNode.getNodeType() == TreeNodeType.NARRV) {
@@ -62,6 +66,17 @@ public class ExpressionGenerator {
         codeGenerator.addToFloatConstants(floatLexeme, opCodePosForConstantLoad);
     }
 
+
+    public static  void generateNTRUECode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        // TRUE
+        codeGenerator.addToOpCodes("05");
+    }
+
+    public static  void generateNFALSCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        // FALSE
+        codeGenerator.addToOpCodes("04");
+    }
 
     public static void generateNADDCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
 
