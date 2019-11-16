@@ -1,11 +1,12 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 // <fncall> --> <id> ( <elist> ) | <id> ( )
 public class NFCALL {
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NFCALLNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <id>
@@ -13,7 +14,7 @@ public class NFCALL {
             p.generateSyntaxError("expected an identifer.");
             return NFCALLNode;
         }
-        TreeNode id = NSIVM.generateTreeNode(p);
+        TreeNode id = NSIVM.generateTreeNode(p, null);
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
@@ -31,7 +32,7 @@ public class NFCALL {
         }
 
         // <elist>
-        TreeNode elist = NEXPL.generateTreeNode(p);
+        TreeNode elist = NEXPL.generateTreeNode(p, symbolTable);
         // handle <elist> error recovery
         if (elist.getNodeType() == TreeNodeType.NUNDEF) {
             // )

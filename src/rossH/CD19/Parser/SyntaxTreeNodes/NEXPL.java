@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -16,11 +17,11 @@ import rossH.CD19.Scanner.Token;
 public class NEXPL {
 
     // <elist>     --> <bool> <opt_elist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NEXPLNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <bool>
-        TreeNode bool = NBOOL.generateTreeNode(p);
+        TreeNode bool = NBOOL.generateTreeNode(p, symbolTable);
         if (bool.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -30,7 +31,7 @@ public class NEXPL {
         }
 
         // <opt_elist>
-        TreeNode elistOptional = elistOptional(p);
+        TreeNode elistOptional = elistOptional(p, symbolTable);
 
         // bool properly defined AND elistOptional either non-existant or contains errors
         // so we will just return bool
@@ -61,7 +62,7 @@ public class NEXPL {
     }
 
     // <opt_elist> --> , <elist> | ε
-    public static TreeNode elistOptional (CD19Parser p) {
+    public static TreeNode elistOptional (CD19Parser p, SymbolTable symbolTable) {
 
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
@@ -72,7 +73,7 @@ public class NEXPL {
         p.moveToNextToken();
 
         // <elist>
-        TreeNode elist = generateTreeNode(p);
+        TreeNode elist = generateTreeNode(p, symbolTable);
         return elist;
     }
 

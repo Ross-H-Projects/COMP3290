@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
@@ -8,7 +9,7 @@ import rossH.CD19.Scanner.Token;
 
 // <rel>             -> not <expr> <relop> <expr>
 public class NNOT {
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NNOTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         if (!p.currentTokenIs(Token.TNOT)) {
@@ -18,7 +19,7 @@ public class NNOT {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr1 = NBOOL.expr(p);
+        TreeNode expr1 = NBOOL.expr(p, symbolTable);
         if (expr1.getNodeType() == TreeNodeType.NUNDEF) {
             return NNOTNode;
         }
@@ -32,7 +33,7 @@ public class NNOT {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr2 = NBOOL.rel(p);
+        TreeNode expr2 = NBOOL.rel(p, symbolTable);
         if (expr2.getNodeType() == TreeNodeType.NUNDEF) {
             return NNOTNode;
         }

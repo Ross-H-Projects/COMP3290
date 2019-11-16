@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
@@ -96,6 +97,49 @@ public class NSDLST {
             sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, p.getBaseReigtserOffset(1));
         } else {
             sdecl.setSymbolRecordDataType(p.getCurrentToken());
+        }
+        p.moveToNextToken();
+
+        sdecl.setValue(TreeNodeType.NSDECL);
+        return sdecl;
+    }
+
+    // <sdecl> --> <id> : <stype>
+    // function specific version as functions each have their own symbol tables
+    public static TreeNode sdecl (CD19Parser p, SymbolTable symbolTable, boolean isNegativeOffset) {
+        TreeNode sdecl = new TreeNode(TreeNodeType.NUNDEF);
+        Token currentToken;
+
+        // <id>
+        if (!p.currentTokenIs(Token.TIDEN)) {
+            p.generateSyntaxError("Expected an identifier in variable declaration.");
+            // prematurely end parsing due to irrecoverable error
+            return sdecl;
+        }
+        // insert program id identifier into symbol table
+        currentToken = p.getCurrentToken();
+        SymbolTableRecord stRec = p.insertSymbolIdentifier(currentToken, symbolTable);
+        sdecl.setSymbolRecord(stRec);
+        p.moveToNextToken();
+
+        // :
+        if (!p.currentTokenIs(Token.TCOLN)) {
+            p.generateSyntaxError("Expected the character ':'");
+            // prematurely end parsing due to irrecoverable error
+            return sdecl;
+        }
+        p.moveToNextToken();
+
+        // <stype> --> integer | real | boolean
+        if (!p.currentTokenIs(Token.TINTG) && !p.currentTokenIs(Token.TREAL) && !p.currentTokenIs(Token.TBOOL)) {
+            p.generateSyntaxError("expected the keyword 'integer', 'real', or 'boolean'");
+            return sdecl;
+        }
+
+        if (isNegativeOffset) {
+            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, symbolTable.getBaseReigtser1OffsetNegative());
+        } else {
+            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, symbolTable.getBaseReigtser1OffsetPositive());
         }
         p.moveToNextToken();
 

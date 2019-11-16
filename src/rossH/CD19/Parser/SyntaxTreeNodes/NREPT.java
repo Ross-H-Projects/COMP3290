@@ -1,12 +1,13 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 
 public class NREPT {
     // <repstat>    --> repeat ( <asgnlist>  ) <stats> until <bool>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NREPTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // repeat
@@ -28,7 +29,7 @@ public class NREPT {
         // <asgnlist>
         TreeNode asgnList = new TreeNode(TreeNodeType.NUNDEF);
         if (p.currentTokenIs(Token.TIDEN)) {
-            asgnList = NASGNS.generateTreeNode(p);
+            asgnList = NASGNS.generateTreeNode(p, symbolTable);
             // handle error recovery in asgnList,
             // asgnList can be null so if it did not parse
             // just set it as null
@@ -45,7 +46,7 @@ public class NREPT {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, symbolTable);
         // <stats> is a necessary section of
         // NREPT, so if we failed to parse that then we are
         // failing parse NREPT entirely
@@ -61,7 +62,7 @@ public class NREPT {
         p.moveToNextToken();
 
         // <bool>
-        TreeNode bool = NBOOL.generateTreeNode(p);
+        TreeNode bool = NBOOL.generateTreeNode(p, symbolTable);
         // <bool> is a necessary section of
         // NREPT, so if it failed to parse that then we are
         // failing to parse NREPT entirely

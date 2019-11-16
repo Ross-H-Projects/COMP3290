@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
@@ -30,7 +31,7 @@ public class NSTATS {
 
     // <stats>    --> <stat>; <opt_stats>
     // <stats>    --> <strstat> <opt_stats>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NSTATSNode = new TreeNode(TreeNodeType.NUNDEF);
         boolean isStrStat = false;
 
@@ -40,13 +41,13 @@ public class NSTATS {
         // <strstat> -> <forstat>
         if (p.currentTokenIs(Token.TFOR)) {
             isStrStat = true;
-            strStat = NFOR.generateTreeNode(p);
+            strStat = NFOR.generateTreeNode(p, symbolTable);
         }
 
         // <strstat> -> <ifstat>
         if (!isStrStat && p.currentTokenIs(Token.TIFTH)) {
             isStrStat = true;
-            strStat = NIFTH.generateTreeNode(p);
+            strStat = NIFTH.generateTreeNode(p, symbolTable);
         }
 
         // handle invalid strStat
@@ -60,7 +61,7 @@ public class NSTATS {
 
         if (!isStrStat) {
             // <stat>
-            stat = stat(p);
+            stat = stat(p, symbolTable);
             if (stat.getNodeType() == TreeNodeType.NUNDEF) {
                 try {
                     errorRecovery(p);
@@ -91,7 +92,7 @@ public class NSTATS {
         }
 
         // <opt_stats>
-        TreeNode statsOptions = optStats(p);
+        TreeNode statsOptions = optStats(p, symbolTable);
 
         // stat properly defined AND statsOptions either non-existant or contains errors
         // so we will just return stat
@@ -123,37 +124,37 @@ public class NSTATS {
 
     // <stat>     --> <reptstat> | <iostat> | <returnstat>
     // <stat>     --> <asgnOrCallStat>
-    public static TreeNode stat (CD19Parser p) {
+    public static TreeNode stat (CD19Parser p, SymbolTable symbolTable) {
 
         // <repstat>
         if (p.currentTokenIs(Token.TREPT)) {
-            return NREPT.generateTreeNode(p);
+            return NREPT.generateTreeNode(p, symbolTable);
         }
 
         // <iostat>
         if (p.currentTokenIs(Token.TINPT)) { // input
-            return NINPUT.generateTreeNode(p);
+            return NINPUT.generateTreeNode(p, symbolTable);
         } else if (p.currentTokenIs(Token.TPRIN)) { // print
-            return NPRINT.generateTreeNode(p);
+            return NPRINT.generateTreeNode(p, symbolTable);
         } else if (p.currentTokenIs(Token.TPRLN)) { // printline
-            return NPRLN.generateTreeNode(p);
+            return NPRLN.generateTreeNode(p, symbolTable);
         }
 
         // <returnstat>
         if (p.currentTokenIs(Token.TRETN)) {
-            return NRETN.generateTreeNode(p);
+            return NRETN.generateTreeNode(p, symbolTable);
         }
 
         // <asgnstat>
         // <callstat>
         // getting to this point implies the next grammar is either <asgnstat>, <callstat>,
         // or we are traversing invalid code
-        TreeNode stat = asgnOrCallStat(p);
+        TreeNode stat = asgnOrCallStat(p, symbolTable);
         return stat;
     }
 
     // <op_stats> --> <stats> | ɛ
-    public static TreeNode optStats (CD19Parser p) {
+    public static TreeNode optStats (CD19Parser p, SymbolTable symbolTable) {
         // critera under which we don't need
         // another <stat> / <stats> is if
         // current token is 'end', 'else', or 'until'
@@ -163,12 +164,12 @@ public class NSTATS {
             return null;
         }
 
-        TreeNode optStats = generateTreeNode(p);
+        TreeNode optStats = generateTreeNode(p, symbolTable);
         return optStats;
     }
 
     // <asgnOrCallStat> --> <asgnstat> | <callstat>
-    public static TreeNode asgnOrCallStat (CD19Parser p) {
+    public static TreeNode asgnOrCallStat (CD19Parser p, SymbolTable symbolTable) {
         // asgnstat and callstat both start with an identifier
         if (!p.currentTokenIs(Token.TIDEN)) {
             p.generateSyntaxError("Expected an identifer");
@@ -177,23 +178,23 @@ public class NSTATS {
 
         // <callstat>
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
-            TreeNode callstat = NCALL.generateTreeNode(p);
+            TreeNode callstat = NCALL.generateTreeNode(p, symbolTable);
             return callstat;
         }
 
         // <asgnstat>
-        TreeNode asgnStat = asgnStat(p);
+        TreeNode asgnStat = asgnStat(p, symbolTable);
         return asgnStat;
     }
 
     // <asgnstat> --> <var> <asgnop> <bool>
-    public static TreeNode asgnStat (CD19Parser p) {
+    public static TreeNode asgnStat (CD19Parser p, SymbolTable symbolTable) {
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            var = NARRV.generateTreeNode(p);
+            var = NARRV.generateTreeNode(p, symbolTable);
         } else { // NISVM: <var> --> <id>
-            var = NSIVM.generateTreeNode(p);
+            var = NSIVM.generateTreeNode(p, symbolTable);
         }
 
         // handle var error recovery
@@ -210,7 +211,7 @@ public class NSTATS {
         p.moveToNextToken();
 
         // <bool>
-        TreeNode bool = NBOOL.generateTreeNode(p);
+        TreeNode bool = NBOOL.generateTreeNode(p, symbolTable);
         // handle bool error recovery
         if (bool.getNodeType() == TreeNodeType.NUNDEF) {
             return bool;

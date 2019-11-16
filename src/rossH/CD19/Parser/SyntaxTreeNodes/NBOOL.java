@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
@@ -18,17 +19,17 @@ import rossH.CD19.Scanner.Token;
  */
 
 public class NBOOL {
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NBOOLNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <rel>
-        TreeNode rel = rel(p);
+        TreeNode rel = rel(p, symbolTable);
         if (rel.getNodeType() == TreeNodeType.NUNDEF) {
             return NBOOLNode;
         }
 
         // <bool_r>
-        TreeNode boolR = boolR(p);
+        TreeNode boolR = boolR(p, symbolTable);
         if (boolR != null && boolR.getNodeType() == TreeNodeType.NUNDEF) {
             return NBOOLNode;
         }
@@ -47,7 +48,7 @@ public class NBOOL {
     }
 
     // <bool_r> -> <logop> <rel> <bool_r> | ɛ
-    public static TreeNode boolR (CD19Parser p) {
+    public static TreeNode boolR (CD19Parser p, SymbolTable symbolTable) {
 
         // <logop>
         TreeNode logop = logop(p);
@@ -59,13 +60,13 @@ public class NBOOL {
         p.moveToNextToken();
 
         // <rel>
-        TreeNode rel = rel(p);
+        TreeNode rel = rel(p, symbolTable);
         if (rel.getNodeType() == TreeNodeType.NUNDEF) {
             return rel;
         }
 
         // <bool_r>
-        TreeNode boolR = boolR(p);
+        TreeNode boolR = boolR(p, symbolTable);
         if (boolR != null && boolR.getNodeType() == TreeNodeType.NUNDEF) {
             return boolR;
         }
@@ -103,23 +104,23 @@ public class NBOOL {
 
     // <rel>             -> <expr> <opt_relop_expr>
     // <rel>             -> not <expr> <relop> <rel>
-    public static TreeNode rel (CD19Parser p) {
+    public static TreeNode rel (CD19Parser p, SymbolTable symbolTable) {
         boolean notPresent = false;
 
         // <rel>             -> not <expr> <relop> <expr>
         if (p.currentTokenIs(Token.TNOT)) {
-            TreeNode NNOTNode = NNOT.generateTreeNode(p);
+            TreeNode NNOTNode = NNOT.generateTreeNode(p, symbolTable);
             return NNOTNode;
         }
 
         // <expr>
-        TreeNode expr = expr(p);
+        TreeNode expr = expr(p, symbolTable);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return expr;
         }
 
         // <opt_relop_expr>
-        TreeNode optRelopExpr = optRelopExpr(p);
+        TreeNode optRelopExpr = optRelopExpr(p, symbolTable);
         if (optRelopExpr != null && optRelopExpr.getNodeType() == TreeNodeType.NUNDEF) {
             return optRelopExpr;
         }
@@ -133,7 +134,7 @@ public class NBOOL {
     }
 
     // <opt_relop_expr>  -> <relop> <expr> | ɛ
-    public static TreeNode optRelopExpr (CD19Parser p) {
+    public static TreeNode optRelopExpr (CD19Parser p, SymbolTable symbolTable) {
 
         // <relop>
         TreeNode relop = relop(p);
@@ -143,7 +144,7 @@ public class NBOOL {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr = expr(p);
+        TreeNode expr = expr(p, symbolTable);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return expr;
         }
@@ -183,15 +184,15 @@ public class NBOOL {
     */
 
     // <expr>            -> <term> <opt_add_sub>
-    public static TreeNode expr (CD19Parser p) {
+    public static TreeNode expr (CD19Parser p, SymbolTable symbolTable) {
         // <term>
-        TreeNode term = term(p);
+        TreeNode term = term(p, symbolTable);
         if (term.getNodeType() == TreeNodeType.NUNDEF) {
             return term;
         }
 
         // <opt_add_sub>
-        TreeNode optAddSub = optAddSub(p);
+        TreeNode optAddSub = optAddSub(p, symbolTable);
         if (optAddSub != null && optAddSub.getNodeType() == TreeNodeType.NUNDEF) {
             return optAddSub;
         }
@@ -205,7 +206,7 @@ public class NBOOL {
     }
 
     // <opt_add_sub>     -> + <expr> | - <expr> | ɛ
-    public static TreeNode optAddSub (CD19Parser p) {
+    public static TreeNode optAddSub (CD19Parser p, SymbolTable symbolTable) {
         TreeNode optAddSub = new TreeNode(TreeNodeType.NUNDEF);
 
 
@@ -219,7 +220,7 @@ public class NBOOL {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr = expr(p);
+        TreeNode expr = expr(p, symbolTable);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return expr;
         }
@@ -244,15 +245,15 @@ public class NBOOL {
     */
 
     // <term>          -> <fact> * <multDivModOpt>
-    public static TreeNode term (CD19Parser p) {
+    public static TreeNode term (CD19Parser p, SymbolTable symbolTable) {
         // <fact>
-        TreeNode fact = fact(p);
+        TreeNode fact = fact(p, symbolTable);
         if (fact.getNodeType() == TreeNodeType.NUNDEF) {
             return fact;
         }
 
         // <multDivModOpt>
-        TreeNode multDivModNothing = multDivModNothing(p);
+        TreeNode multDivModNothing = multDivModNothing(p, symbolTable);
         if (multDivModNothing != null && multDivModNothing.getNodeType() == TreeNodeType.NUNDEF) {
             return multDivModNothing;
         }
@@ -266,7 +267,7 @@ public class NBOOL {
     }
 
     //        <multDivModOpt> -> / <term> | % <term> | * <term> | ɛ
-    public static TreeNode multDivModNothing (CD19Parser p) {
+    public static TreeNode multDivModNothing (CD19Parser p, SymbolTable symbolTable) {
         TreeNode multDivModNothing = new TreeNode(TreeNodeType.NUNDEF);
 
         if (p.currentTokenIs(Token.TDIVD)) { // /
@@ -281,7 +282,7 @@ public class NBOOL {
         p.moveToNextToken();
 
         // <term>
-        TreeNode term = term(p);
+        TreeNode term = term(p, symbolTable);
         if (term.getNodeType() == TreeNodeType.NUNDEF) {
             return term;
         }
@@ -301,16 +302,16 @@ public class NBOOL {
     */
 
     // <fact>   -> <exponent <fact_r>
-    public static TreeNode fact (CD19Parser p) {
+    public static TreeNode fact (CD19Parser p, SymbolTable symbolTable) {
 
         // <exponent>
-        TreeNode exponent = exponent(p);
+        TreeNode exponent = exponent(p, symbolTable);
         if (exponent.getNodeType() == TreeNodeType.NUNDEF) {
             return exponent;
         }
 
         // <fact_r>
-        TreeNode factR = factR(p);
+        TreeNode factR = factR(p, symbolTable);
         if (factR != null && factR.getNodeType() == TreeNodeType.NUNDEF) {
             return factR;
         }
@@ -324,7 +325,7 @@ public class NBOOL {
     }
 
     // <fact_r> -> ^ <fact> | ɛ
-    public static TreeNode factR (CD19Parser p) {
+    public static TreeNode factR (CD19Parser p, SymbolTable symbolTable) {
         TreeNode factR = new TreeNode(TreeNodeType.NUNDEF);
 
         // ɛ
@@ -337,7 +338,7 @@ public class NBOOL {
         factR.setValue(TreeNodeType.NPOW);
 
         // <fact>
-        TreeNode fact = fact(p);
+        TreeNode fact = fact(p, symbolTable);
         if (fact.getNodeType() == TreeNodeType.NUNDEF) {
             return fact;
         }
@@ -366,7 +367,7 @@ public class NBOOL {
         <varOrFnCall> --> <var> | <fnCall>
     */
 
-    public static TreeNode exponent (CD19Parser p) {
+    public static TreeNode exponent (CD19Parser p, SymbolTable symbolTable) {
 
         // true | false
         if (p.currentTokenIs(Token.TTRUE)) { // true
@@ -405,7 +406,7 @@ public class NBOOL {
             p.moveToNextToken();
 
             // <bool>
-            TreeNode bool = generateTreeNode(p);
+            TreeNode bool = generateTreeNode(p, symbolTable);
             if (bool.getNodeType() == TreeNodeType.NUNDEF) {
                 return bool;
             }
@@ -422,7 +423,7 @@ public class NBOOL {
 
         // <varOrFnCall>
         if (p.currentTokenIs(Token.TIDEN)) {
-            TreeNode varOrFnCall = varOrFnCall(p);
+            TreeNode varOrFnCall = varOrFnCall(p, symbolTable);
             return varOrFnCall;
         }
 
@@ -435,19 +436,19 @@ public class NBOOL {
     }
 
     // <varOrFnCall> --> <var> | <fncall>
-    private static TreeNode varOrFnCall (CD19Parser p) {
+    private static TreeNode varOrFnCall (CD19Parser p, SymbolTable symbolTable) {
         // <fncall>
         if (p.getTokenAhead(1).value() == Token.TLPAR) {
-            TreeNode fncall = NFCALL.generateTreeNode(p);
+            TreeNode fncall = NFCALL.generateTreeNode(p, symbolTable);
             return fncall;
         }
 
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            var = NARRV.generateTreeNode(p);
+            var = NARRV.generateTreeNode(p, symbolTable);
         } else { // NISVM: <var> --> <id>
-            var = NSIVM.generateTreeNode(p);
+            var = NSIVM.generateTreeNode(p, symbolTable);
         }
 
         return var;

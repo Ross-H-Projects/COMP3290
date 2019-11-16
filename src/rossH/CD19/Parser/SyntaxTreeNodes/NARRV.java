@@ -2,6 +2,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNodeType;
@@ -10,7 +11,7 @@ import rossH.CD19.Scanner.Token;
 // RULES:
 // NARRV: <var> --> <id>[<expr>].<id>
 public class NARRV {
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NARRVNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
@@ -19,7 +20,7 @@ public class NARRV {
             p.generateSyntaxError("Expected an identifier.");
             return NARRVNode;
         }
-        TreeNode id1 = NSIVM.generateTreeNode(p);
+        TreeNode id1 = NSIVM.generateTreeNode(p, symbolTable);
 
         // [
         if (!p.currentTokenIs(Token.TLBRK)) {
@@ -29,7 +30,7 @@ public class NARRV {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr = NBOOL.expr(p);
+        TreeNode expr = NBOOL.expr(p, symbolTable);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return NARRVNode;
         }
@@ -49,7 +50,7 @@ public class NARRV {
         p.moveToNextToken();
 
         // <id>
-        TreeNode id2 = NSIVM.generateTreeNode(p);
+        TreeNode id2 = NSIVM.generateTreeNode(p, symbolTable);
         if (id2.getNodeType() == TreeNodeType.NUNDEF) {
             return NARRVNode;
         }

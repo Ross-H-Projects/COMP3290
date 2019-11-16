@@ -3,28 +3,14 @@ NPROG  test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
 NSDLST NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
   NSDECL 
 y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  NREPT  NASGN  NSIMV  
+  NSTATS NASGN  NSIMV  
 x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NILIT  0  DEBUG: [48005 || null || br: 90, o: 0 ]
-      
-NSTATS NPLEQ  NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  
-NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NREPT  NASGN  
-NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  NILIT  0  DEBUG: [48005 || null || br: 90, o: 0 ]
+  NILIT  3  DEBUG: [50891 || null || br: 90, o: 0 ]
       
 NSTATS NPLEQ  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
   
-NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NPRLN  NPRLST 
-NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  
-NEQL   NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
+NADD   NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
   NILIT  
-10  DEBUG: [1509283 || null || br: 90, o: 0 ]
-   NEQL   NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+3  DEBUG: [50891 || null || br: 90, o: 0 ]
+      NPRLN  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
   
-NILIT  10  DEBUG: [1509283 || null || br: 90, o: 0 ]
-   

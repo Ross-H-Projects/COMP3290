@@ -5,8 +5,14 @@ import java.util.HashMap;
 public class SymbolTable {
     private HashMap<Integer, SymbolTableRecord> symbols;
 
+    private int currentBaseRegister1OffsetPositive;
+    private int currentBaseRegister1OffsetNegative;
+
     public SymbolTable () {
         symbols = new HashMap<Integer, SymbolTableRecord>();
+
+        currentBaseRegister1OffsetNegative = -8;
+        currentBaseRegister1OffsetPositive = 16;
     }
 
     public void setSymbolTableRecord (SymbolTableRecord STRec) {
@@ -31,5 +37,27 @@ public class SymbolTable {
 
     public boolean contains (SymbolTableRecord stRec) {
         return symbols.containsKey(stRec.hashCode());
+    }
+
+    public int getBaseReigtser1OffsetPositive() {
+
+        int oldBaseRegisterOffsetPositive = currentBaseRegister1OffsetPositive;
+        currentBaseRegister1OffsetPositive += 8;
+
+        return oldBaseRegisterOffsetPositive;
+    }
+
+    public int getBaseReigtser1OffsetNegative() {
+
+        int oldBaseRegisterOffsetNegative = currentBaseRegister1OffsetNegative;
+        currentBaseRegister1OffsetNegative -= 8;
+
+        return oldBaseRegisterOffsetNegative;
+    }
+
+    public void printSymbolTableRecords () {
+        for (SymbolTableRecord  str : symbols.values()) {
+            System.out.println(str.getLexeme() + ", Base Reg: " + str.getBaseRegister() + ", Offset: " + str.getOffset());
+        }
     }
 }

@@ -41,7 +41,7 @@ public class NMAIN {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, null);
         // <stats> are a necessary section of NMAIN, so if we fail to parse
         // <stats> we fail to parse the entirety  of NMAIN
         if (stats != null && stats.getNodeType() == TreeNodeType.NUNDEF) {

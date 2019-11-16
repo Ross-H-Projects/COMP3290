@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import rossH.CD19.Parser.SymbolTable.SymbolDataType;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
@@ -77,6 +78,7 @@ public class TreeNode {
     private TreeNodeType nodeType;
     private int nodeValue;
     private TreeNode left,middle,right;
+    private SymbolTable symbolTable;
     private SymbolTableRecord symbolRecord;
     private TreeNodeDataType dataType;
 
@@ -88,6 +90,7 @@ public class TreeNode {
         middle = null;
         right = null;
         symbolRecord = null;
+        symbolTable = null;
         dataType = null;
 
         idx = ++index;
@@ -133,7 +136,16 @@ public class TreeNode {
         return this.symbolRecord;
     }
 
-    //public StRec getType() { return type; }
+    public SymbolDataType getSymbolRecordDataType() {
+        if (this.symbolRecord != null) {
+            return this.symbolRecord.getSymbolDataType();
+        }
+        return null;
+    }
+
+    public SymbolTable getSymbolTable () {
+        return this.symbolTable;
+    }
 
     public void setValue (TreeNodeType nValue) {
         this.nodeType = nValue;
@@ -156,12 +168,11 @@ public class TreeNode {
         this.symbolRecord = stRec;
     }
 
-    public SymbolDataType getSymbolRecordDataType() {
-        if (this.symbolRecord != null) {
-            return this.symbolRecord.getSymbolDataType();
-        }
-        return null;
+    public void setSymbolTable (SymbolTable st) {
+        this.symbolTable = st;
     }
+
+
 
     public void setSymbolRecordDataType(Token currentToken, int baseRegister, int offset) {
         if (this.symbolRecord != null) {

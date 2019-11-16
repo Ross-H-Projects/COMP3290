@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -14,7 +15,7 @@ import rossH.CD19.Scanner.Token;
 */
 public class NRETN {
     // <returnStat>    --> return <opt_expr>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NRETNNode  = new TreeNode(TreeNodeType.NRETN);
 
         // return
@@ -27,7 +28,7 @@ public class NRETN {
 
 
         // <opt_exp>
-        TreeNode exprOptional = exprOptional(p);
+        TreeNode exprOptional = exprOptional(p, symbolTable);
         if (exprOptional == null) {
             NRETNNode.setValue(TreeNodeType.NRETN);
             return NRETNNode;
@@ -40,14 +41,14 @@ public class NRETN {
     }
 
     // <opt_expr>      --> <expr> | ε
-    public static TreeNode exprOptional (CD19Parser p) {
+    public static TreeNode exprOptional (CD19Parser p, SymbolTable symbolTable) {
         // implies we've just traversed "return ;"
         // so we're pasrsing <opt_expr> --> <expr> | ε
         if (p.currentTokenIs(Token.TSEMI)) {
             return null;
         }
 
-        TreeNode expr = NBOOL.expr(p);
+        TreeNode expr = NBOOL.expr(p, symbolTable);
         return expr;
     }
 }

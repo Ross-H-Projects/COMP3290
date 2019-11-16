@@ -1,12 +1,13 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
 public class NARRD {
     // <arrdecl>      --> <id> : <typeid>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NARRDNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
@@ -18,7 +19,12 @@ public class NARRD {
         }
         // insert program id identifier into symbol table
         currentToken = p.getCurrentToken();
-        SymbolTableRecord stRec = p.insertSymbolIdentifier(currentToken);
+        SymbolTableRecord stRec;
+        if (symbolTable == null) {
+            stRec = p.insertSymbolIdentifier(currentToken);
+        } else {
+            stRec = p.insertSymbolIdentifier(currentToken, symbolTable);
+        }
         NARRDNode.setSymbolRecord(stRec);
         p.moveToNextToken();
 
@@ -31,12 +37,15 @@ public class NARRD {
         p.moveToNextToken();
 
         // <typeid>
-        TreeNode typeid = NSIVM.generateTreeNode(p);
+        // we only want to the typeid to point to a the programs symbol table
+        // as types are only defined globally and not in each sub procedure
+        TreeNode typeid = NSIVM.generateTreeNode(p, null);
         if (typeid.getNodeType() == TreeNodeType.NUNDEF) {
             return NARRDNode;
         }
 
         // we compute the offset after we have traversed the main body declarations
+        // or the function parameters / locals
         NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 1, 0);
 
         NARRDNode.setValue(TreeNodeType.NARRD);

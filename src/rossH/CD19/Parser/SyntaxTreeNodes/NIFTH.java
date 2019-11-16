@@ -6,6 +6,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -21,7 +22,7 @@ import rossH.CD19.Scanner.Token;
 
 public class NIFTH {
     // <ifstat>                --> if ( <bool> ) <stats> <opt_else> end
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NIFTHNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // if
@@ -41,7 +42,7 @@ public class NIFTH {
         p.moveToNextToken();
 
         // <bool>
-        TreeNode bool = NBOOL.generateTreeNode(p);
+        TreeNode bool = NBOOL.generateTreeNode(p, symbolTable);
         if (bool.getNodeType() == TreeNodeType.NUNDEF) {
             errorRecoveryToEnd(p);
             return NIFTHNode;
@@ -56,14 +57,14 @@ public class NIFTH {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, symbolTable);
         if (stats.getNodeType() == TreeNodeType.NUNDEF) {
             errorRecoveryToEnd(p);
             return NIFTHNode;
         }
 
         // <opt_else>
-        TreeNode  elseStats = elseIfOptional(p);
+        TreeNode  elseStats = elseIfOptional(p, symbolTable);
         if (elseStats != null && elseStats.getNodeType() == TreeNodeType.NUNDEF) {
             errorRecoveryToEnd(p);
             return NIFTHNode;
@@ -91,7 +92,7 @@ public class NIFTH {
     }
 
     // <opt_else>              --> else <stats> | ε
-    public static TreeNode elseIfOptional (CD19Parser p) {
+    public static TreeNode elseIfOptional (CD19Parser p, SymbolTable symbolTable) {
 
         // ε
         if (!p.currentTokenIs(Token.TELSE)) {
@@ -102,7 +103,7 @@ public class NIFTH {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, symbolTable);
         return stats;
     }
 

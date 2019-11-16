@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -16,15 +17,15 @@ import rossH.CD19.Scanner.Token;
 public class NVLIST {
 
     // <vlist>     --> <var> <opt_vlist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NVLISTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <var>
         TreeNode var = new TreeNode(TreeNodeType.NUNDEF);
         if (p.getTokenAhead(1).value() == Token.TLBRK) { // NARRV: <var> --> <id>[<expr>].<id>
-            var = NARRV.generateTreeNode(p);
+            var = NARRV.generateTreeNode(p, symbolTable);
         } else { // NISVM: <var> --> <id>
-            var = NSIVM.generateTreeNode(p);
+            var = NSIVM.generateTreeNode(p, symbolTable);
         }
         
         if (var.getNodeType() == TreeNodeType.NUNDEF) {
@@ -36,7 +37,7 @@ public class NVLIST {
         }
 
         // <opt_vlist>
-        TreeNode vlistOptional =  vlistOptional(p);
+        TreeNode vlistOptional =  vlistOptional(p, symbolTable);
         // var properly defined AND vlistOptional either non-existant or contains errors
         // so we will just return var
         if (var.getNodeType() != TreeNodeType.NUNDEF &&
@@ -66,7 +67,7 @@ public class NVLIST {
     }
 
     // <opt_vlist> --> , <vlist> | ε
-    public static TreeNode vlistOptional (CD19Parser p) {
+    public static TreeNode vlistOptional (CD19Parser p, SymbolTable symbolTable) {
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
@@ -76,7 +77,7 @@ public class NVLIST {
         p.moveToNextToken();
 
         // <vlist>
-        TreeNode vlist = generateTreeNode(p);
+        TreeNode vlist = generateTreeNode(p, symbolTable);
         return vlist;
     }
     

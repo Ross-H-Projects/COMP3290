@@ -86,6 +86,7 @@ public class CD19CodeGenerator {
 
 
         TreeNode globalsNode = programNode.getLeft();
+        TreeNode functionsNode = programNode.getMiddle();
         TreeNode mainbodyNode = programNode.getRight();
         TreeNode slistNode = mainbodyNode.getLeft();
 
@@ -101,11 +102,11 @@ public class CD19CodeGenerator {
         GlobalsGenerator.generateCode(globalsNode, this);
 
 
-
-
         // we need to generate code for statements in main body
         TreeNode statsNode = mainbodyNode.getRight();
         generateMainBodyStatements(statsNode);
+
+        FunctionsGenerator.generateCode(functionsNode, this);
 
 
         //  generate integer constants section AND fix instruction section
@@ -119,6 +120,8 @@ public class CD19CodeGenerator {
         // todo
         //  generate string constants section AND fix instruction section
         //  to refer to string constants section
+
+
 
         String instructionSection = convertOpCodesListToModFile(opCodes);
         return instructionSection;
@@ -190,6 +193,9 @@ public class CD19CodeGenerator {
         // x -> int literal | variables | addition of variabls / literals
         // ie currently only supports nstats, nasgn, nsimv, nilit,
         StatementGenerator.generateCode(statements, this);
+
+        // terminate the current line of output
+        opCodes.add("65");
 
         // figure out if we need to pad the instruction op codes
         if (opCodes.size() % 8 != 0) {
@@ -399,6 +405,8 @@ public class CD19CodeGenerator {
 
     public String[] convertAddressToByteRep (int actualIntegerConstantPos) {
         String[] byteRep = new String[4];
+
+        // todo - account for negative addresses
 
         // we can cheat a little bit since we know we are only working with 64 Kbits of memory
         byteRep[0] = "00";

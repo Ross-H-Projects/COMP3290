@@ -52,6 +52,8 @@ public class StatementGenerator {
             generateNIFTHCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NREPT) {
             generateNREPTCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NFOR) {
+            generateNPFORCode(treeNode, codeGenerator);
         }
 
     }
@@ -417,6 +419,49 @@ public class StatementGenerator {
         // getting here implies we are in NASGNS node
         generateAsgnListCode(treeNode.getLeft(), codeGenerator);
         generateAsgnListCode(treeNode.getRight(), codeGenerator);
+    }
+
+    public static void generateNPFORCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        // create op codes for asgnlist
+        generateAsgnListCode(treeNode.getLeft(), codeGenerator);
+
+        int opCodeToJumpToForLoop = codeGenerator.getAmountOfOpCodes();
+
+
+        codeGenerator.addToOpCodes("90");
+        int fillWithOpCodeToJumpToIfBoolTruePos = codeGenerator.getAmountOfOpCodes();
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+
+        // gneerate op codes for bool
+        BooleanGenerator.generateCode(treeNode.getMiddle(), codeGenerator);
+
+        // bf
+        codeGenerator.addToOpCodes("36");
+
+        // generate op codes for statements
+        generateCode(treeNode.getRight(), codeGenerator);
+
+
+        String[] opCodeToJumpToForLoopByteRep = codeGenerator.convertAddressToByteRep(opCodeToJumpToForLoop);
+        codeGenerator.addToOpCodes("90");
+        codeGenerator.addToOpCodes(opCodeToJumpToForLoopByteRep[0]);
+        codeGenerator.addToOpCodes(opCodeToJumpToForLoopByteRep[1]);
+        codeGenerator.addToOpCodes(opCodeToJumpToForLoopByteRep[2]);
+        codeGenerator.addToOpCodes(opCodeToJumpToForLoopByteRep[3]);
+
+        // br
+        codeGenerator.addToOpCodes("37");
+
+        int opCodeToJumpToIfBoolTruePos = codeGenerator.getAmountOfOpCodes();
+        String[] opCodeToJumpToIfBoolTruePosByteRep = codeGenerator.convertAddressToByteRep(opCodeToJumpToIfBoolTruePos);
+
+        codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos, opCodeToJumpToIfBoolTruePosByteRep[0]);
+        codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 1, opCodeToJumpToIfBoolTruePosByteRep[1]);
+        codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 2, opCodeToJumpToIfBoolTruePosByteRep[2]);
+        codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 3, opCodeToJumpToIfBoolTruePosByteRep[3]);
     }
 
 

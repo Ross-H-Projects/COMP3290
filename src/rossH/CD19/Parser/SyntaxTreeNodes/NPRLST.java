@@ -12,6 +12,7 @@ package rossH.CD19.Parser.SyntaxTreeNodes;
 */
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
@@ -19,11 +20,11 @@ import rossH.CD19.Scanner.Token;
 public class NPRLST {
 
     // <prlist>        --> <printitem> <opt_prlist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode PRLSTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <printitem>
-        TreeNode printitem = printItem(p);
+        TreeNode printitem = printItem(p, symbolTable);
         if (printitem.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -32,7 +33,7 @@ public class NPRLST {
             }
         }
 
-        TreeNode prlistOptional = prlistOptional(p);
+        TreeNode prlistOptional = prlistOptional(p, symbolTable);
 
         // printitem properly defined AND prlistOptional either non-existant or contains errors
         // so we will just return printitem
@@ -63,7 +64,7 @@ public class NPRLST {
     }
 
     // <opt_prlist>    --> , <prlist> | ε
-    public static TreeNode prlistOptional (CD19Parser p) {
+    public static TreeNode prlistOptional (CD19Parser p, SymbolTable symbolTable) {
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
@@ -73,13 +74,13 @@ public class NPRLST {
         p.moveToNextToken();
 
         // <prlist>
-        TreeNode prlist = generateTreeNode(p);
+        TreeNode prlist = generateTreeNode(p, symbolTable);
         return prlist;
     }
 
     // <printitem> -->  <expr>
     // <printitem>  --> <string>
-    public static TreeNode printItem (CD19Parser p) {
+    public static TreeNode printItem (CD19Parser p, SymbolTable symbolTable) {
         // <string>
         if (p.currentTokenIs(Token.TSTRG)) {
             Token stringToken = p.getCurrentToken();
@@ -91,7 +92,7 @@ public class NPRLST {
         }
 
         // <expr>
-        TreeNode expr = NBOOL.expr(p);
+        TreeNode expr = NBOOL.expr(p, symbolTable);
         return expr;
     }
 

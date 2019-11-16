@@ -63,6 +63,20 @@ public class CD19Parser {
         return stRec;
     }
 
+    public SymbolTableRecord insertSymbolIdentifier (Token token, SymbolTable symbolTable) {
+
+        // Add to symbol Table or get Symbol Table reference
+        SymbolTableRecord stRec = new SymbolTableRecord(token.value(), token.getStr());
+
+        if (symbolTable.contains(stRec)) {
+            // MAY NEED KEEP TRACK OF symbol table record in Token??
+            stRec = symbolTable.getSymbolTableRecord(stRec);
+        }
+
+        symbolTable.setSymbolTableRecord(stRec);
+        return stRec;
+    }
+
     public void moveToNextToken () {
         tokenPos++;
 

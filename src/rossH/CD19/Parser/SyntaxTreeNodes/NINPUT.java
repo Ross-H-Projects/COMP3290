@@ -1,11 +1,12 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 public class NINPUT {
     // <iostat> --> input <vlist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NINPUTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // input
@@ -16,7 +17,7 @@ public class NINPUT {
         p.moveToNextToken();
 
         // <vlist>
-        TreeNode vlist = NVLIST.generateTreeNode(p);
+        TreeNode vlist = NVLIST.generateTreeNode(p, symbolTable);
         if (vlist.getNodeType() == TreeNodeType.NUNDEF) {
             return NINPUTNode;
         }

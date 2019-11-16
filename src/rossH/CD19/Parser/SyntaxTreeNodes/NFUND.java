@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
@@ -10,6 +11,8 @@ public class NFUND {
     public static TreeNode generateTreeNode (CD19Parser p) {
         TreeNode NFUNDNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
+
+        SymbolTable symbolTable = new SymbolTable();
 
         // function
         if (!p.currentTokenIs(Token.TFUNC)) {
@@ -43,7 +46,7 @@ public class NFUND {
         // <plist>
         TreeNode plist = null;
         if (!p.currentTokenIs(Token.TRPAR)) {
-            plist = NPLIST.generateTreeNode(p);
+            plist = NPLIST.generateTreeNode(p, symbolTable);
             if (plist.getNodeType() == TreeNodeType.NUNDEF) {
                 plist = null;
             }
@@ -71,7 +74,7 @@ public class NFUND {
             return NFUNDNode;
         }
         // todo
-        // add symbol reference to symbol type (function return type)
+        //  add symbol reference to symbol type (function return type)
         p.moveToNextToken();
 
 
@@ -83,7 +86,7 @@ public class NFUND {
         // <dlist>
         TreeNode dlist = null;
         if (!p.currentTokenIs(Token.TBEGN)) {
-            dlist = NDLIST.generateTreeNode(p);
+            dlist = NDLIST.generateTreeNode(p, symbolTable);
 
             if (dlist.getNodeType() == TreeNodeType.NUNDEF) {
                 dlist = null;
@@ -103,7 +106,7 @@ public class NFUND {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, symbolTable);
         if (stats.getNodeType() == TreeNodeType.NUNDEF) {
             // stats are a necessary part of the function body
             // therefore we will just return an invalid NFUND
@@ -118,6 +121,8 @@ public class NFUND {
         p.moveToNextToken();
 
         NFUNDNode.setValue(TreeNodeType.NFUND);
+        NFUNDNode.setSymbolTable(symbolTable);
+
         NFUNDNode.setLeft(plist);
         NFUNDNode.setMiddle(dlist);
         NFUNDNode.setRight(stats);

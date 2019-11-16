@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -16,11 +17,11 @@ import rossH.CD19.Scanner.Token;
 
 public class NASGNS {
     // <alist>  --> <asgnstat> <opt_alist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NASGNSNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <asgnstat>
-        TreeNode asgnStat = NSTATS.asgnStat(p);
+        TreeNode asgnStat = NSTATS.asgnStat(p, symbolTable);
         if (asgnStat.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -30,7 +31,7 @@ public class NASGNS {
         }
 
         // <opt_alist>
-        TreeNode alistOptional = alistOptional(p);
+        TreeNode alistOptional = alistOptional(p, symbolTable);
 
         // asgnStat properly defined AND alistOptional either non-existant or contains errors
         // so we will just return asgnStat
@@ -61,7 +62,7 @@ public class NASGNS {
     }
 
     // <opt_alist> --> , <alist> | ε
-    public static TreeNode alistOptional (CD19Parser p) {
+    public static TreeNode alistOptional (CD19Parser p, SymbolTable symbolTable) {
 
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
@@ -72,7 +73,7 @@ public class NASGNS {
         p.moveToNextToken();
 
         // <alist>
-        TreeNode alist = generateTreeNode(p);
+        TreeNode alist = generateTreeNode(p, symbolTable);
         return alist;
     }
 

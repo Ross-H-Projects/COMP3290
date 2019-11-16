@@ -1,12 +1,13 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 public class NFOR {
 
     // for ( <asgnlist> ; <bool> ) <stats> end
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NFORNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // for
@@ -29,7 +30,7 @@ public class NFOR {
         // <asgnlist>
         TreeNode asgnList = new TreeNode(TreeNodeType.NUNDEF);
         if (p.currentTokenIs(Token.TIDEN)) {
-            asgnList = NASGNS.generateTreeNode(p);
+            asgnList = NASGNS.generateTreeNode(p, symbolTable);
             // <asgnlist> is not a necessary part for NFOR
             // so just set it null
             if (asgnList.getNodeType() == TreeNodeType.NUNDEF) {
@@ -46,7 +47,7 @@ public class NFOR {
         p.moveToNextToken();
 
         // <bool>
-        TreeNode bool = NBOOL.generateTreeNode(p);
+        TreeNode bool = NBOOL.generateTreeNode(p, symbolTable);
         // <bool> is a necessary part of NFOR
         // so if it fails, fail the entire NFOR
         if (bool.getNodeType() == TreeNodeType.NUNDEF) {
@@ -64,7 +65,7 @@ public class NFOR {
         p.moveToNextToken();
 
         // <stats>
-        TreeNode stats = NSTATS.generateTreeNode(p);
+        TreeNode stats = NSTATS.generateTreeNode(p, symbolTable);
         // <stats> is a necessary part of NFOR
         // so if it fails, fail the entire NFOR
         if (stats.getNodeType() == TreeNodeType.NUNDEF) {

@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
 
 /*
@@ -14,11 +15,11 @@ import rossH.CD19.Scanner.Token;
  */
 public class NPLIST {
     // <params>        --> <param> <opt_params>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NPLISTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <param>
-        TreeNode param = param(p);
+        TreeNode param = param(p, symbolTable);
         if (param.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -29,7 +30,7 @@ public class NPLIST {
         }
 
         // <opt_params>
-        TreeNode paramsOptional = paramsOptional(p);
+        TreeNode paramsOptional = paramsOptional(p, symbolTable);
 
         // param properly defined AND paramsOptional either non-existant or contains errors
         // so we will just return param
@@ -63,24 +64,24 @@ public class NPLIST {
     // <param>        --> <sdecl>
     // <param>        --> <arrdecl>
     // <param>        --> const <arrdecl>
-    public static TreeNode param (CD19Parser p) {
+    public static TreeNode param (CD19Parser p, SymbolTable symbolTable) {
         // determine which piece of grammar we are parsing
 
         // <param>      --> const <arrdecl>
         if (p.currentTokenIs(Token.TCNST)) {
             p.moveToNextToken();
-            return constantArrDecl(p);
+            return constantArrDecl(p, symbolTable);
         }
 
         // <param>        --> <arrdecl>
         // <param>        --> <sdecl>
-        return sdeclOrArrdecl(p);
+        return sdeclOrArrdecl(p, symbolTable);
     }
 
-    public static TreeNode constantArrDecl (CD19Parser p) {
+    public static TreeNode constantArrDecl (CD19Parser p, SymbolTable symbolTable) {
         TreeNode decl = new TreeNode(TreeNodeType.NARRC);
 
-        TreeNode arrdecl = NARRD.generateTreeNode(p);
+        TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable);
         if (arrdecl.getNodeType() == TreeNodeType.NUNDEF) {
             return arrdecl;
         }
@@ -91,7 +92,7 @@ public class NPLIST {
 
     // <param>        --> <arrdecl>
     // <param>        --> <sdecl>
-    public static TreeNode sdeclOrArrdecl (CD19Parser p) {
+    public static TreeNode sdeclOrArrdecl (CD19Parser p, SymbolTable symbolTable) {
         TreeNode decl = new TreeNode(TreeNodeType.NUNDEF);
         // <arrdecl>    --> <id> : <typeid>
         // <sdecl>      --> <id> : <stype>
@@ -112,7 +113,7 @@ public class NPLIST {
         int potentialStype = p.getTokenAhead(2).value();
         if (potentialStype == Token.TINTG || potentialStype == Token.TREAL || potentialStype == Token.TBOOL) {
             decl.setValue(TreeNodeType.NSIMP);
-            TreeNode sdecl = NSDLST.sdecl(p, true);
+            TreeNode sdecl = NSDLST.sdecl(p, symbolTable, true);
             decl.setLeft(sdecl);
             return decl;
         }
@@ -120,7 +121,8 @@ public class NPLIST {
         // arrdecl
         if (potentialStype == Token.TIDEN) {
             decl.setValue(TreeNodeType.NARRP);
-            TreeNode arrdecl = NARRD.generateTreeNode(p);
+
+            TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable);
             decl.setLeft(arrdecl);
             return decl;
         }
@@ -132,7 +134,7 @@ public class NPLIST {
     }
 
     // <opt_paramas>   --> , <params>  | ε
-    public static TreeNode paramsOptional (CD19Parser p) {
+    public static TreeNode paramsOptional (CD19Parser p, SymbolTable symbolTable) {
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
@@ -142,7 +144,7 @@ public class NPLIST {
         p.moveToNextToken();
 
         // <params>
-        TreeNode params = generateTreeNode(p);
+        TreeNode params = generateTreeNode(p, symbolTable);
         return params;
     }
 

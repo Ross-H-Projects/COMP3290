@@ -1,7 +1,10 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Scanner.Token;
+
+import javax.swing.plaf.synth.SynthMenuBarUI;
 
 /*
     OLD RULES:
@@ -14,11 +17,11 @@ import rossH.CD19.Scanner.Token;
  */
 public class NDLIST {
     // <dlist>     --> <decl> <opt_dlist>
-    public static TreeNode generateTreeNode (CD19Parser p) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
         TreeNode NDLISTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <decl>
-        TreeNode decl = sdeclOrArrdecl(p);
+        TreeNode decl = sdeclOrArrdecl(p, symbolTable);
         if (decl.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
@@ -28,7 +31,7 @@ public class NDLIST {
         }
 
         // <opt_dlist>
-        TreeNode dlistOptional = dlistOptional(p);
+        TreeNode dlistOptional = dlistOptional(p, symbolTable);
         // decl properly defined AND dlistOptional either non-existant or contains errors
         // so we will just return decl
         if (decl.getNodeType() != TreeNodeType.NUNDEF &&
@@ -59,7 +62,7 @@ public class NDLIST {
 
 
     //  <opt_dlist> --> , <dlist> | ε
-    public static TreeNode dlistOptional (CD19Parser p) {
+    public static TreeNode dlistOptional (CD19Parser p, SymbolTable symbolTable) {
         // ε
         if (!p.currentTokenIs(Token.TCOMA)) {
             return null;
@@ -69,13 +72,13 @@ public class NDLIST {
         p.moveToNextToken();
 
         // <dlist>
-        TreeNode dlist = generateTreeNode(p);
+        TreeNode dlist = generateTreeNode(p, symbolTable);
         return dlist;
     }
 
     // <decl>        --> <arrdecl>
     // <decl>        --> <sdecl>
-    public static TreeNode sdeclOrArrdecl (CD19Parser p) {
+    public static TreeNode sdeclOrArrdecl (CD19Parser p, SymbolTable symbolTable) {
         TreeNode decl = new TreeNode(TreeNodeType.NUNDEF);
         // <arrdecl>    --> <id> : <typeid>
         // <sdecl>      --> <id> : <stype>
@@ -97,13 +100,15 @@ public class NDLIST {
         // sdecl
         int potentialStype = p.getTokenAhead(2).value();
         if (potentialStype == Token.TINTG || potentialStype == Token.TREAL || potentialStype == Token.TBOOL) {
-            TreeNode sdecl = NSDLST.sdecl(p, false);
+            TreeNode sdecl = NSDLST.sdecl(p, symbolTable, false);
             return sdecl;
         }
 
         // arrdecl
         if (potentialStype == Token.TIDEN) {
-            TreeNode arrdecl = NARRD.generateTreeNode(p);
+            // todo
+            //  arrdecl needs to take the functions symbol table into account
+            TreeNode arrdecl = NARRD.generateTreeNode(p, null);
             return arrdecl;
         }
 

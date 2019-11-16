@@ -33,7 +33,7 @@ public class NINIT {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr = NBOOL.expr(p);
+        TreeNode expr = NBOOL.expr(p, null);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return NINITNode;
         }

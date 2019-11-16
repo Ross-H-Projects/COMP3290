@@ -1,25 +1,14 @@
 CD19 test
 
-
 main
 	x : integer,
 	y : integer
 begin
 	
-
-	repeat (x = 0)
-		x += 1;
-		
-		repeat (y = 0)
-			y += 1;
-			printline x, y;
-			
-		until
-			y == 10;
-	until
-		x == 10;
-		
+	x = 3;
 	
+	y += x + 3;
 	
+	printline y;
 end 
 CD19 test

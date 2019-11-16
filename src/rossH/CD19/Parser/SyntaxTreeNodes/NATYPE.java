@@ -1,6 +1,7 @@
 package rossH.CD19.Parser.SyntaxTreeNodes;
 
 import rossH.CD19.Parser.CD19Parser;
+import rossH.CD19.Parser.SymbolTable.SymbolTable;
 import rossH.CD19.Parser.SymbolTable.SymbolTableRecord;
 import rossH.CD19.Scanner.Token;
 
@@ -47,7 +48,7 @@ public class NATYPE {
         p.moveToNextToken();
 
         // <expr>
-        TreeNode expr = NBOOL.expr(p);
+        TreeNode expr = NBOOL.expr(p, null);
         if (expr.getNodeType() == TreeNodeType.NUNDEF) {
             return NATYPENode;
         }
@@ -71,7 +72,7 @@ public class NATYPE {
         p.moveToNextToken();
 
         // <structid>
-        TreeNode structId = NSIVM.generateTreeNode(p);
+        TreeNode structId = NSIVM.generateTreeNode(p, null);
         if (structId.getNodeType() == TreeNodeType.NUNDEF) {
             return NATYPENode;
         }
