@@ -1,16 +1,9 @@
-NPROG  test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
-     NMAIN  
-NSDLST NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NSDECL 
-y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  NSTATS NASGN  NSIMV  
-x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NILIT  3  DEBUG: [50891 || null || br: 90, o: 0 ]
-      
-NSTATS NPLEQ  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  
-NADD   NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NILIT  
-3  DEBUG: [50891 || null || br: 90, o: 0 ]
-      NPRLN  NSIMV  y  DEBUG: [118200 || Integer || br: 91, o: 8 ]
-  
+NPROG  test   NFUND  abc    NPLIST NSIMP  NSDECL x      NPLIST NSIMP  
+NSDECL y      NSIMP  NSDECL z      NSDECL a      NSTATS NASGN  NSIMV  
+a      NILIT  77     NSTATS NASGN  NSIMV  x      NILIT  100    NSTATS 
+NASGN  NSIMV  a      NADD   NSIMV  x      NADD   NSIMV  y      NSIMV  
+z      NSTATS NPRLN  NSIMV  a      NRETN  NMAIN  NSDLST NSDECL x      
+NSDECL y      NSTATS NASGN  NSIMV  x      NILIT  3      NSTATS NASGN  
+NSIMV  y      NILIT  11     NSTATS NCALL  NSIMV  abc    NEXPL  NILIT  
+1      NEXPL  NILIT  2      NILIT  3      NSTATS NPRLN  NSIMV  x      
+NPRLN  NSIMV  y      

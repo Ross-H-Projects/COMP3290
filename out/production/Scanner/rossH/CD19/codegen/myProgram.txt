@@ -1,14 +1,28 @@
 CD19 test
 
+function abc (x : integer, y : integer, z : integer) : void
+	a : integer
+begin
+	a = 77;
+	
+	
+	x = 100;
+	a = x + y + z;
+	printline a;
+	
+	return;
+end
+
 main
 	x : integer,
 	y : integer
 begin
-	
 	x = 3;
+	y = 11;
 	
-	y += x + 3;
+	abc (1, 2, 3);
 	
+	printline x;
 	printline y;
 end 
 CD19 test

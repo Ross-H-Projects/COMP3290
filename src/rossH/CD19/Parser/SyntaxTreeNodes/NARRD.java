@@ -26,6 +26,7 @@ public class NARRD {
             stRec = p.insertSymbolIdentifier(currentToken, symbolTable);
         }
         NARRDNode.setSymbolRecord(stRec);
+        NARRDNode.setIsArray(true);
         p.moveToNextToken();
 
         // :

@@ -82,6 +82,8 @@ public class TreeNode {
     private SymbolTableRecord symbolRecord;
     private TreeNodeDataType dataType;
 
+    private boolean isArray;
+    private boolean isConstant;
 
     public TreeNode (TreeNodeType nValue) {
         nodeType = nValue;
@@ -92,6 +94,9 @@ public class TreeNode {
         symbolRecord = null;
         symbolTable = null;
         dataType = null;
+
+        isArray = false;
+        isConstant = false;
 
         idx = ++index;
     }
@@ -147,6 +152,14 @@ public class TreeNode {
         return this.symbolTable;
     }
 
+    public boolean getIsArray () {
+        return this.isArray;
+    }
+
+    public boolean getIsConstant () {
+        return this.isConstant;
+    }
+
     public void setValue (TreeNodeType nValue) {
         this.nodeType = nValue;
         this.nodeValue = nodeTypeIntMapping.get(nodeType);
@@ -172,8 +185,6 @@ public class TreeNode {
         this.symbolTable = st;
     }
 
-
-
     public void setSymbolRecordDataType(Token currentToken, int baseRegister, int offset) {
         if (this.symbolRecord != null) {
             this.symbolRecord.setDataType(currentToken, baseRegister, offset);
@@ -184,6 +195,14 @@ public class TreeNode {
         if (this.symbolRecord != null) {
             this.symbolRecord.setDataType(currentToken);
         }
+    }
+
+    public void setIsArray (boolean b) {
+        this.isArray = b;
+    }
+
+    public void setIsConstant (boolean b) {
+        this.isConstant = b;
     }
 
     public static void setup () {

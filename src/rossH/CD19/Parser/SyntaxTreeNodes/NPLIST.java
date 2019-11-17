@@ -86,6 +86,7 @@ public class NPLIST {
             return arrdecl;
         }
 
+        arrdecl.setIsConstant(true);
         decl.setLeft(arrdecl);
         return decl;
     }

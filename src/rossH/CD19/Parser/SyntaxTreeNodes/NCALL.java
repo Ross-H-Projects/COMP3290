@@ -16,6 +16,7 @@ public class NCALL {
             return NCALLNode;
         }
         TreeNode id = NSIVM.generateTreeNode(p, null);
+        NCALLNode.setLeft(id);
 
         // (
         if (!p.currentTokenIs(Token.TLPAR)) {
@@ -46,7 +47,6 @@ public class NCALL {
             p.moveToNextToken();
 
             NCALLNode.setValue(TreeNodeType.NCALL);
-            NCALLNode.setLeft(id);
             return NCALLNode;
         }
 

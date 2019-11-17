@@ -73,8 +73,9 @@ public class NFUND {
             p.generateSyntaxError("Expected a function reurn type: 'integer', 'real', 'boolean', 'void'.");
             return NFUNDNode;
         }
-        // todo
-        //  add symbol reference to symbol type (function return type)
+        // set return type of function
+        NFUNDNode.setSymbolRecordDataType(p.getCurrentToken());
+
         p.moveToNextToken();
 
 

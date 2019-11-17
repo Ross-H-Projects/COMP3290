@@ -63,6 +63,9 @@ public class CD19CodeGenerator {
     HashMap<String, ArrayType> arrays;
     HashMap<String, String> arrayToArrayTypeMappings;
 
+    HashMap<String, Integer> functionOpCodeStartingPosMapping;
+
+    HashMap<Integer, String> callStatOpCodePosToFunctionNameMapping;
 
     public CD19CodeGenerator () {
         opCodes = new LinkedList<String>();
@@ -79,6 +82,9 @@ public class CD19CodeGenerator {
         arrays = new HashMap<String, ArrayType>();
         arrayToArrayTypeMappings = new HashMap<String, String>();
 
+        functionOpCodeStartingPosMapping = new HashMap<String, Integer>();
+
+        callStatOpCodePosToFunctionNameMapping = new HashMap<Integer, String>();
     }
 
     public String generateCode (TreeNode programNode) {
@@ -106,14 +112,27 @@ public class CD19CodeGenerator {
         TreeNode statsNode = mainbodyNode.getRight();
         generateMainBodyStatements(statsNode);
 
+        // we want the instructions for the functions to be under the main body instructions
         FunctionsGenerator.generateCode(functionsNode, this);
 
+        // figure out if we need to pad the instruction op codes
+        if (opCodes.size() % 8 != 0) {
+            int amountToPadBy = 8 - (opCodes.size() % 8);
+            for (int i = 0; i < amountToPadBy; i++) {
+                opCodes.add("00");
+            }
+        }
 
-        //  generate integer constants section AND fix instruction section
+        // fix insructions section
+        // so that call statements will refer to correct
+        // op code pos for functions
+        resolveCallStatStatements();
+
+        //  fix instruction section
         //  to refer to integer constants section
         resolveIntegerConstants();
 
-        //  generate float constants section AND fix instruction section
+        //  fix instruction section
         //  to refer to float constants section
         resolveFloatConsants();
 
@@ -197,13 +216,8 @@ public class CD19CodeGenerator {
         // terminate the current line of output
         opCodes.add("65");
 
-        // figure out if we need to pad the instruction op codes
-        if (opCodes.size() % 8 != 0) {
-            int amountToPadBy = 8 - (opCodes.size() % 8);
-            for (int i = 0; i < amountToPadBy; i++) {
-                opCodes.add("00");
-            }
-        }
+        // halt - stop execution
+        opCodes.add("00");
     }
 
     public void generateNSIVMCode (TreeNode treeNode) {
@@ -315,6 +329,20 @@ public class CD19CodeGenerator {
         }
 
         floatConstantToInstructionMapping.put(opCodePosForConstant, newFloatConstantPos);
+    }
+
+    public void resolveCallStatStatements () {
+        for (Map.Entry<Integer, String> entry : callStatOpCodePosToFunctionNameMapping.entrySet()) {
+            int functionOpCodePos = functionOpCodeStartingPosMapping.get(entry.getValue());
+            String[] functionOpCodePosByteRep = convertAddressToByteRep(functionOpCodePos);
+
+            int callStatOpCodeStartPos = entry.getKey();
+            opCodes.set(callStatOpCodeStartPos, functionOpCodePosByteRep[0]);
+            opCodes.set(callStatOpCodeStartPos + 1, functionOpCodePosByteRep[1]);
+            opCodes.set(callStatOpCodeStartPos + 2, functionOpCodePosByteRep[2]);
+            opCodes.set(callStatOpCodeStartPos + 3, functionOpCodePosByteRep[3]);
+
+        }
     }
 
     public void resolveIntegerConstants () {
@@ -497,7 +525,16 @@ public class CD19CodeGenerator {
         return amountOfDeclarationsSoFar;
     }
 
+    public void addFunctionOpCodeStartingPosMapping (String functionName, int opCodeStartingPos) {
+        functionOpCodeStartingPosMapping.put(functionName, opCodeStartingPos);
+    }
 
+    public int getFunctionOpCodeStartingPos (String functionName) {
+        return functionOpCodeStartingPosMapping.get(functionName);
+    }
 
+    public void addCallStatOpCodePosToFunctionNameMapping(int whereToFillWithFunctionAddress, String lexeme) {
+        callStatOpCodePosToFunctionNameMapping.put(whereToFillWithFunctionAddress, lexeme);
+    }
 
 }

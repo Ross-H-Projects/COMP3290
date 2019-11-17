@@ -54,6 +54,10 @@ public class StatementGenerator {
             generateNREPTCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NFOR) {
             generateNPFORCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NCALL) {
+            generateNCALLCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NRETN) {
+            generateNRETNCode(treeNode, codeGenerator);
         }
 
     }
@@ -462,6 +466,77 @@ public class StatementGenerator {
         codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 1, opCodeToJumpToIfBoolTruePosByteRep[1]);
         codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 2, opCodeToJumpToIfBoolTruePosByteRep[2]);
         codeGenerator.setOpCodes(fillWithOpCodeToJumpToIfBoolTruePos + 3, opCodeToJumpToIfBoolTruePosByteRep[3]);
+    }
+
+    public static void generateNCALLCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+
+        // allocate a space for return type if needed
+        if (treeNode.getLeft().getSymbolRecord().getSymbolDataType() != SymbolDataType.Void) {
+            // LB
+            codeGenerator.addToOpCodes("42");
+            codeGenerator.addToOpCodes("00");
+            codeGenerator.addToOpCodes("00");
+        }
+
+        // generate params
+        int noOfParams = evaluateParams(treeNode.getRight(), codeGenerator, 0);
+        String[] noOfParamsByteRep = codeGenerator.convertAddressToByteRep(noOfParams);
+
+        // LH for no of params
+        codeGenerator.addToOpCodes("42");
+        codeGenerator.addToOpCodes(noOfParamsByteRep[2]);
+        codeGenerator.addToOpCodes(noOfParamsByteRep[3]);
+
+        // LA for function start pos
+
+
+
+        codeGenerator.addToOpCodes("90");
+        // we do not know the op code start pos for functions until after main body is
+        // has op codes generated, so we will just save the position and the name of the function that is
+        // needed to be called here
+        int whereToFillWithFunctionAddress = codeGenerator.getAmountOfOpCodes();
+        codeGenerator.addCallStatOpCodePosToFunctionNameMapping(whereToFillWithFunctionAddress, treeNode.getLeft().getSymbolRecord().getLexeme());
+
+        // leave blank for now, will be resolved later after both main and function bodies are generated
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+        codeGenerator.addToOpCodes("00");
+
+        // JS2
+        codeGenerator.addToOpCodes("72");
+    }
+
+    public static int evaluateParams (TreeNode treeNode, CD19CodeGenerator codeGenerator, int noOfParamsSoFar) {
+        if (treeNode == null) {
+            return noOfParamsSoFar;
+        }
+
+
+        if (treeNode.getNodeType() != TreeNodeType.NEXPL) {
+            BooleanGenerator.generateCode(treeNode, codeGenerator);
+
+            noOfParamsSoFar++;
+            return noOfParamsSoFar;
+        }
+
+        noOfParamsSoFar = evaluateParams(treeNode.getLeft(), codeGenerator, noOfParamsSoFar);
+        noOfParamsSoFar = evaluateParams(treeNode.getRight(), codeGenerator, noOfParamsSoFar);
+
+        return noOfParamsSoFar;
+    }
+
+    public static void generateNRETNCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        // implies we are returning void
+        if (treeNode.getLeft() == null) {
+            // RETN
+            codeGenerator.addToOpCodes("71");
+            return;
+        }
+
+        // todo
+        //  gen code for non void returns
     }
 
 
