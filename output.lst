@@ -1,17 +1,5 @@
-NPROG  test   NFUNCS NFUND  abc    NPLIST NSIMP  NSDECL x      NPLIST 
-NSIMP  NSDECL y      NSIMP  NSDECL z      NSDECL d      NSTATS NASGN  
-NSIMV  d      NILIT  2      NSTATS NASGN  NSIMV  x      NADD   NILIT  
-500    NSIMV  d      NSTATS NPRLN  NPRLST NSIMV  x      NPRLST NSIMV  
-y      NPRLST NSIMV  z      NSIMV  d      NRETN  NADD   NSIMV  d      
-NSIMV  x      NFUNCS NFUND  mul2   NSIMP  NSDECL u      NRETN  NMUL   
-NSIMV  u      NILIT  2      NFUND  abc2   NSIMP  NSDECL x      NSDECL 
-d      NSTATS NASGN  NSIMV  d      NADD   NFCALL NSIMV  mul2   NSIMV  
-x      NILIT  2      NRETN  NSIMV  d      NMAIN  NSDLST NSDECL x      
-NSDLST NSDECL y      NSDLST NSDECL z      NSDECL e      NSTATS NASGN  
-NSIMV  x      NILIT  3      NSTATS NASGN  NSIMV  y      NILIT  11     
-NSTATS NASGN  NSIMV  z      NILIT  40     NSTATS NASGN  NSIMV  e      
-NFCALL NSIMV  abc    NEXPL  NSIMV  x      NEXPL  NSIMV  y      NSIMV  
-z      NSTATS NPRLN  NSIMV  e      NSTATS NASGN  NSIMV  e      NFCALL 
-NSIMV  mul2   NSIMV  e      NSTATS NPRLN  NSIMV  e      NSTATS NASGN  
-NSIMV  e      NILIT  1      NSTATS NASGN  NSIMV  e      NFCALL NSIMV  
-abc2   NSIMV  e      NPRLN  NSIMV  e      
+NPROG  test   NGLOB  NTYPEL NRTYPE arb    NSDECL foo    NATYPE abArray       
+NILIT  4      NSIMV  arb    NARRD  arbArrayRealized     NSIMV  abArray       
+NMAIN  NSDECL x      NSTATS NASGN  NSIMV  x      NILIT  0      NSTATS 
+NINPUT NSIMV  x      NINPUT NARRV  NSIMV  arbArrayRealized     NILIT  
+1      NSIMV  foo    

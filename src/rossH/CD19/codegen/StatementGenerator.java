@@ -289,7 +289,7 @@ public class StatementGenerator {
         } else if (treeNode.getNodeType() == TreeNodeType.NARRV) {
             codeGenerator.generateNARRVCode(treeNode);
 
-            SymbolDataType dt = treeNode.getSymbolRecord().getSymbolDataType();
+            SymbolDataType dt = treeNode.getRight().getSymbolRecord().getSymbolDataType();
 
             if (dt == SymbolDataType.Integer) {
                 // READI  - read integer

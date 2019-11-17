@@ -1,228 +1,45 @@
 <root>
 <nodeType value="NPROG "/>
 <nodeSymbolValue value="test  "/>
+<child which="left">
+<nodeType value="NGLOB "/>
 <child which="middle">
-<nodeType value="NFUNCS "/>
+<nodeType value="NTYPEL "/>
 <child which="left">
-<nodeType value="NFUND "/>
-<nodeSymbolValue value="abc  "/>
-<child which="left">
-<nodeType value="NPLIST "/>
-<child which="left">
-<nodeType value="NSIMP "/>
+<nodeType value="NRTYPE "/>
+<nodeSymbolValue value="arb  "/>
 <child which="left">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="x  "/>
+<nodeSymbolValue value="foo  "/>
 </child>
 </child>
 <child which="right">
-<nodeType value="NPLIST "/>
-<child which="left">
-<nodeType value="NSIMP "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="y  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSIMP "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="z  "/>
-</child>
-</child>
-</child>
-</child>
-<child which="middle">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="d  "/>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  "/>
-</child>
-<child which="right">
-<nodeType value="NADD "/>
+<nodeType value="NATYPE "/>
+<nodeSymbolValue value="abArray  "/>
 <child which="left">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="500  "/>
+<nodeSymbolValue value="4  "/>
 </child>
 <child which="right">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
+<nodeSymbolValue value="arb  "/>
 </child>
 </child>
 </child>
 <child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NPRLST "/>
+<nodeType value="NARRD "/>
+<nodeSymbolValue value="arbArrayRealized  "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  "/>
-</child>
-<child which="right">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  "/>
-</child>
-<child which="right">
-<nodeType value="NPRLST "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
-</child>
-</child>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NRETN "/>
-<child which="left">
-<nodeType value="NADD "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  "/>
-</child>
-</child>
-</child>
-</child>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NFUNCS "/>
-<child which="left">
-<nodeType value="NFUND "/>
-<nodeSymbolValue value="mul2  "/>
-<child which="left">
-<nodeType value="NSIMP "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="u  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NRETN "/>
-<child which="left">
-<nodeType value="NMUL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="u  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  "/>
-</child>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NFUND "/>
-<nodeSymbolValue value="abc2  "/>
-<child which="left">
-<nodeType value="NSIMP "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="x  "/>
-</child>
-</child>
-<child which="middle">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="d  "/>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
-</child>
-<child which="right">
-<nodeType value="NADD "/>
-<child which="left">
-<nodeType value="NFCALL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="mul2  "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NRETN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="d  "/>
-</child>
-</child>
-</child>
+<nodeSymbolValue value="abArray  "/>
 </child>
 </child>
 </child>
 <child which="right">
 <nodeType value="NMAIN "/>
 <child which="left">
-<nodeType value="NSDLST "/>
-<child which="left">
 <nodeType value="NSDECL "/>
 <nodeSymbolValue value="x  "/>
-</child>
-<child which="right">
-<nodeType value="NSDLST "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="y  "/>
-</child>
-<child which="right">
-<nodeType value="NSDLST "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="z  "/>
-</child>
-<child which="right">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-</child>
 </child>
 <child which="right">
 <nodeType value="NSTATS "/>
@@ -234,151 +51,33 @@
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="3  "/>
+<nodeSymbolValue value="0  "/>
 </child>
 </child>
 <child which="right">
 <nodeType value="NSTATS "/>
 <child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="11  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  "/>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="40  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-<child which="right">
-<nodeType value="NFCALL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="abc  "/>
-</child>
-<child which="right">
-<nodeType value="NEXPL "/>
+<nodeType value="NINPUT "/>
 <child which="left">
 <nodeType value="NSIMV "/>
 <nodeSymbolValue value="x  "/>
 </child>
+</child>
 <child which="right">
-<nodeType value="NEXPL "/>
+<nodeType value="NINPUT "/>
+<child which="left">
+<nodeType value="NARRV "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  "/>
+<nodeSymbolValue value="arbArrayRealized  "/>
 </child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  "/>
-</child>
-</child>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-<child which="right">
-<nodeType value="NFCALL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="mul2  "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-<child which="right">
+<child which="middle">
 <nodeType value="NILIT "/>
 <nodeSymbolValue value="1  "/>
 </child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-<child which="right">
-<nodeType value="NFCALL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="abc2  "/>
-</child>
 <child which="right">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NPRLN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="e  "/>
-</child>
-</child>
-</child>
-</child>
-</child>
-</child>
+<nodeSymbolValue value="foo  "/>
 </child>
 </child>
 </child>
