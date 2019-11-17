@@ -2,187 +2,76 @@
 <nodeType value="NPROG "/>
 <nodeSymbolValue value="test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
  "/>
-<child which="left">
-<nodeType value="NGLOB "/>
 <child which="middle">
-<nodeType value="NTYPEL "/>
+<nodeType value="NFUNCS "/>
 <child which="left">
-<nodeType value="NRTYPE "/>
-<nodeSymbolValue value="arb  DEBUG: [93170536 || null || br: 90, o: 0 ]
- "/>
-<child which="left">
-<nodeType value="NSDECL "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NATYPE "/>
-<nodeSymbolValue value="arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
- "/>
-<child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="4  DEBUG: [51853 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="arb  DEBUG: [93170536 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-</child>
-<child which="right">
-<nodeType value="NARRD "/>
-<nodeSymbolValue value="a  DEBUG: [95112 || Void || br: 91, o: 8 ]
- "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-</child>
-<child which="middle">
 <nodeType value="NFUND "/>
-<nodeSymbolValue value="abc  DEBUG: [92694346 || Integer || br: 90, o: 0 ]
+<nodeSymbolValue value="sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
  "/>
-<child which="left">
-<nodeType value="NPLIST "/>
 <child which="left">
 <nodeType value="NSIMP "/>
 <child which="left">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 92, o: -16 ]
+<nodeSymbolValue value="x  DEBUG: [117238 || Real || br: 92, o: -8 ]
  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NARRP "/>
-<child which="left">
-<nodeType value="NARRD "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Void || br: 92, o: -8 ]
- "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-</child>
-</child>
-<child which="middle">
-<nodeType value="NARRD "/>
-<nodeSymbolValue value="k  DEBUG: [104732 || Void || br: 92, o: 16 ]
- "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="k  DEBUG: [104732 || Void || br: 92, o: 16 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: [48967 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NFLIT "/>
-<nodeSymbolValue value="23.434  DEBUG: [2105732628 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Void || br: 92, o: -8 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: [48967 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="0  DEBUG: [48005 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  DEBUG: [118200 || Void || br: 92, o: -8 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  DEBUG: [49929 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="k  DEBUG: [104732 || Void || br: 92, o: 16 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: [48967 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- "/>
-</child>
 </child>
 </child>
 <child which="right">
 <nodeType value="NRETN "/>
 <child which="left">
+<nodeType value="NPOW "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+ "/>
+</child>
+<child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: [48967 || null || br: 90, o: 0 ]
+<nodeSymbolValue value="2  DEBUG: [49929 || null || br: 90, o: 0 ]
+ "/>
+</child>
+</child>
+</child>
+</child>
+<child which="right">
+<nodeType value="NFUND "/>
+<nodeSymbolValue value="pow4  DEBUG: [-978947650 || Real || br: 90, o: 0 ]
+ "/>
+<child which="left">
+<nodeType value="NSIMP "/>
+<child which="left">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+ "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NRETN "/>
+<child which="left">
+<nodeType value="NMUL "/>
+<child which="left">
+<nodeType value="NFCALL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
+ "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+ "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NFCALL "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
+ "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Real || br: 92, o: -8 ]
  "/>
 </child>
 </child>
@@ -208,7 +97,7 @@
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="45  DEBUG: [1603559 || null || br: 90, o: 0 ]
+<nodeSymbolValue value="2  DEBUG: [49929 || null || br: 90, o: 0 ]
  "/>
 </child>
 </child>
@@ -216,78 +105,31 @@
 <nodeType value="NSTATS "/>
 <child which="left">
 <nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: [95112 || Void || br: 91, o: 8 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="0  DEBUG: [48005 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NFLIT "/>
-<nodeSymbolValue value="200.00  DEBUG: [-507871300 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NARRV "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: [95112 || Void || br: 91, o: 8 ]
- "/>
-</child>
-<child which="middle">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  DEBUG: [48967 || null || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NFLIT "/>
-<nodeSymbolValue value="400.00  DEBUG: [-1259959624 || null || br: 90, o: 0 ]
- "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NCALL "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="abc  DEBUG: [92694346 || Integer || br: 90, o: 0 ]
- "/>
-</child>
-<child which="right">
-<nodeType value="NEXPL "/>
 <child which="left">
 <nodeType value="NSIMV "/>
 <nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
  "/>
 </child>
 <child which="right">
+<nodeType value="NFCALL "/>
+<child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  DEBUG: [95112 || Void || br: 91, o: 8 ]
+<nodeSymbolValue value="pow4  DEBUG: [-978947650 || Real || br: 90, o: 0 ]
+ "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
  "/>
 </child>
 </child>
+</child>
+<child which="right">
+<nodeType value="NPRLN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+ "/>
 </child>
 </child>
 </child>

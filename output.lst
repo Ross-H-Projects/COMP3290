@@ -1,73 +1,33 @@
 NPROG  test  DEBUG: [-873614422 || null || br: 90, o: 0 ]
-     NGLOB  
-NTYPEL NRTYPE arb  DEBUG: [93170536 || null || br: 90, o: 0 ]
- NSDECL 
-foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- NATYPE arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
-  
-NILIT  4  DEBUG: [51853 || null || br: 90, o: 0 ]
-      NSIMV  arb  DEBUG: [93170536 || null || br: 90, o: 0 ]
- 
-NARRD  a  DEBUG: [95112 || Void || br: 91, o: 8 ]
-      NSIMV  arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
-  
-NFUND  abc  DEBUG: [92694346 || Integer || br: 90, o: 0 ]
-     NPLIST 
-NSIMP  NSDECL x  DEBUG: [117238 || Integer || br: 92, o: -16 ]
-NARRP  
-NARRD  y  DEBUG: [118200 || Void || br: 92, o: -8 ]
-    NSIMV  arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
-  
-NARRD  k  DEBUG: [104732 || Void || br: 92, o: 16 ]
-    NSIMV  arbArray  DEBUG: [667888150 || null || br: 90, o: 0 ]
-  
-NSTATS NASGN  NARRV  NSIMV  k  DEBUG: [104732 || Void || br: 92, o: 16 ]
+     NFUNCS 
+NFUND  sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
+     NSIMP  
+NSDECL x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+    NRETN  NPOW   
+NSIMV  x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+    NILIT  2  DEBUG: [49929 || null || br: 90, o: 0 ]
+      
+NFUND  pow4  DEBUG: [-978947650 || Real || br: 90, o: 0 ]
+     NSIMP  
+NSDECL x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+    NRETN  NMUL   
+NFCALL NSIMV  sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
+     
+NSIMV  x  DEBUG: [117238 || Real || br: 92, o: -8 ]
+    NFCALL NSIMV  
+sqrt  DEBUG: [-891209402 || Real || br: 90, o: 0 ]
+     NSIMV  x  DEBUG: [117238 || Real || br: 92, o: -8 ]
     
-NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- 
-NFLIT  23.434  DEBUG: [2105732628 || null || br: 90, o: 0 ]
-   NSTATS 
-NASGN  NARRV  NSIMV  y  DEBUG: [118200 || Void || br: 92, o: -8 ]
-    
-NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- 
-NILIT  0  DEBUG: [48005 || null || br: 90, o: 0 ]
-      NSTATS NASGN  
-NARRV  NSIMV  y  DEBUG: [118200 || Void || br: 92, o: -8 ]
-    NILIT  
+NMAIN  NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+  NSTATS 
+NASGN  NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+  NILIT  
 2  DEBUG: [49929 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- 
-NARRV  NSIMV  k  DEBUG: [104732 || Void || br: 92, o: 16 ]
-    NILIT  
-1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || null || br: 90, o: 0 ]
- 
-NRETN  NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NMAIN  
-NSDECL x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NSTATS NASGN  
+      NSTATS NASGN  NSIMV  
+x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+  NFCALL NSIMV  pow4  DEBUG: [-978947650 || Real || br: 90, o: 0 ]
+     
 NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NILIT  45  DEBUG: [1603559 || null || br: 90, o: 0 ]
-   
-NSTATS NASGN  NARRV  NSIMV  a  DEBUG: [95112 || Void || br: 91, o: 8 ]
-      
-NILIT  0  DEBUG: [48005 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- 
-NFLIT  200.00  DEBUG: [-507871300 || null || br: 90, o: 0 ]
-   NSTATS 
-NASGN  NARRV  NSIMV  a  DEBUG: [95112 || Void || br: 91, o: 8 ]
-      
-NILIT  1  DEBUG: [48967 || null || br: 90, o: 0 ]
-      NSIMV  foo  DEBUG: [97715986 || Real || br: 90, o: 0 ]
- 
-NFLIT  400.00  DEBUG: [-1259959624 || null || br: 90, o: 0 ]
-  NCALL  
-NSIMV  abc  DEBUG: [92694346 || Integer || br: 90, o: 0 ]
-     NEXPL  
-NSIMV  x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
-  NSIMV  a  DEBUG: [95112 || Void || br: 91, o: 8 ]
-      
+  NPRLN  NSIMV  
+x  DEBUG: [117238 || Integer || br: 91, o: 0 ]
+  

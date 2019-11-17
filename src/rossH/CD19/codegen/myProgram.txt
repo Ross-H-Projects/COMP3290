@@ -1,36 +1,23 @@
 CD19 test
-types
-	arb is
-		foo : real
-	end
-	
-	arbArray is array[4] of arb
 
-arrays
-	a : arbArray
 	
-	
-function abc (x : integer, y : arbArray) : integer
-	k : arbArray
-begin
-		
-	k[1].foo = 23.434;
-	y[1].foo = 0;
-	y[2].foo = k[1].foo;
-	
-	
-	return 1;
+function sqrt ( x : real ) : real
+begin	
+	return x ^ 2;
+end
+
+function pow4 ( x : real ) : real
+begin	
+	return sqrt(x) * sqrt(x);
 end
 
 main
 	x : integer
 begin
-	x = 45;
+	x = 2;
 	
-	a[0].foo = 200.00;
-	a[1].foo = 400.00;
-
-	abc (x, a);
+	x = pow4(x);
+	printline x;
 	
 end 
 CD19 test
