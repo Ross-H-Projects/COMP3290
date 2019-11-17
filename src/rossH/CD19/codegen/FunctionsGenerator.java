@@ -16,7 +16,7 @@ public class FunctionsGenerator {
         }
 
         // code gen for single function
-        if (treeNode.getNodeType() != TreeNodeType.NSTATS) {
+        if (treeNode.getNodeType() != TreeNodeType.NFUNCS) {
             generateFunctionCode(treeNode, codeGenerator);
             return;
         }
@@ -30,6 +30,10 @@ public class FunctionsGenerator {
     }
 
     public static void generateFunctionCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        if (treeNode == null) {
+            return;
+        }
+
         // take note of the amount of op codes for where this function body
         // is starting to be generated
         // add a mapping in CD19CodGenerator of function names to their op code pos

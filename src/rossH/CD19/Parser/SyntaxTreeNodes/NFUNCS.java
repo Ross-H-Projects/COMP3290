@@ -51,6 +51,7 @@ public class NFUNCS {
         // were successfully defined
         NFUNCS.setValue(TreeNodeType.NFUNCS);
         NFUNCS.setLeft(func);
+        NFUNCS.setRight(funcs);
         return NFUNCS;
     }
 

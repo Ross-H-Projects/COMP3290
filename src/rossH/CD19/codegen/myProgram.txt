@@ -1,28 +1,22 @@
 CD19 test
+types
+	arb is
+		foo : real
+	end
+	
+	abArray is array[4] of arb
+	
+arrays
+	arbArrayRealized : abArray
 
-function abc (x : integer, y : integer, z : integer) : void
-	d : integer
-begin
-	d = 2;
-	x = 500 + d;
-	
-	printline x, y, z, d;
-	
-	return;
-end
 
 main
 	x : integer,
-	y : integer,
-	z : integer
 begin
-	x = 3;
-	y = 11;
-	z = 40;
+	x = 0;
+	input x;
+	input arbArrayRealized[1].foo;
 	
-	abc (x, y, z);
 	
-	printline x, y, z;
-
 end 
 CD19 test

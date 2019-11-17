@@ -270,10 +270,24 @@ public class StatementGenerator {
             return;
         }
 
-        // todo
-        //  add support for reading into array elements
+
         if (treeNode.getNodeType() == TreeNodeType.NSIMV) {
             codeGenerator.generateNSIVMCode(treeNode);
+
+            SymbolDataType dt = treeNode.getSymbolRecord().getSymbolDataType();
+
+            if (dt == SymbolDataType.Integer) {
+                // READI  - read integer
+                codeGenerator.addToOpCodes("61");
+            } else if (dt == SymbolDataType.Real) {
+                // READF  - read float
+                codeGenerator.addToOpCodes("60");
+            }
+
+            codeGenerator.addToOpCodes("43");
+            return;
+        } else if (treeNode.getNodeType() == TreeNodeType.NARRV) {
+            codeGenerator.generateNARRVCode(treeNode);
 
             SymbolDataType dt = treeNode.getSymbolRecord().getSymbolDataType();
 
@@ -489,8 +503,6 @@ public class StatementGenerator {
 
         // LA for function start pos
 
-
-
         codeGenerator.addToOpCodes("90");
         // we do not know the op code start pos for functions until after main body is
         // has op codes generated, so we will just save the position and the name of the function that is
@@ -535,9 +547,8 @@ public class StatementGenerator {
             return;
         }
 
-        // todo
-        //  gen code for non void returns
+        ExpressionGenerator.generateCode(treeNode.getLeft(), codeGenerator);
+        codeGenerator.addToOpCodes("70");
+        codeGenerator.addToOpCodes("71");
     }
-
-
 }

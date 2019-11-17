@@ -35,6 +35,8 @@ public class ExpressionGenerator {
             generateNPOWCode(treeNode, codeGenerator);
         } else if (treeNode.getNodeType() == TreeNodeType.NBOOL) {
             BooleanGenerator.generateCode(treeNode, codeGenerator);
+        } else if (treeNode.getNodeType() == TreeNodeType.NFCALL) {
+            generateNFCALLCode(treeNode, codeGenerator);
         }
 
     }
@@ -149,6 +151,10 @@ public class ExpressionGenerator {
 
         // do a modulo op code at the end
         codeGenerator.addToOpCodes("16");
+    }
+
+    public static void generateNFCALLCode (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        StatementGenerator.generateNCALLCode(treeNode, codeGenerator);
     }
 
 }
