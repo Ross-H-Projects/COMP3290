@@ -1,9 +1,10 @@
-package rossH.CD19.codegen;
+
 
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
 import rossH.CD19.Scanner.CD19Scanner;
 import rossH.CD19.Scanner.Token;
+import rossH.CD19.codegen.CD19CodeGenerator;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,7 +16,7 @@ import java.util.List;
 public class A4 {
     public static void main (String args[]) {
         boolean debug = true;
-        boolean debugMore = false;
+        boolean debugMore = true;
 
         // get source program content
         String sourceFileName = null;
@@ -65,12 +66,12 @@ public class A4 {
                 BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
                 TreeNode.setXmlFileWriter(xmlFileWriter);
                 xmlFileWriter.write("");
-                TreeNode.printTree(NPROG, "", debugMore);
+                TreeNode.printTree(NPROG, "", debugMore, false);
                 xmlFileWriter.close();
             } else {
                 // write parsed grammar to screen and
                 // output.lst file
-                TreeNode.printTree(NPROG, "", debugMore);
+                TreeNode.printTree(NPROG, "", debugMore, false);
             }
 
 

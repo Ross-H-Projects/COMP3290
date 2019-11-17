@@ -106,9 +106,7 @@ public class NDLIST {
 
         // arrdecl
         if (potentialStype == Token.TIDEN) {
-            // todo
-            //  arrdecl needs to take the functions symbol table into account
-            TreeNode arrdecl = NARRD.generateTreeNode(p, null, false);
+            TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable, false);
             return arrdecl;
         }
 

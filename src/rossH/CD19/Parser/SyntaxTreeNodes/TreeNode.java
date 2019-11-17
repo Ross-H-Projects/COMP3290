@@ -297,7 +297,7 @@ public class TreeNode {
         xmlFileWriter = fileWriter;
     }
 
-    public static void printTree(TreeNode tr, String nodePos, boolean debug) throws IOException {
+    public static void printTree(TreeNode tr, String nodePos, boolean debug, boolean printToScreen) throws IOException {
         if (tr.nodeValue == NUNDEF) {
             return;
         }
@@ -315,13 +315,17 @@ public class TreeNode {
         String nodeType = PRINTNODE[tr.nodeValue] + " ";
         nodeType = padToSeven(nodeType);
 
-        System.out.print(nodeType);
+        if (printToScreen) {
+            System.out.print(nodeType);
+        }
         lstFileWriter.append(nodeType);
         count++;
 
         if (count >= 10)  {
             count = 0;
-            System.out.println();
+            if (printToScreen) {
+                System.out.println();
+            }
             lstFileWriter.append("\n");
         }
 
@@ -339,14 +343,18 @@ public class TreeNode {
             }
 
             toPrint = padToSeven(toPrint);
-            System.out.print(toPrint);
+            if (printToScreen) {
+                System.out.print(toPrint);
+            }
             lstFileWriter.append(toPrint);
 
             int countIncreaseBy = (toPrint.length() / 7);
             count += countIncreaseBy;
             if (count >= 10) {
                 count = 0;
-                System.out.println();
+                if (printToScreen) {
+                    System.out.println();
+                }
                 lstFileWriter.append("\n");
             };
         }
@@ -358,7 +366,7 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"left\">\n");
             }
 
-            printTree(tr.left, "left", debug);
+            printTree(tr.left, "left", debug, printToScreen);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");
@@ -370,7 +378,7 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"middle\">\n");
             }
 
-            printTree(tr.middle, "middle", debug);
+            printTree(tr.middle, "middle", debug, printToScreen);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");
@@ -382,16 +390,13 @@ public class TreeNode {
                 xmlFileWriter.append("<child which=\"right\">\n");
             }
 
-            printTree(tr.right, "right", debug);
+            printTree(tr.right, "right", debug, printToScreen);
 
             if (xmlFileWriter != null) {
                 xmlFileWriter.append("</child>\n");
             }
         }
 
-        /*if (tr.nodeValue == NPROG && count % 7 != 0) {
-            System.out.println();
-        };*/
 
         if (tr.nodeValue == NPROG) {
             if (xmlFileWriter != null) {

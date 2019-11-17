@@ -111,4 +111,8 @@ public class SymbolTableRecord {
     public void setOffset (int o) {
         this.offset = o;
     }
+
+    public void setBaseRegister (int b) {
+        this.baseRegister = b;
+    }
 }

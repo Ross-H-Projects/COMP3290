@@ -4,19 +4,33 @@ types
 		foo : real
 	end
 	
-	abArray is array[4] of arb
-	
-arrays
-	arbArrayRealized : abArray
+	arbArray is array[4] of arb
 
+arrays
+	a : arbArray
+	
+	
+function abc (x : integer, y : arbArray) : integer
+	k : arbArray
+begin
+		
+	k[1].foo = 23.434;
+	y[1].foo = 0;
+	y[2].foo = k[1].foo;
+	
+	
+	return 1;
+end
 
 main
 	x : integer
 begin
-	x = 0;
-	input x;
-	input arbArrayRealized[1].foo;
+	x = 45;
 	
+	a[0].foo = 200.00;
+	a[1].foo = 400.00;
+
+	abc (x, a);
 	
 end 
 CD19 test

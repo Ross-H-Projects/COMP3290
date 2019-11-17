@@ -127,6 +127,10 @@ public class NFUND {
         // we need to fix (by reversing) the offsets for the parameters
         fixParameters(plist);
 
+        // we need to fix the local declarations so that any existing array declarations
+        // have proper offsets
+        fixLocalArrayDeclarationOffsets(dlist);
+
         NFUNDNode.setLeft(plist);
         NFUNDNode.setMiddle(dlist);
         NFUNDNode.setRight(stats);
@@ -222,6 +226,51 @@ public class NFUND {
         noOfParametersEncountered = fixParametersRecursive(treeNode.getRight(), totalAmountOfParameters, noOfParametersEncountered);
 
         return noOfParametersEncountered;
+    }
+
+    public static void fixLocalArrayDeclarationOffsets (TreeNode treeNode) {
+        int amountOfNonArrayDeclarations = countAmountOfNonArrayDeclarations(treeNode, 0);
+
+        fixLocalArrayDeclarationOffsetsRecursive(treeNode , amountOfNonArrayDeclarations ,0);
+    }
+
+    public static int fixLocalArrayDeclarationOffsetsRecursive(TreeNode treeNode, int totalAmountOfNonArrayDeclarations, int arrayDeclarationsEncountered) {
+        if (treeNode == null) {
+            return arrayDeclarationsEncountered;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NDLIST) {
+            if (treeNode.getNodeType() == TreeNodeType.NARRD) {
+                arrayDeclarationsEncountered++;
+                int newOffset = 8 + (totalAmountOfNonArrayDeclarations * 8) + (arrayDeclarationsEncountered * 8);
+                treeNode.getSymbolRecord().setOffset(newOffset);
+
+                // also set the base register to 2
+                treeNode.getSymbolRecord().setBaseRegister(2);
+            }
+            return arrayDeclarationsEncountered;
+        }
+
+        arrayDeclarationsEncountered = fixLocalArrayDeclarationOffsetsRecursive(treeNode.getLeft(), totalAmountOfNonArrayDeclarations, arrayDeclarationsEncountered);
+        arrayDeclarationsEncountered = fixLocalArrayDeclarationOffsetsRecursive(treeNode.getRight(), totalAmountOfNonArrayDeclarations, arrayDeclarationsEncountered);
+        return arrayDeclarationsEncountered;
+    }
+
+    public static int countAmountOfNonArrayDeclarations (TreeNode treeNode, int amountSoFar) {
+        if (treeNode == null) {
+            return amountSoFar;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NDLIST) {
+            if (treeNode.getNodeType() != TreeNodeType.NARRD) {
+                amountSoFar++;
+            }
+            return amountSoFar;
+        }
+
+        amountSoFar = countAmountOfNonArrayDeclarations(treeNode.getLeft(), amountSoFar);
+        amountSoFar = countAmountOfNonArrayDeclarations(treeNode.getRight(), amountSoFar);
+        return amountSoFar;
     }
 
 }

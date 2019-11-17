@@ -65,12 +65,12 @@ public class A3 {
                 BufferedWriter xmlFileWriter = new BufferedWriter(new FileWriter("treeOutput.xml", false));
                 TreeNode.setXmlFileWriter(xmlFileWriter);
                 xmlFileWriter.write("");
-                TreeNode.printTree(NPROG, "", debugMore);
+                TreeNode.printTree(NPROG, "", debugMore, true);
                 xmlFileWriter.close();
             } else {
                 // write parsed grammar to screen and
                 // output.lst file
-                TreeNode.printTree(NPROG, "", debugMore);
+                TreeNode.printTree(NPROG, "", debugMore, true);
             }
 
 

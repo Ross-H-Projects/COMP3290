@@ -1,6 +1,5 @@
 package rossH.CD19.codegen;
 
-import com.sun.source.tree.Tree;
 import rossH.CD19.Parser.CD19Parser;
 import rossH.CD19.Parser.SymbolTable.SymbolDataType;
 import rossH.CD19.Parser.SyntaxTreeNodes.TreeNode;
@@ -44,9 +43,13 @@ public class FunctionsGenerator {
         //  CHECK IF we don't need to generate any op codes for the parameters because this is done
         //  when the function is called
 
+        mapArrayParametersToArrayTypes(treeNode.getLeft(), codeGenerator);
+
         // allocate space on top of the call frame stack for the local variables
         // and initialize those variables
         generateFunctionDeclarations(treeNode.getMiddle(), codeGenerator);
+
+        mapArrayDeclarationsToArrayTypes(treeNode.getMiddle(), codeGenerator);
 
         // generate code for the statements within the function
         StatementGenerator.generateCode(treeNode.getRight(), codeGenerator);
@@ -75,17 +78,16 @@ public class FunctionsGenerator {
         if (declarations == null) {
             return 0;
         }
-        // declaratiosn will either be NSDLST or NSDECL
+        // declaratiosn will either be NSDLST or NSDECL or NARRD
 
-        if (declarations.getNodeType() == TreeNodeType.NSDLST) { // NSDLST
+        if (declarations.getNodeType() == TreeNodeType.NDLIST) { // NSDLST
             int noOfDeclarationsLeft = generateFunctionDeclarationsRecursive(declarations.getLeft(), noOfDeclarationsSofar, codeGenerator);
             int noOfDeclarationsRight = generateFunctionDeclarationsRecursive(declarations.getRight(), noOfDeclarationsSofar, codeGenerator);
             return noOfDeclarationsSofar + noOfDeclarationsLeft + noOfDeclarationsRight;
-        } else { // NSDECL
-            // example declaration initialization
-            // where the declaration lies in base register 1
-            // and the offset here is 16 :
-            // "91  00  00  00 16  42  00  00 43"
+        }
+
+        if (declarations.getNodeType() == TreeNodeType.NSDECL) { //
+
             String declarationBaseRegister = "" + declarations.getSymbolRecord().getBaseRegister();
 
             // load address
@@ -105,13 +107,49 @@ public class FunctionsGenerator {
             codeGenerator.addToOpCodes("00");
             // store
             codeGenerator.addToOpCodes("43");
-
-            if (declarations.getSymbolRecord().getSymbolDataType() == SymbolDataType.Real) {
-                // turn the top of the stack to real / float
-                //opCodes.add("09");
-            }
-
-            return 1;
+        } else if (declarations.getNodeType() == TreeNodeType.NARRD) {
+            GlobalsGenerator.generateArraysSection(declarations, codeGenerator);
+            return 0;
         }
+
+        return 1;
+    }
+
+    public static void mapArrayParametersToArrayTypes (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        if (treeNode == null) {
+            return;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NPLIST) {
+            if (treeNode.getNodeType() == TreeNodeType.NARRP) {
+                String arrayParameterName = treeNode.getLeft().getSymbolRecord().getLexeme();
+                String arrayTypeParameterName = treeNode.getLeft().getLeft().getSymbolRecord().getLexeme();
+
+                codeGenerator.arrayToArrayTypeMappings.put(arrayParameterName, arrayTypeParameterName);
+            }
+            return;
+        }
+
+        mapArrayParametersToArrayTypes(treeNode.getLeft(), codeGenerator);
+        mapArrayParametersToArrayTypes(treeNode.getRight(), codeGenerator);
+    }
+
+    public static void mapArrayDeclarationsToArrayTypes (TreeNode treeNode, CD19CodeGenerator codeGenerator) {
+        if (treeNode == null) {
+            return;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NDLIST) {
+            if (treeNode.getNodeType() == TreeNodeType.NARRD) {
+                String arrayDeclarationrName = treeNode.getSymbolRecord().getLexeme();
+                String arrayTypeParameterName = treeNode.getLeft().getSymbolRecord().getLexeme();
+
+                codeGenerator.arrayToArrayTypeMappings.put(arrayDeclarationrName, arrayTypeParameterName);
+            }
+            return;
+        }
+
+        mapArrayDeclarationsToArrayTypes(treeNode.getLeft(), codeGenerator);
+        mapArrayDeclarationsToArrayTypes(treeNode.getRight(), codeGenerator);
     }
 }
