@@ -83,15 +83,18 @@ public class FunctionsGenerator {
             // and the offset here is 16 :
             // "91  00  00  00 16  42  00  00 43"
             String declarationBaseRegister = "" + declarations.getSymbolRecord().getBaseRegister();
-            String declarationOffSet = "" + declarations.getSymbolRecord().getOffset();
+
             // load address
             codeGenerator.addToOpCodes(declarationBaseRegister);
-            // todo
-            //  convert large offsets to  bytes properly
-            codeGenerator.addToOpCodes("00");
-            codeGenerator.addToOpCodes("00");
-            codeGenerator.addToOpCodes("00");
-            codeGenerator.addToOpCodes(declarationOffSet);
+
+            int declarationOffSet = declarations.getSymbolRecord().getOffset();
+            String[] declarationOffSetByteRep = codeGenerator.convertAddressToByteRep(declarationOffSet);
+
+            codeGenerator.addToOpCodes(declarationOffSetByteRep[0]);
+            codeGenerator.addToOpCodes(declarationOffSetByteRep[1]);
+            codeGenerator.addToOpCodes(declarationOffSetByteRep[2]);
+            codeGenerator.addToOpCodes(declarationOffSetByteRep[3]);
+
             // initializes the variable to 0
             codeGenerator.addToOpCodes("42");
             codeGenerator.addToOpCodes("00");

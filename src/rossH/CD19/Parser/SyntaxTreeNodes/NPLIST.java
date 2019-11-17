@@ -81,7 +81,7 @@ public class NPLIST {
     public static TreeNode constantArrDecl (CD19Parser p, SymbolTable symbolTable) {
         TreeNode decl = new TreeNode(TreeNodeType.NARRC);
 
-        TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable);
+        TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable, true);
         if (arrdecl.getNodeType() == TreeNodeType.NUNDEF) {
             return arrdecl;
         }
@@ -123,7 +123,7 @@ public class NPLIST {
         if (potentialStype == Token.TIDEN) {
             decl.setValue(TreeNodeType.NARRP);
 
-            TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable);
+            TreeNode arrdecl = NARRD.generateTreeNode(p, symbolTable, true);
             decl.setLeft(arrdecl);
             return decl;
         }

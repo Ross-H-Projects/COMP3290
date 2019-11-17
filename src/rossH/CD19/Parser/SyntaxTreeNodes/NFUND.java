@@ -124,6 +124,9 @@ public class NFUND {
         NFUNDNode.setValue(TreeNodeType.NFUND);
         NFUNDNode.setSymbolTable(symbolTable);
 
+        // we need to fix (by reversing) the offsets for the parameters
+        fixParameters(plist);
+
         NFUNDNode.setLeft(plist);
         NFUNDNode.setMiddle(dlist);
         NFUNDNode.setRight(stats);
@@ -161,6 +164,64 @@ public class NFUND {
         }
 
         throw new Exception("Unable to recover");
+    }
+
+    public static void fixParameters (TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+
+        // count the amount of parameters
+        int noOfParameters = countNoOfParameters(treeNode, 0);
+
+        fixParametersRecursive(treeNode, noOfParameters, 0);
+    }
+
+    public static int countNoOfParameters (TreeNode treeNode, int noOfParametersSoFar) {
+        if (treeNode == null) {
+            return noOfParametersSoFar;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NPLIST) {
+            noOfParametersSoFar++;
+            return noOfParametersSoFar;
+        }
+
+        noOfParametersSoFar = countNoOfParameters(treeNode.getLeft(), noOfParametersSoFar);
+        noOfParametersSoFar = countNoOfParameters(treeNode.getRight(), noOfParametersSoFar);
+
+        return noOfParametersSoFar;
+    }
+
+    public static int fixParametersRecursive (TreeNode treeNode, int totalAmountOfParameters, int noOfParametersEncountered) {
+        if (treeNode == null) {
+            return noOfParametersEncountered;
+        }
+
+        if (treeNode.getNodeType() != TreeNodeType.NPLIST) {
+            noOfParametersEncountered++;
+
+            if (treeNode.getNodeType() == TreeNodeType.NSIMP) {
+                int oldOffset = treeNode.getLeft().getSymbolRecord().getOffset();
+                int newOffset = -8 + (totalAmountOfParameters * (-8)) + (noOfParametersEncountered * 8);
+                treeNode.getLeft().getSymbolRecord().setOffset(newOffset);
+            } else if (treeNode.getNodeType() == TreeNodeType.NARRP) {
+                int oldOffset = treeNode.getLeft().getSymbolRecord().getOffset();
+                int newOffset = -8 + (totalAmountOfParameters * (-8)) + (noOfParametersEncountered * 8);
+                treeNode.getLeft().getSymbolRecord().setOffset(newOffset);
+            } else if (treeNode.getNodeType() == TreeNodeType.NARRC) {
+                int oldOffset = treeNode.getLeft().getSymbolRecord().getOffset();
+                int newOffset = -8 + (totalAmountOfParameters * (-8)) + (noOfParametersEncountered * 8);
+                treeNode.getLeft().getSymbolRecord().setOffset(newOffset);
+            }
+
+            return noOfParametersEncountered;
+        }
+
+        noOfParametersEncountered = fixParametersRecursive(treeNode.getLeft(), totalAmountOfParameters, noOfParametersEncountered);
+        noOfParametersEncountered = fixParametersRecursive(treeNode.getRight(), totalAmountOfParameters, noOfParametersEncountered);
+
+        return noOfParametersEncountered;
     }
 
 }

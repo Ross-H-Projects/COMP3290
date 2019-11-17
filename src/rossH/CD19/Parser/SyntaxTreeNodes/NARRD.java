@@ -7,7 +7,7 @@ import rossH.CD19.Scanner.Token;
 
 public class NARRD {
     // <arrdecl>      --> <id> : <typeid>
-    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable) {
+    public static TreeNode generateTreeNode (CD19Parser p, SymbolTable symbolTable, boolean isParameter) {
         TreeNode NARRDNode = new TreeNode(TreeNodeType.NUNDEF);
         Token currentToken;
 
@@ -47,8 +47,13 @@ public class NARRD {
 
         // we compute the offset after we have traversed the main body declarations
         // or the function parameters / locals
-        NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 1, 0);
-
+        if (symbolTable == null) { // it is a main program array, offset calculated in codegen
+            NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 1, 0);
+        } else if (isParameter) { // is parameter to sub program, offset can be calculated now
+            NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 2, symbolTable.getBaseReigtser1OffsetNegative());
+        } else { // it is a local in a function, we compute the offsets of these in code gen
+            NARRDNode.setSymbolRecordDataType(p.getCurrentToken(), 2, 0);
+        }
         NARRDNode.setValue(TreeNodeType.NARRD);
         NARRDNode.setLeft(typeid);
         return NARRDNode;

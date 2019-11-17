@@ -33,7 +33,7 @@
 </child>
 <child which="middle">
 <nodeType value="NSDECL "/>
-<nodeSymbolValue value="a  "/>
+<nodeSymbolValue value="d  "/>
 </child>
 <child which="right">
 <nodeType value="NSTATS "/>
@@ -41,11 +41,11 @@
 <nodeType value="NASGN "/>
 <child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  "/>
+<nodeSymbolValue value="d  "/>
 </child>
 <child which="right">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="77  "/>
+<nodeSymbolValue value="2  "/>
 </child>
 </child>
 <child which="right">
@@ -57,34 +57,14 @@
 <nodeSymbolValue value="x  "/>
 </child>
 <child which="right">
+<nodeType value="NADD "/>
+<child which="left">
 <nodeType value="NILIT "/>
-<nodeSymbolValue value="100  "/>
-</child>
-</child>
-<child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
-<nodeType value="NASGN "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  "/>
-</child>
-<child which="right">
-<nodeType value="NADD "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="x  "/>
-</child>
-<child which="right">
-<nodeType value="NADD "/>
-<child which="left">
-<nodeType value="NSIMV "/>
-<nodeSymbolValue value="y  "/>
+<nodeSymbolValue value="500  "/>
 </child>
 <child which="right">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="z  "/>
-</child>
+<nodeSymbolValue value="d  "/>
 </child>
 </child>
 </child>
@@ -93,13 +73,33 @@
 <child which="left">
 <nodeType value="NPRLN "/>
 <child which="left">
+<nodeType value="NPRLST "/>
+<child which="left">
 <nodeType value="NSIMV "/>
-<nodeSymbolValue value="a  "/>
+<nodeSymbolValue value="x  "/>
+</child>
+<child which="right">
+<nodeType value="NPRLST "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  "/>
+</child>
+<child which="right">
+<nodeType value="NPRLST "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="z  "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="d  "/>
+</child>
+</child>
+</child>
 </child>
 </child>
 <child which="right">
 <nodeType value="NRETN "/>
-</child>
 </child>
 </child>
 </child>
@@ -114,8 +114,15 @@
 <nodeSymbolValue value="x  "/>
 </child>
 <child which="right">
+<nodeType value="NSDLST "/>
+<child which="left">
 <nodeType value="NSDECL "/>
 <nodeSymbolValue value="y  "/>
+</child>
+<child which="right">
+<nodeType value="NSDECL "/>
+<nodeSymbolValue value="z  "/>
+</child>
 </child>
 </child>
 <child which="right">
@@ -147,6 +154,19 @@
 <child which="right">
 <nodeType value="NSTATS "/>
 <child which="left">
+<nodeType value="NASGN "/>
+<child which="left">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="z  "/>
+</child>
+<child which="right">
+<nodeType value="NILIT "/>
+<nodeSymbolValue value="40  "/>
+</child>
+</child>
+<child which="right">
+<nodeType value="NSTATS "/>
+<child which="left">
 <nodeType value="NCALL "/>
 <child which="left">
 <nodeType value="NSIMV "/>
@@ -155,36 +175,41 @@
 <child which="right">
 <nodeType value="NEXPL "/>
 <child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="1  "/>
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="x  "/>
 </child>
 <child which="right">
 <nodeType value="NEXPL "/>
 <child which="left">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="2  "/>
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="y  "/>
 </child>
 <child which="right">
-<nodeType value="NILIT "/>
-<nodeSymbolValue value="3  "/>
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="z  "/>
 </child>
 </child>
 </child>
 </child>
 <child which="right">
-<nodeType value="NSTATS "/>
-<child which="left">
 <nodeType value="NPRLN "/>
+<child which="left">
+<nodeType value="NPRLST "/>
 <child which="left">
 <nodeType value="NSIMV "/>
 <nodeSymbolValue value="x  "/>
 </child>
-</child>
 <child which="right">
-<nodeType value="NPRLN "/>
+<nodeType value="NPRLST "/>
 <child which="left">
 <nodeType value="NSIMV "/>
 <nodeSymbolValue value="y  "/>
+</child>
+<child which="right">
+<nodeType value="NSIMV "/>
+<nodeSymbolValue value="z  "/>
+</child>
+</child>
 </child>
 </child>
 </child>

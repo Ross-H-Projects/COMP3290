@@ -137,9 +137,9 @@ public class NSDLST {
         }
 
         if (isNegativeOffset) {
-            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, symbolTable.getBaseReigtser1OffsetNegative());
+            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 2, symbolTable.getBaseReigtser1OffsetNegative());
         } else {
-            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 1, symbolTable.getBaseReigtser1OffsetPositive());
+            sdecl.setSymbolRecordDataType(p.getCurrentToken(), 2, symbolTable.getBaseReigtser1OffsetPositive());
         }
         p.moveToNextToken();
 

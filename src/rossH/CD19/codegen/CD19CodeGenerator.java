@@ -1,4 +1,5 @@
 
+
 package rossH.CD19.codegen;
 
 import rossH.CD19.Parser.SymbolTable.SymbolDataType;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 
 public class CD19CodeGenerator {
 
@@ -181,15 +183,19 @@ public class CD19CodeGenerator {
             // and the offset here is 16 :
             // "91  00  00  00 16  42  00  00 43"
             String declarationBaseRegister = "" + declarations.getSymbolRecord().getBaseRegister();
-            String declarationOffSet = "" + declarations.getSymbolRecord().getOffset();
+
             // load address
             opCodes.add(declarationBaseRegister);
-            // todo
-            //  convert large offsets to  bytes properly
-            opCodes.add("00");
-            opCodes.add("00");
-            opCodes.add("00");
-            opCodes.add(declarationOffSet);
+
+            int declarationOffSet = declarations.getSymbolRecord().getOffset();
+            String[] declarationOffSetByteRep = convertAddressToByteRep(declarationOffSet);
+
+            opCodes.add(declarationOffSetByteRep[0]);
+            opCodes.add(declarationOffSetByteRep[1]);
+            opCodes.add(declarationOffSetByteRep[2]);
+            opCodes.add(declarationOffSetByteRep[3]);
+
+
             // initializes the variable to 0
             opCodes.add("42");
             opCodes.add("00");
@@ -281,15 +287,15 @@ public class CD19CodeGenerator {
 
     public void generateLoadVariableCode (TreeNode treeNode) {
         String baseAddressValueInstruction = "" + treeNode.getSymbolRecord().getBaseRegisterForValue();
-        String offset = "" +  treeNode.getSymbolRecord().getOffset();
+        int offset = treeNode.getSymbolRecord().getOffset();
         opCodes.add(baseAddressValueInstruction);
+
         // specify offset
-        // todo
-        //  eventually support larger address size
-        opCodes.add("00");
-        opCodes.add("00");
-        opCodes.add("00");
-        opCodes.add(offset);
+        String[] offsetByteRep = convertAddressToByteRep(offset);
+        opCodes.add(offsetByteRep[0]);
+        opCodes.add(offsetByteRep[1]);
+        opCodes.add(offsetByteRep[2]);
+        opCodes.add(offsetByteRep[3]);
     }
 
     public void generateLoadArrayElementCode (TreeNode treeNode) {
@@ -434,7 +440,15 @@ public class CD19CodeGenerator {
     public String[] convertAddressToByteRep (int actualIntegerConstantPos) {
         String[] byteRep = new String[4];
 
-        // todo - account for negative addresses
+        if (actualIntegerConstantPos < 0) {
+            String bitString = Integer.toBinaryString(actualIntegerConstantPos);
+            byteRep[0] = "" + Integer.parseInt(bitString.substring(0, 8), 2);
+            byteRep[1] = "" + Integer.parseInt(bitString.substring(8, 16), 2);
+            byteRep[2] = "" + Integer.parseInt(bitString.substring(16, 24), 2);
+            byteRep[3] = "" + Integer.parseInt(bitString.substring(24, 32), 2);
+
+            return byteRep;
+        }
 
         // we can cheat a little bit since we know we are only working with 64 Kbits of memory
         byteRep[0] = "00";

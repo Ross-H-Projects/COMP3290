@@ -19,7 +19,7 @@ public class NALIST {
         TreeNode NALISTNode = new TreeNode(TreeNodeType.NUNDEF);
 
         // <arrdecl>
-        TreeNode arrdecl = NARRD.generateTreeNode(p, null);
+        TreeNode arrdecl = NARRD.generateTreeNode(p, null, false);
         if (arrdecl.getNodeType() == TreeNodeType.NUNDEF) {
             try {
                 errorRecovery(p);
